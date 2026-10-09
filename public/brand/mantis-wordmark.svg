@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="130" viewBox="0 0 380 130" role="img" aria-label="Mantis Studio wordmark"><title>Mantis Studio wordmark</title><g transform="translate(6 8)"><g fill="#285c48" fill-rule="evenodd">
+    <path d="M0 23H13V30Q21 20 33 22Q43 22 49 31Q57 21 70 22Q91 22 91 47V84H77V48Q77 35 67 35Q55 35 55 49V84H41V48Q41 35 31 35Q14 35 14 50V84H0Z"/>
+    <path d="M105 31Q119 20 136 22Q160 23 160 47V84H147V77Q139 86 125 85Q103 84 103 65Q103 44 146 47Q146 33 134 34Q122 34 113 42ZM146 58Q117 55 117 65Q117 74 128 73Q145 74 146 63Z"/>
+    <path d="M174 23H187V31Q196 21 208 22Q231 22 231 48V84H217V49Q217 35 205 35Q188 35 188 51V84H174Z"/>
+    <path d="M248 8H262V23H279V36H262V63Q262 74 279 71V84Q248 91 248 65V36H238V23H248Z"/>
+    <path d="M291 23H305V84H291Z"/><circle cx="298" cy="7" r="8"/>
+    <path d="M320 67Q331 76 342 74Q352 74 352 67Q352 61 338 58Q315 53 317 39Q318 22 340 22Q354 22 365 31L357 41Q347 34 339 34Q330 34 330 40Q330 45 343 48Q368 54 366 68Q365 85 342 85Q325 85 313 76Z"/>
+  </g></g><g transform="translate(8 109)"><g fill="none" stroke="#285c48" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="round">
+    <path d="M11 2C0-4-4 7 6 8C17 9 12 20 1 15"/>
+    <path d="M36 1H50M43 1V17M77 1V10C77 20 90 20 90 10V1"/>
+    <path d="M118 1V17H123C136 17 136 1 123 1ZM158 1V17"/>
+    <ellipse cx="195" cy="9" rx="8" ry="9"/>
+  </g></g></svg>

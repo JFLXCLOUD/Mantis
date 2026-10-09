@@ -1,0 +1,11 @@
+# Mantis concept-board prompt
+
+Tool: built-in `image_gen.imagegen`. New image, opaque ivory background. No reference image supplied.
+
+Use case: logo-brand.
+Asset type: exploratory identity concept board for an independent open-source Windows craft design and precision cutting application, currently named Hopper. This is a proposed new brand direction, not a final approved replacement.
+Primary request: an original praying mantis mascot and matching logo/app icon. A mantis's folded angular forearms evoke precise cutting. Make the character approachable and clever, with controlled clean angles, a recognizable triangular head, two expressive eyes, antennae, slender thorax, folded raptorial forearms and four supporting legs. Clearly a praying mantis rather than a grasshopper. The forearms are natural stylized insect anatomy, not literal steel weapons. Friendly, focused, not babyish or menacing.
+Style: polished contemporary craft-software identity; clean graphic illustration with restrained dimensional shading for the hero mascot; genuinely simplified flat shapes for the emblem and icon.
+Palette: deep forest green #285c48, sage #8fbc8f, pale mint #dce9d8 and warm ivory #f5f8df, preserving visual continuity with the existing project.
+Composition: landscape art-directed presentation board on warm ivory with generous negative space, editorial typography and meticulous alignment. Main upper-left lockup has an original flat mantis emblem beside the exact words "mantis" with small "STUDIO" beneath, and small upper heading "IDENTITY EXPLORATION". A large full-body friendly mantis mascot occupies the right half. The bottom-left contains a dark-green rounded-square app tile with a bold simple mantis head/forearms silhouette that suggests an M, plus a monochrome emblem. Along the very bottom a compact name study reads exactly "Mantis Studio   /   Manti   /   Mantika". Keep labels sparse and legible.
+Constraints: original artwork, no Cricut logo or competitor marks, no grasshopper jumping legs, no wings dominating the silhouette, no scissors prop, no photoreal insect texture, no excessive fine lines. Ensure the app icon and mascot share face/antenna proportions. Working name only; do not include trademark symbols, claims of registered identity, app screenshots, or extra slogans.

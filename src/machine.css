@@ -1,0 +1,338 @@
+.machine-modal {
+  width: 940px;
+  padding: 32px;
+}
+.machine-lede {
+  font-size: 12px;
+  color: #71806b;
+  margin: 0 0 20px;
+}
+.machine-stage-note {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  background: #f6f4e9;
+  border: 1px solid #e9e4cf;
+  border-radius: 9px;
+  padding: 13px 15px;
+  color: #847347;
+  margin-bottom: 22px;
+}
+.machine-stage-note svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.machine-stage-note p {
+  font-size: 11px;
+  line-height: 1.75;
+}
+.machine-stage-note strong {
+  display: block;
+  font-weight: 600;
+}
+.machine-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.machine-card {
+  border: 1px solid #e0e7d8;
+  border-radius: 10px;
+  padding: 20px;
+  min-width: 0;
+}
+.machine-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 19px;
+}
+.machine-card-heading h3 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #3f6048;
+  font-size: 13px;
+}
+.machine-pill {
+  font-size: 8px;
+  letter-spacing: 1.2px;
+  background: #eef3e8;
+  color: #728866;
+  padding: 5px 7px;
+  border-radius: 4px;
+}
+.machine-small {
+  font-size: 10px;
+  color: #7a8870;
+  line-height: 1.8;
+  margin: 0 0 13px;
+}
+.machine-footnote {
+  font-size: 9px;
+  color: #87937b;
+  line-height: 1.8;
+  margin-top: 12px;
+}
+.machine-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #f7f9f3;
+  border-radius: 8px;
+  padding: 22px 17px;
+  margin: 15px 0;
+  color: #7f9373;
+  gap: 10px;
+}
+.machine-empty strong {
+  font-size: 11px;
+  color: #52684b;
+  font-weight: 600;
+}
+.machine-empty p {
+  font-size: 10px;
+  line-height: 1.8;
+}
+.machine-device {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e0e7d8;
+  border-radius: 7px;
+  margin: 10px 0;
+  text-align: left;
+}
+.machine-device.selected {
+  background: #f0f6eb;
+  border-color: #8eac82;
+}
+.machine-device > span {
+  flex: 1;
+  min-width: 0;
+}
+.machine-device strong {
+  display: block;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.machine-device small {
+  display: block;
+  font-size: 9px;
+  color: #829476;
+  margin-top: 5px;
+}
+.machine-report {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  color: #567950;
+  padding: 7px 0;
+}
+.machine-error {
+  font-size: 10px;
+  line-height: 1.8;
+  color: #a05d42;
+  background: #fbf2e9;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+.machine-job-summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 15px 0;
+  margin-bottom: 5px;
+  border-top: 1px solid #e8eddf;
+  font-size: 10px;
+  color: #87957a;
+}
+.machine-job-summary strong {
+  color: #607153;
+  font-weight: 500;
+  text-align: right;
+}
+.machine-passes {
+  max-width: 104px;
+}
+.machine-preflight {
+  margin-top: 21px;
+  padding: 17px 20px;
+  background: #f7f8f3;
+  border-radius: 9px;
+}
+.machine-preflight h3 {
+  font-size: 11px;
+  color: #627257;
+  margin-bottom: 10px;
+}
+.machine-preflight ul {
+  margin: 0;
+  padding-left: 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.machine-preflight li,
+.machine-preflight p {
+  font-size: 10px;
+  line-height: 1.65;
+  color: #7c876e;
+}
+.machine-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 22px;
+  align-items: center;
+}
+.machine-actions > div {
+  display: flex;
+  gap: 8px;
+}
+.machine-actions .button {
+  font-size: 11px;
+  padding: 9px 12px;
+}
+.machine-exported {
+  font-size: 11px;
+  color: #285c48;
+  margin-top: 12px;
+}
+.machine-discovery {
+  margin-top: 12px;
+}
+.machine-setup-link {
+  margin-left: auto;
+  align-self: center;
+  flex-shrink: 0;
+}
+.machine-header-button {
+  padding: 9px 12px;
+}
+.machine-scanning {
+  animation: machine-spin 1.4s linear infinite;
+}
+@keyframes machine-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .machine-scanning {
+    animation: none;
+  }
+}
+@media (max-width: 1200px) {
+  .machine-header-button {
+    font-size: 0;
+    gap: 0;
+    padding: 9px;
+  }
+  .machine-header-button svg {
+    width: 17px;
+    height: 17px;
+  }
+  .machine-modal {
+    width: 890px;
+  }
+}
+.machine-transport {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 14px 0;
+  background: #eef2eb;
+  border-radius: 10px;
+}
+.machine-transport button {
+  flex: 1;
+  border: 0;
+  border-radius: 7px;
+  padding: 9px;
+  background: transparent;
+  color: #52614d;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+.machine-transport button[aria-pressed="true"] {
+  background: #fff;
+  color: #315b38;
+  box-shadow: 0 1px 4px #253b2020;
+}
+.machine-pairing {
+  font-size: 12px;
+  line-height: 1.55;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid #dce5d6;
+  border-radius: 10px;
+  background: #f7faf4;
+}
+.machine-pairing strong {
+  color: #304b32;
+}
+.machine-pairing ol {
+  padding-left: 18px;
+  margin: 8px 0;
+}
+.machine-pairing li + li {
+  margin-top: 5px;
+}
+.machine-pairing p {
+  color: #657060;
+  margin: 8px 0;
+}
+.machine-pairing .button {
+  white-space: normal;
+  text-align: left;
+}
+.machine-radio {
+  font-size: 12px;
+  color: #52614d;
+}
+.machine-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid #bbcdb4;
+  background: #f1f7eb;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin: 18px 0;
+}
+.machine-link strong {
+  font-size: 14px;
+  color: #285c48;
+}
+.machine-link p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 5px;
+}
+.machine-link small {
+  display: block;
+  font-size: 10px;
+  color: #65755c;
+  margin-top: 6px;
+}
+.machine-link.error {
+  background: #fff4ed;
+  border-color: #e4c0b2;
+}
+.machine-link.error strong {
+  color: #9c4b36;
+}
+.machine-connect-action {
+  margin-top: 14px;
+}
+.machine-connect-action p {
+  margin-top: 9px;
+}

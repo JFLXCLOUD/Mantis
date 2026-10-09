@@ -1,0 +1,81 @@
+{
+  "name": "mantis-studio",
+  "version": "0.6.0",
+  "private": true,
+  "description": "An independent, open-source craft design studio. Your ideas, without limits.",
+  "repository": { "type": "git", "url": "git+https://github.com/JFLXCLOUD/Mantis.git" },
+  "homepage": "https://github.com/JFLXCLOUD/Mantis#readme",
+  "bugs": { "url": "https://github.com/JFLXCLOUD/Mantis/issues" },
+  "engines": { "node": ">=24.15.0 <25" },
+  "main": "electron/main.cjs",
+  "scripts": {
+    "brand:build": "node scripts/icons.mjs",
+    "dev": "vite --host 127.0.0.1",
+    "desktop:dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && node scripts/launch.mjs --dev\"",
+    "build": "tsc -b && vite build && node scripts/notices.mjs",
+    "start": "node scripts/launch.mjs",
+    "test": "vitest run src --maxWorkers=1 && node --test electron/devices/*.test.cjs && npm run test:research",
+    "test:research": "node --test scripts/*.test.mjs",
+    "research:summary": "node scripts/summarize-explore-capture.mjs",
+    "test:e2e": "playwright test",
+    "package:win": "npm run build && node scripts/ensure-electron.mjs && electron-builder --win --dir",
+    "dist:win": "npm run build && node scripts/ensure-electron.mjs && electron-builder --win portable"
+  },
+  "keywords": [],
+  "author": "Mantis Studio contributors",
+  "license": "MIT",
+  "type": "module",
+  "build": {
+    "electronDist": "node_modules/electron/dist",
+    "appId": "studio.hopper.desktop",
+    "productName": "Mantis Studio",
+    "directories": {
+      "output": "release/v0.6.0"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "shared/**/*",
+      "!electron/**/*.test.cjs",
+      "package.json",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.txt",
+      "!node_modules/**/*"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        "portable"
+      ],
+      "artifactName": "Mantis-Studio-${version}-Windows.${ext}",
+      "signExecutable": false
+    }
+  },
+  "overrides": {
+    "@electron/get": "^5.0.0",
+    "shell-quote": "^1.12.0"
+  },
+  "dependencies": {
+    "dompurify": "^3.4.16",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^1.52.0",
+    "paper": "^0.12.18",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.5",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "jsdom": "^30.1.2",
+    "prettier": "^3.9.9",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3",
+    "wait-on": "^9.5.1"
+  }
+}

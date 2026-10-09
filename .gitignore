@@ -1,0 +1,26 @@
+node_modules/
+dist/
+release/
+test-results/
+playwright-report/
+*.log
+.DS_Store
+*.tsbuildinfo
+
+# Local credentials, projects and hardware observations are never source assets.
+.env
+.env.*
+!.env.example
+*.private.json
+*.etl
+*.pcap
+*.pcapng
+*.hopper
+*.hopperjob
+
+# Publish only reviewed screenshots; device diagnostics can show identifiers.
+docs/screenshots/*
+!docs/screenshots/README.md
+!docs/screenshots/mantis-studio.png
+!docs/screenshots/object-context-menu.png
+!docs/screenshots/print-then-cut.png

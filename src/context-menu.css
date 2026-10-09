@@ -1,0 +1,82 @@
+.object-context-menu {
+  position: fixed;
+  z-index: 150;
+  width: 264px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  background: #fffefa;
+  border: 1px solid #dce3d5;
+  border-radius: 12px;
+  box-shadow:
+    0 12px 36px #16372526,
+    0 2px 8px #16372512;
+  color: var(--ink);
+  font-size: 12px;
+}
+.object-menu-heading {
+  padding: 9px 10px 10px;
+  display: grid;
+  gap: 5px;
+}
+.object-menu-heading strong {
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--green);
+}
+.object-menu-heading span {
+  font-size: 10px;
+  color: #7a826f;
+  line-height: 1.5;
+}
+.object-context-menu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  min-height: 32px;
+  border-radius: 6px;
+  text-align: left;
+}
+.object-context-menu button > svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.7;
+}
+.object-context-menu button > span {
+  flex: 1;
+}
+.object-context-menu button > kbd {
+  font-size: 9px;
+  font-family: inherit;
+  color: #818976;
+}
+.object-context-menu button:focus {
+  outline: none;
+  background: #e9f0e3;
+  color: #235945;
+  box-shadow: inset 0 0 0 1px #afc5a6;
+}
+.object-context-menu button:hover:not(:disabled) {
+  background: #eef3e9;
+}
+.object-context-menu button:disabled {
+  opacity: 0.4;
+}
+.object-context-menu button.danger {
+  color: #a64e40;
+}
+.object-context-menu button.danger:focus,
+.object-context-menu button.danger:hover {
+  background: #fbefea;
+}
+.object-menu-separator {
+  height: 1px;
+  background: #e8ecdf;
+  margin: 5px 6px;
+}

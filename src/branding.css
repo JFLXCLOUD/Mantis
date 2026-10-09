@@ -1,0 +1,46 @@
+.brand {
+  gap: 8px;
+}
+.brand-logo {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.brand > .alpha {
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 1.3px;
+}
+.sidebar-mascot {
+  float: right;
+  width: 46px;
+  height: 61px;
+  object-fit: contain;
+  margin: -4px -5px 0 5px;
+}
+.open-note p {
+  clear: both;
+}
+.app-status img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+.empty-mascot {
+  display: block;
+  object-fit: contain;
+  margin: -8px auto 14px;
+}
+.help-brand {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: -7px 5px 12px 0;
+}
+.help-brand > img {
+  object-fit: contain;
+}
+.help-brand > img:first-child {
+  width: 62px;
+  height: 62px;
+}

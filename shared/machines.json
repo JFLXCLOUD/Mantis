@@ -1,0 +1,94 @@
+{
+  "maker-4": {
+    "name": "Cricut Maker 4",
+    "family": "Maker",
+    "usb": true,
+    "bluetooth": "classic"
+  },
+  "maker-3": {
+    "name": "Cricut Maker 3",
+    "family": "Maker",
+    "usb": true,
+    "bluetooth": "classic"
+  },
+  "maker": {
+    "name": "Cricut Maker (original)",
+    "family": "Maker",
+    "usb": true,
+    "bluetooth": "classic"
+  },
+  "maker-5": {
+    "name": "Cricut Maker 5",
+    "family": "Maker",
+    "usb": true,
+    "bluetooth": "ble"
+  },
+  "explore-5": {
+    "name": "Cricut Explore 5",
+    "family": "Explore",
+    "usb": true,
+    "bluetooth": "ble"
+  },
+  "explore-4": {
+    "name": "Cricut Explore 4",
+    "family": "Explore",
+    "usb": true,
+    "bluetooth": "classic"
+  },
+  "explore-3": {
+    "name": "Cricut Explore 3",
+    "family": "Explore",
+    "usb": true,
+    "bluetooth": "classic"
+  },
+  "explore-air-2": {
+    "name": "Cricut Explore Air 2",
+    "family": "Explore",
+    "usb": true,
+    "bluetooth": "classic"
+  },
+  "explore-air": {
+    "name": "Cricut Explore Air",
+    "family": "Explore",
+    "usb": true,
+    "bluetooth": "classic"
+  },
+  "explore-one": {
+    "name": "Cricut Explore One",
+    "family": "Explore",
+    "usb": true,
+    "bluetooth": "classic",
+    "bluetoothAdapter": true
+  },
+  "explore": {
+    "name": "Cricut Explore (original)",
+    "family": "Explore",
+    "usb": true,
+    "bluetooth": "classic",
+    "bluetoothAdapter": true
+  },
+  "joy": {
+    "name": "Cricut Joy",
+    "family": "Joy",
+    "usb": false,
+    "bluetooth": "classic"
+  },
+  "joy-xtra": {
+    "name": "Cricut Joy Xtra",
+    "family": "Joy",
+    "usb": false,
+    "bluetooth": "classic"
+  },
+  "joy-2": {
+    "name": "Cricut Joy 2",
+    "family": "Joy",
+    "usb": false,
+    "bluetooth": "ble"
+  },
+  "venture": {
+    "name": "Cricut Venture",
+    "family": "Venture",
+    "usb": true,
+    "bluetooth": "classic"
+  }
+}

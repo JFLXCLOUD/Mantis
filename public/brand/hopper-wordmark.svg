@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="104" viewBox="0 0 300 104" role="img" aria-label="Hopper wordmark"><title>Hopper wordmark</title><g transform="translate(3 1)"><g fill="none" stroke="#285c48" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 13v54m0-23c0-24 31-24 31 0v23"/>
+    <ellipse cx="72" cy="47" rx="18" ry="21"/>
+    <path d="M106 88V29m0 18c0-28 37-28 37 0s-37 28-37 0"/>
+    <path d="M160 88V29m0 18c0-28 37-28 37 0s-37 28-37 0"/>
+    <path d="M213 46h34c0-27-35-28-35 1 0 22 20 26 33 16"/>
+    <path d="M265 67V29m0 16c0-14 9-20 20-18"/>
+  </g></g></svg>

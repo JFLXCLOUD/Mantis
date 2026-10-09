@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Hopper app icon"><title>Hopper app icon</title><rect width="256" height="256" rx="58" fill="#285c48"/><g transform="translate(13 11) scale(1.78)"><g stroke="#f5f8df" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M88 76 96 104h13M76 82 71 105H60" fill="none" stroke-width="7"/>
+    <path d="M23 85C38 65 61 53 90 58 89 82 63 97 23 85Z" fill="#8fbc8f" stroke-width="5"/>
+    <path d="m32 83 46-17" fill="none" stroke="#285c48" stroke-width="4"/>
+    <path d="M76 88 43 48 51 105H29" fill="none" stroke-width="9"/>
+    <path d="M90 31Q85 18 77 16M101 30Q105 15 116 14" fill="none" stroke-width="5"/>
+    <path d="M77 51C77 38 84 30 96 30 108 30 116 39 116 51 116 63 108 70 97 70 84 70 77 62 77 51Z" fill="#285c48" stroke-width="5"/>
+    <circle cx="103" cy="46" r="3.5" fill="#f5f8df" stroke="none"/>
+    <path d="M101 57q5 4 9-1" fill="none" stroke-width="2.8"/>
+    <path d="m103 75 10 7 9-12" fill="none" stroke-width="6"/>
+  </g></g></svg>

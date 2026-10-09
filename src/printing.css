@@ -1,0 +1,122 @@
+.print-columns {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(230px, 1.1fr);
+  gap: 24px;
+  margin: 22px 0;
+}
+.print-controls .field-label {
+  margin-top: 14px;
+}
+.print-controls .field-label:first-child {
+  margin-top: 0;
+}
+.print-controls input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+}
+.print-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-top: 14px;
+}
+.print-preview-column {
+  padding: 18px;
+  background: #e8eddf;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.print-paper {
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+  background: white;
+  box-shadow: 0 5px 20px #253c2720;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.print-artwork {
+  position: absolute;
+}
+.print-artwork svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.print-proof-label,
+.print-paper > small {
+  position: absolute;
+  left: 6%;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: #73816b;
+}
+.print-proof-label {
+  top: 2%;
+}
+.print-paper > small {
+  bottom: 2%;
+  font-size: 6px;
+}
+.print-handoff {
+  background: #f5f7ef;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 17px 20px;
+}
+.print-handoff h3 {
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+.print-handoff ol {
+  padding-left: 19px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.print-handoff p {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #65735b;
+}
+.print-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.combine-options {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0;
+}
+.combine-options button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 5px;
+}
+.combine-options span {
+  font-size: 11px;
+  font-weight: 400;
+}
+.modal:has(.combine-options) > p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #64775b;
+}
+@media (max-width: 750px) {
+  .print-columns {
+    grid-template-columns: 1fr;
+  }
+  .print-paper {
+    max-width: 260px;
+  }
+}
