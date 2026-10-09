@@ -1,5 +1,14 @@
-import { useState } from "react";
-import { Usb, Download, FileCheck2, Info, ArrowLeft } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Usb,
+  Download,
+  FileCheck2,
+  Info,
+  ArrowLeft,
+  BookOpen,
+} from "lucide-react";
+import { MaterialLibrary } from "./MaterialLibrary";
+import { MATERIAL_CATEGORIES } from "./materials";
 import { DeviceDiscovery } from "./DeviceDiscovery";
 import { useBluetoothConnection } from "./useBluetoothConnection";
 import { materialGroups, type Project } from "./model";
@@ -21,6 +30,7 @@ export function MachineSetup({
   mirror,
   setMirror,
   back,
+  initialMaterialLibrary = false,
 }: {
   project: Project;
   initialGroup: number;
@@ -28,8 +38,16 @@ export function MachineSetup({
   mirror: boolean;
   setMirror(value: boolean): void;
   back(): void;
+  initialMaterialLibrary?: boolean;
 }) {
   const [preferences, setPreferences] = useState(loadPreferences);
+  const [showMaterials, setShowMaterials] = useState(initialMaterialLibrary);
+  const browseButton = useRef<HTMLButtonElement>(null);
+  const wasBrowsing = useRef(false);
+  useEffect(() => {
+    if (!showMaterials && wasBrowsing.current) browseButton.current?.focus();
+    wasBrowsing.current = showMaterials;
+  }, [showMaterials]);
   const {
     connection,
     error: connectionError,
@@ -60,6 +78,17 @@ export function MachineSetup({
   const draft = active
     ? makeJobDraft(project, preferences, groupIndex, mirror)
     : null;
+  if (showMaterials)
+    return (
+      <MaterialLibrary
+        selected={preferences.materialProfile}
+        onBack={() => setShowMaterials(false)}
+        onChoose={(profile) => {
+          change({ material: profile.name, materialProfile: profile });
+          setShowMaterials(false);
+        }}
+      />
+    );
   return (
     <div className="machine-setup">
       <span className="eyebrow">FROM YOUR CANVAS TO YOUR MACHINE</span>
@@ -236,9 +265,39 @@ export function MachineSetup({
               placeholder="e.g. removable vinyl"
               maxLength={120}
               value={preferences.material}
-              onChange={(e) => change({ material: e.target.value })}
+              onChange={(e) =>
+                change({ material: e.target.value, materialProfile: undefined })
+              }
             />
           </label>
+          <button
+            ref={browseButton}
+            className="button secondary wide material-browse-button"
+            onClick={() => setShowMaterials(true)}
+          >
+            <BookOpen size={16} />
+            Browse materials
+          </button>
+          {preferences.materialProfile && (
+            <div className="material-current">
+              <strong>
+                {MATERIAL_CATEGORIES[preferences.materialProfile.category]} ·{" "}
+                {preferences.materialProfile.source === "custom"
+                  ? "Custom profile"
+                  : "Starter profile"}
+              </strong>
+              {[
+                preferences.materialProfile.brand,
+                preferences.materialProfile.specification,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+              {preferences.materialProfile.notes && (
+                <p>{preferences.materialProfile.notes}</p>
+              )}
+              <p>Saved snapshot · Machine settings unverified</p>
+            </div>
+          )}
           <div className="field-row">
             <label className="field-label grow">
               Tool

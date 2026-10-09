@@ -19,6 +19,7 @@ Design locally, keep editable project files, and take your artwork with you as S
 - **Layers and local projects:** search layers, select matching colors, group artwork, recover your current workspace and save portable `.hopper` files.
 - **Portable artwork:** sanitized SVG import, SVG export by canvas or group, mirrored material previews and overhang checks.
 - **Print Then Cut preparation:** export transparent 300 dpi PNG artwork and Letter/A4 PDF proofs, then finish registration and cutting in Design Space. Native sensor registration is still planned.
+- **Material library:** browse 15 starter materials, search by category, save favorites and create your own profiles with supplier, weight/thickness and notes. Job drafts retain a material snapshot; profiles are planning notes, not verified cutting presets.
 - **Your workspace, your appearance:** Light, Dark and Follow Windows themes, with saved preferences. Artwork and print colors stay unchanged.
 - **Release notifications:** check GitHub for updates from App settings, or enable automatic daily checks. Open release notes/downloads in your browser when ready; no automatic installation or restart.
 
@@ -40,6 +41,15 @@ Design locally, keep editable project files, and take your artwork with you as S
 </details>
 
 Meet **Manti**, our praying mantis mascot, in the [brand kit](docs/BRANDING.md). Earlier Hopper projects and local workspaces remain compatible.
+
+<details>
+<summary>See the material library</summary>
+
+![Material library with categories, favorites and search](docs/screenshots/material-library-dark.png)
+![Custom material with supplier and reusable notes](docs/screenshots/material-custom-dark.png)
+![Material library in light mode](docs/screenshots/material-library-light.png)
+
+</details>
 
 ## Machine support: what works today
 

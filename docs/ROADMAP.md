@@ -8,6 +8,10 @@
 4. **Broader Cricut coverage:** independent Maker, Explore, Joy and Venture adapters, including a separate BLE track. Track each model/firmware/transport explicitly; do not equate a dropdown entry with cutting support.
 5. **Public application release:** source and contributor workflow live at [JFLXCLOUD/Mantis](https://github.com/JFLXCLOUD/Mantis). Hold downloads until machine validation passes, then finish Windows distribution, signing and updates.
 
+## 0.8.0 - Material planning library (implemented locally)
+
+Prepare now opens a searchable material library with 15 original generic starter profiles, category filters, favorites and up to 200 custom profiles. Custom materials support supplier, weight/thickness, notes, copying, editing and deletion. Selecting a profile adds a snapshot to machine preferences and exported job drafts while preserving tool, passes and mirror. Existing handwritten materials still work. Pressure, speed, machine compatibility and cutting remain unverified; no machine presets or commands are enabled.
+
 ## 0.7.0 - Appearance and release notifications (implemented locally)
 
 Light, Dark and Follow Windows modes, saved independently of artwork; a shared Settings dialog; manual GitHub update checks and an automatic daily-check preference; clear no-release, offline, rate-limit, up-to-date and new-release states. Downloads open on the fixed GitHub releases page and remain user-initiated. No automatic installation, machine commands or public application release is introduced.

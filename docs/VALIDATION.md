@@ -1,3 +1,12 @@
+# Material planning library - 9 October 2026
+
+- Local Windows 0.8.0 package built successfully. No release or tag was published.
+- All **93 unit/research tests** passed: 50 renderer, 24 native and 19 offline research. New material checks cover legacy preference preservation, validated snapshots, unchanged send restrictions, search/filter intersections, persistence, malformed data and bounded profiles.
+- **36 browser/Electron scenarios passed** with one hardware-only scenario skipped. New scenarios cover Prepare entry, search/favorites/category intersection, unchanged tool/passes/mirror, free-text metadata detachment, custom creation/copy/edit/delete, preserved draft snapshots, storage write failures and dark-mode layout at 1100 by 740. The direct Prepare → Choose material path did not invoke device discovery or connection in the bridge fixture.
+- The packaged app independently passed material browsing, custom profile creation and persistence after reload. Reviewed light/dark library and custom-profile screenshots use only sample data. Its isolated preview profile was removed after exit.
+- Privately backed up the user's workspace storage, closed 0.7.0 normally and opened 0.8.0. Existing project, machine and appearance preference entries were unchanged; update-check timing is independent. The material library was left open for the owner.
+- Pressure and speed remain unset, material compatibility is unverified, and draft sending stays disabled. No hardware connection or machine command was requested.
+
 # Appearance and update settings - 9 October 2026
 
 - Local Windows 0.7.0 package built successfully. No release or tag was published.

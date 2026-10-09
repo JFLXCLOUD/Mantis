@@ -48,6 +48,14 @@ Undo stores snapshots (80 entries). A drag commits one snapshot on pointer relea
 
 SVG text uses a target text length and Windows system fonts, not glyph outlines. Primitive shapes are intentionally simple. The rectangle tool currently creates rounded rectangles. Conservative SVG import omits resources/effects; it is not a full SVG implementation. Native-shape booleans and print-proof export are implemented; a machine toolpath engine and verified cutting driver are not.
 
+## Material planning (0.8.0)
+
+`src/materials.ts` defines original generic starter labels and the versioned local library at `mantis.material-library.v1`. Profiles contain an ID, source, name, category, supplier, weight/thickness description and notes. Input sizes, category membership, unique IDs and a 200-custom-profile limit are validated. Favorite IDs are deduplicated and stale references are removed. Invalid persisted data is retained untouched and shown as an error with read-only starter browsing; failed writes keep the custom form open and the previous saved library intact.
+
+`MaterialLibrary` is a view inside job setup, accessible directly from Prepare without mounting device discovery. It supports intersecting search/category/collection filters, favorites, custom creation/copy/edit and confirmed deletion. Dark/light tokens and the existing modal focus trap apply. Selecting a profile copies validated descriptive fields into the existing machine-preference key and optional draft `setup.materialProfile`. Unknown configuration fields are stripped. Invalid optional metadata does not reset legacy machine preferences. Manual name edits detach the snapshot; library changes never silently alter an already selected snapshot.
+
+The `.hopper` project schema remains unchanged. Material preferences are defaults for each exported artwork-group draft, not automatic per-group assignments. Tools, passes and mirror remain explicit choices; pressure/speed stay null and send eligibility stays false. Library entries make no tested material/tool/model compatibility claim.
+
 ## Appearance and release checks (0.7.0)
 
 `src/preferences.ts` stores appearance and automatic-check preferences separately from artwork under `mantis.preferences.v1`. System appearance is the default and follows live Windows color-scheme changes. Semantic CSS tokens theme interface surfaces, controls and dialogs; SVG artwork, canvas grids, paper and export colors remain unchanged. A failed preference write remains usable for the current session and is reported in Settings. The window appears after its first render to avoid showing an unthemed launch background.

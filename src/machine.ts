@@ -1,5 +1,6 @@
 import { bounds, materialGroups, validateProject, type Project } from "./model";
 import { exportSvg } from "./io";
+import { validateMaterialProfile, type MaterialProfile } from "./materials";
 
 import catalog from "../shared/machines.json";
 export const MACHINE_PROFILES = catalog;
@@ -75,6 +76,7 @@ export type JobPreferences = {
   model: MachineModel;
   transport: Transport;
   material: string;
+  materialProfile?: MaterialProfile;
   passes: number;
   tool: "automatic" | "fine-point" | "pen" | "scoring";
 };
@@ -102,10 +104,19 @@ export function validatePreferences(value: unknown): JobPreferences {
     !["automatic", "fine-point", "pen", "scoring"].includes(p.tool)
   )
     throw new Error("Invalid machine preferences.");
+  let materialProfile: MaterialProfile | undefined;
+  // Invalid optional metadata must not discard a user's existing machine choices.
+  try {
+    const profile = validateMaterialProfile(p.materialProfile);
+    if (profile.name === p.material.trim()) materialProfile = profile;
+  } catch {
+    /* Legacy free-text materials remain valid. */
+  }
   return {
     model: p.model,
     transport: catalog[p.model].usb ? (p.transport ?? "usb") : "bluetooth",
     material: p.material.trim(),
+    ...(materialProfile ? { materialProfile } : {}),
     passes: p.passes,
     tool: p.tool,
   };
@@ -230,6 +241,9 @@ export function makeJobDraft(
     },
     setup: {
       material: setup.material,
+      ...(setup.materialProfile
+        ? { materialProfile: setup.materialProfile }
+        : {}),
       tool,
       passes: setup.passes,
       mirror,

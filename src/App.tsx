@@ -283,6 +283,7 @@ export default function App() {
   const [dialog, setDialog] = useState<
     | "prepare"
     | "machine"
+    | "materials"
     | "repeat"
     | "help"
     | "new"
@@ -2180,7 +2181,7 @@ export default function App() {
         <div className="modal-backdrop" onClick={() => setDialog(null)}>
           <section
             ref={modal}
-            className={`modal ${dialog === "prepare" ? "prepare-modal" : dialog === "machine" || dialog === "print" ? "machine-modal" : ""}`}
+            className={`modal ${dialog === "prepare" ? "prepare-modal" : dialog === "machine" || dialog === "materials" || dialog === "print" ? "machine-modal" : ""}`}
             role="dialog"
             aria-modal="true"
             aria-label={
@@ -2190,7 +2191,7 @@ export default function App() {
                   ? "Combine shapes"
                   : dialog === "prepare"
                     ? "Prepare your design"
-                    : dialog === "machine"
+                    : dialog === "machine" || dialog === "materials"
                       ? "Machine and job setup"
                       : dialog === "repeat"
                         ? "Repeat pattern"
@@ -2258,8 +2259,9 @@ export default function App() {
                 )}
               </>
             )}
-            {dialog === "machine" && (
+            {(dialog === "machine" || dialog === "materials") && (
               <MachineSetup
+                initialMaterialLibrary={dialog === "materials"}
                 project={project}
                 initialGroup={matIndex}
                 setGroup={setMatIndex}
@@ -2499,6 +2501,7 @@ export default function App() {
                     {!groups.length && (
                       <p>Add visible artwork to prepare an export.</p>
                     )}
+                    <button className="button secondary wide material-browse-button" onClick={() => setDialog("materials")}>Choose material <ArrowUpRight size={15} /></button>
                     <label className="toggle-row">
                       <input
                         type="checkbox"

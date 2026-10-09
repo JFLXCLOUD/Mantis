@@ -27,3 +27,6 @@ docs/screenshots/*
 !docs/screenshots/editor-dark.png
 !docs/screenshots/settings-dark.png
 !docs/screenshots/settings-light.png
+!docs/screenshots/material-library-dark.png
+!docs/screenshots/material-library-light.png
+!docs/screenshots/material-custom-dark.png
