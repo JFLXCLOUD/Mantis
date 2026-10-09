@@ -1,4 +1,8 @@
 const { contextBridge, ipcRenderer } = require("electron");
+contextBridge.exposeInMainWorld("mantisUpdates", Object.freeze({
+  check: () => ipcRenderer.invoke("mantis:check-updates"),
+  openReleases: () => ipcRenderer.invoke("mantis:open-releases"),
+}));
 // Fixed discovery and transport methods only; no raw IPC or device writes.
 contextBridge.exposeInMainWorld(
   "hopperMachine",

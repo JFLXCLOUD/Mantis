@@ -15,7 +15,7 @@
   padding: 10px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  background: white;
+  background: var(--surface, white);
 }
 .print-check {
   display: flex;
@@ -26,7 +26,7 @@
 }
 .print-preview-column {
   padding: 18px;
-  background: #e8eddf;
+  background: var(--surface-soft, #e8eddf);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -66,7 +66,7 @@
   font-size: 6px;
 }
 .print-handoff {
-  background: #f5f7ef;
+  background: var(--surface-soft, #f5f7ef);
   border: 1px solid var(--border);
   border-radius: 9px;
   padding: 17px 20px;
@@ -83,7 +83,7 @@
 .print-handoff p {
   font-size: 11px;
   line-height: 1.6;
-  color: #65735b;
+  color: var(--text-muted, #65735b);
 }
 .print-actions {
   display: flex;
@@ -110,7 +110,7 @@
 .modal:has(.combine-options) > p {
   font-size: 12px;
   line-height: 1.6;
-  color: #64775b;
+  color: var(--text-muted, #64775b);
 }
 @media (max-width: 750px) {
   .print-columns {

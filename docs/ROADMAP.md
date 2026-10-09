@@ -8,6 +8,10 @@
 4. **Broader Cricut coverage:** independent Maker, Explore, Joy and Venture adapters, including a separate BLE track. Track each model/firmware/transport explicitly; do not equate a dropdown entry with cutting support.
 5. **Public application release:** source and contributor workflow live at [JFLXCLOUD/Mantis](https://github.com/JFLXCLOUD/Mantis). Hold downloads until machine validation passes, then finish Windows distribution, signing and updates.
 
+## 0.7.0 - Appearance and release notifications (implemented locally)
+
+Light, Dark and Follow Windows modes, saved independently of artwork; a shared Settings dialog; manual GitHub update checks and an automatic daily-check preference; clear no-release, offline, rate-limit, up-to-date and new-release states. Downloads open on the fixed GitHub releases page and remain user-initiated. No automatic installation, machine commands or public application release is introduced.
+
 ## 0.6.0 - Explore 3 Bluetooth data link (implemented)
 
 Paired-device validation, uncached service discovery, real RFCOMM socket connection, live monitoring, cancel/disconnect and cleanup on app closure. Physical Explore 3 connection tested without sending command bytes. Cut-job sending, configuration and Print Then Cut sensor registration remain unimplemented.

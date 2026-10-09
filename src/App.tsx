@@ -1,4 +1,6 @@
 import { version as appVersion } from "../package.json";
+import { AppSettings } from './AppSettings';
+import { useAppSettings } from './useAppSettings';
 import {
   useEffect,
   useRef,
@@ -263,6 +265,7 @@ type Drag = {
   originals: DesignObject[];
 };
 export default function App() {
+  const appSettings = useAppSettings();
   const [history, setHistory] = useState<{
     past: Project[];
     present: Project;
@@ -285,6 +288,7 @@ export default function App() {
     | "new"
     | "combine"
     | "print"
+    | "settings"
     | null
   >(null);
   const [toast, setToast] = useState("");
@@ -417,7 +421,7 @@ export default function App() {
     const root = modal.current;
     const focusable = () => [
       ...(root?.querySelectorAll<HTMLElement>(
-        'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]',
+        'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]',
       ) || []),
     ];
     focusable()[0]?.focus();
@@ -705,6 +709,10 @@ export default function App() {
         return;
       }
       if (e.key === "Escape") {
+        if (dialog) {
+          setDialog(null);
+          return;
+        }
         setDialog(null);
         setSelection([]);
         setDrag(null);
@@ -1054,6 +1062,10 @@ export default function App() {
           </span>
         </div>
         <div className="header-actions">
+          <button className="icon-button app-settings-button" aria-label="App settings" title="App settings" onClick={() => setDialog('settings')}>
+            <Settings2 />
+            {appSettings.result?.status === 'available' && <span className="update-dot" aria-label="Update available" />}
+          </button>
           <button
             className="button quiet machine-header-button"
             aria-label="Machine setup"
@@ -2172,7 +2184,7 @@ export default function App() {
             role="dialog"
             aria-modal="true"
             aria-label={
-              dialog === "print"
+              dialog === "settings" ? "App settings" : dialog === "print"
                 ? "Print Then Cut"
                 : dialog === "combine"
                   ? "Combine shapes"
@@ -2198,6 +2210,7 @@ export default function App() {
             {dialog === "print" && (
               <PrintSetup project={project} selectedIds={selection} />
             )}
+            {dialog === 'settings' && <AppSettings settings={appSettings} />}
             {dialog === "combine" && (
               <>
                 <span className="eyebrow">MAKE SOMETHING NEW</span>

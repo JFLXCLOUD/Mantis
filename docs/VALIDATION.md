@@ -1,3 +1,14 @@
+# Appearance and update settings - 9 October 2026
+
+- Local Windows 0.7.0 package built successfully. No release or tag was published.
+- All **87 unit/research tests** passed: 44 renderer, 24 native and 19 offline research tests. Update tests cover version comparison, fixed GitHub URLs, response limits, timeouts, rate limits, caching and trusted IPC.
+- **32 browser/Electron scenarios passed**; the hardware-only scenario was skipped. Settings tests cover live system theme changes, saved appearance, unchanged artwork/project content, daily automatic checks, opt-out persistence, manual results and browser-launch failures. The actual isolated Electron preload/IPC path is included.
+- The packaged app's real GitHub request returned `no-release`, correctly distinguishing an unpublished repository from an up-to-date installation. This check uses public release metadata without authentication or project/device information.
+- Reviewed dark/light settings and dark editor screenshots from an isolated packaged profile. The 1100 by 740 minimum window had no horizontal overflow and kept the update check accessible. The temporary preview profile was removed after exit.
+- Escape closes App settings without clearing the selected artwork and returns focus to the settings button. Artwork and printed paper retain their original colors in dark mode.
+- Backed up the existing workspace storage privately, closed 0.6.0 normally and opened the local 0.7.0 package. Both existing storage entries (project and machine preferences) remained byte-for-byte identical. App settings was left open for the owner.
+- Hardware work remained paused; no device connection or command was requested during this validation.
+
 # Tool-free motion observation - 8 October 2026
 
 ## Implementation-informed codec validation

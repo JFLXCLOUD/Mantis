@@ -24,3 +24,6 @@ docs/screenshots/*
 !docs/screenshots/mantis-studio.png
 !docs/screenshots/object-context-menu.png
 !docs/screenshots/print-then-cut.png
+!docs/screenshots/editor-dark.png
+!docs/screenshots/settings-dark.png
+!docs/screenshots/settings-light.png

@@ -4,18 +4,18 @@
 }
 .machine-lede {
   font-size: 12px;
-  color: #71806b;
+  color: var(--text-muted, #71806b);
   margin: 0 0 20px;
 }
 .machine-stage-note {
   display: flex;
   gap: 11px;
   align-items: flex-start;
-  background: #f6f4e9;
-  border: 1px solid #e9e4cf;
+  background: var(--warning-surface, #f6f4e9);
+  border: 1px solid var(--border, #e9e4cf);
   border-radius: 9px;
   padding: 13px 15px;
-  color: #847347;
+  color: var(--warning-text, #847347);
   margin-bottom: 22px;
 }
 .machine-stage-note svg {
@@ -36,7 +36,7 @@
   gap: 18px;
 }
 .machine-card {
-  border: 1px solid #e0e7d8;
+  border: 1px solid var(--border, #e0e7d8);
   border-radius: 10px;
   padding: 20px;
   min-width: 0;
@@ -51,26 +51,26 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #3f6048;
+  color: var(--text-accent, #3f6048);
   font-size: 13px;
 }
 .machine-pill {
   font-size: 8px;
   letter-spacing: 1.2px;
-  background: #eef3e8;
-  color: #728866;
+  background: var(--surface-soft, #eef3e8);
+  color: var(--text-muted, #728866);
   padding: 5px 7px;
   border-radius: 4px;
 }
 .machine-small {
   font-size: 10px;
-  color: #7a8870;
+  color: var(--text-muted, #7a8870);
   line-height: 1.8;
   margin: 0 0 13px;
 }
 .machine-footnote {
   font-size: 9px;
-  color: #87937b;
+  color: var(--text-muted, #87937b);
   line-height: 1.8;
   margin-top: 12px;
 }
@@ -79,16 +79,16 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  background: #f7f9f3;
+  background: var(--surface-soft, #f7f9f3);
   border-radius: 8px;
   padding: 22px 17px;
   margin: 15px 0;
-  color: #7f9373;
+  color: var(--text-muted, #7f9373);
   gap: 10px;
 }
 .machine-empty strong {
   font-size: 11px;
-  color: #52684b;
+  color: var(--text-muted, #52684b);
   font-weight: 600;
 }
 .machine-empty p {
@@ -101,14 +101,14 @@
   gap: 10px;
   width: 100%;
   padding: 12px;
-  border: 1px solid #e0e7d8;
+  border: 1px solid var(--border, #e0e7d8);
   border-radius: 7px;
   margin: 10px 0;
   text-align: left;
 }
 .machine-device.selected {
-  background: #f0f6eb;
-  border-color: #8eac82;
+  background: var(--selection, #f0f6eb);
+  border-color: var(--border-strong, #8eac82);
 }
 .machine-device > span {
   flex: 1;
@@ -122,7 +122,7 @@
 .machine-device small {
   display: block;
   font-size: 9px;
-  color: #829476;
+  color: var(--text-muted, #829476);
   margin-top: 5px;
 }
 .machine-report {
@@ -130,14 +130,14 @@
   align-items: center;
   gap: 7px;
   font-size: 10px;
-  color: #567950;
+  color: var(--text-accent, #567950);
   padding: 7px 0;
 }
 .machine-error {
   font-size: 10px;
   line-height: 1.8;
-  color: #a05d42;
-  background: #fbf2e9;
+  color: var(--danger-text, #a05d42);
+  background: var(--warning-surface, #fbf2e9);
   padding: 10px;
   border-radius: 6px;
   margin: 10px 0;
@@ -148,12 +148,12 @@
   gap: 10px;
   padding: 15px 0;
   margin-bottom: 5px;
-  border-top: 1px solid #e8eddf;
+  border-top: 1px solid var(--border, #e8eddf);
   font-size: 10px;
-  color: #87957a;
+  color: var(--text-muted, #87957a);
 }
 .machine-job-summary strong {
-  color: #607153;
+  color: var(--text-muted, #607153);
   font-weight: 500;
   text-align: right;
 }
@@ -163,12 +163,12 @@
 .machine-preflight {
   margin-top: 21px;
   padding: 17px 20px;
-  background: #f7f8f3;
+  background: var(--surface-soft, #f7f8f3);
   border-radius: 9px;
 }
 .machine-preflight h3 {
   font-size: 11px;
-  color: #627257;
+  color: var(--text-muted, #627257);
   margin-bottom: 10px;
 }
 .machine-preflight ul {
@@ -182,7 +182,7 @@
 .machine-preflight p {
   font-size: 10px;
   line-height: 1.65;
-  color: #7c876e;
+  color: var(--text-muted, #7c876e);
 }
 .machine-actions {
   display: flex;
@@ -201,7 +201,7 @@
 }
 .machine-exported {
   font-size: 11px;
-  color: #285c48;
+  color: var(--text-accent, #285c48);
   margin-top: 12px;
 }
 .machine-discovery {
@@ -247,7 +247,7 @@
   gap: 4px;
   padding: 4px;
   margin: 14px 0;
-  background: #eef2eb;
+  background: var(--surface-soft, #eef2eb);
   border-radius: 10px;
 }
 .machine-transport button {
@@ -256,14 +256,14 @@
   border-radius: 7px;
   padding: 9px;
   background: transparent;
-  color: #52614d;
+  color: var(--text-muted, #52614d);
   font: inherit;
   font-weight: 650;
   cursor: pointer;
 }
 .machine-transport button[aria-pressed="true"] {
-  background: #fff;
-  color: #315b38;
+  background: var(--surface, #fff);
+  color: var(--text-accent, #315b38);
   box-shadow: 0 1px 4px #253b2020;
 }
 .machine-pairing {
@@ -271,12 +271,12 @@
   line-height: 1.55;
   padding: 14px;
   margin-bottom: 12px;
-  border: 1px solid #dce5d6;
+  border: 1px solid var(--border, #dce5d6);
   border-radius: 10px;
-  background: #f7faf4;
+  background: var(--surface-soft, #f7faf4);
 }
 .machine-pairing strong {
-  color: #304b32;
+  color: var(--text, #304b32);
 }
 .machine-pairing ol {
   padding-left: 18px;
@@ -286,7 +286,7 @@
   margin-top: 5px;
 }
 .machine-pairing p {
-  color: #657060;
+  color: var(--text-muted, #657060);
   margin: 8px 0;
 }
 .machine-pairing .button {
@@ -295,22 +295,22 @@
 }
 .machine-radio {
   font-size: 12px;
-  color: #52614d;
+  color: var(--text-muted, #52614d);
 }
 .machine-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  border: 1px solid #bbcdb4;
-  background: #f1f7eb;
+  border: 1px solid var(--border, #bbcdb4);
+  background: var(--surface-soft, #f1f7eb);
   border-radius: 10px;
   padding: 16px 18px;
   margin: 18px 0;
 }
 .machine-link strong {
   font-size: 14px;
-  color: #285c48;
+  color: var(--text-accent, #285c48);
 }
 .machine-link p {
   font-size: 12px;
@@ -320,15 +320,15 @@
 .machine-link small {
   display: block;
   font-size: 10px;
-  color: #65755c;
+  color: var(--text-muted, #65755c);
   margin-top: 6px;
 }
 .machine-link.error {
-  background: #fff4ed;
-  border-color: #e4c0b2;
+  background: var(--danger-surface, #fff4ed);
+  border-color: var(--border, #e4c0b2);
 }
 .machine-link.error strong {
-  color: #9c4b36;
+  color: var(--danger-text, #9c4b36);
 }
 .machine-connect-action {
   margin-top: 14px;

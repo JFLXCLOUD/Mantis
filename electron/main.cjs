@@ -1,4 +1,5 @@
-const { app, BrowserWindow, session, ipcMain } = require("electron");
+const { app, BrowserWindow, session, ipcMain, shell, nativeTheme } = require("electron");
+const { registerUpdateIpc } = require("./updates.cjs");
 const { pathToFileURL } = require("node:url");
 const { registerMachineIpc } = require("./devices/ipc.cjs");
 const path = require("node:path");
@@ -14,12 +15,13 @@ app.whenReady().then(() => {
     (_contents, _permission, callback) => callback(false),
   );
   const window = new BrowserWindow({
+    show: false,
     width: 1500,
     height: 980,
     minWidth: 1100,
     minHeight: 740,
     title: "Mantis Studio",
-    backgroundColor: "#f8f9f6",
+    backgroundColor: nativeTheme.shouldUseDarkColors ? "#171e1b" : "#f8f9f6",
     autoHideMenuBar: true,
     icon: path.join(__dirname, "../dist/mantis.png"),
     webPreferences: {
@@ -30,6 +32,7 @@ app.whenReady().then(() => {
       webSecurity: true,
     },
   });
+  window.once('ready-to-show', () => window.show());
   window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   window.webContents.on("will-navigate", (event) => event.preventDefault());
   const entry = path.join(__dirname, "../dist/index.html");
@@ -38,6 +41,9 @@ app.whenReady().then(() => {
     window,
     isDev ? "http://127.0.0.1:5173/" : pathToFileURL(entry).href,
   );
+  registerUpdateIpc(ipcMain, window, isDev ? "http://127.0.0.1:5173/" : pathToFileURL(entry).href, {
+    version: app.getVersion(), openExternal: (url) => shell.openExternal(url),
+  });
   if (isDev) window.loadURL("http://127.0.0.1:5173/");
   else window.loadFile(entry);
 });

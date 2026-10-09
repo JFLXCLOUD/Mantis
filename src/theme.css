@@ -1,0 +1,34 @@
+/* Light colors live beside their component rules as fallbacks. These semantic
+   tokens theme the interface only; SVG artwork, mats and paper retain colors. */
+:root { color-scheme: light; }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --green: #96d2b2;
+  --green-light: #2c4135;
+  --ink: #e3eae5;
+  --muted: #a9b5ac;
+  --border: #39483f;
+  --text: #e3eae5;
+  --text-muted: #a9b5ac;
+  --text-accent: #a4d8b7;
+  --surface: #202a24;
+  --surface-soft: #26322b;
+  --surface-hover: #314338;
+  --workspace: #171e1b;
+  --selection: #304a3b;
+  --on-accent: #142b1e;
+  --accent-hover: #aedfc3;
+  --warning-surface: #393426;
+  --warning-text: #e0ca91;
+  --danger-surface: #422e2a;
+  --danger-text: #f0b4a4;
+  --border-strong: #6c957a;
+  background: var(--workspace);
+  color: var(--text);
+}
+:root[data-theme="dark"] .brand-logo { filter: brightness(1.9) saturate(.75); }
+:root[data-theme="dark"] .design-canvas,
+:root[data-theme="dark"] .print-paper { background: #fff; color-scheme: light; }
+:root[data-theme="dark"] .layer-thumb { background: #f6f6f1; }
+:root[data-theme="dark"] .ruler.horizontal { background-image: repeating-linear-gradient(90deg,transparent 0,transparent calc(8.3333% - 1px),#506354 calc(8.3333% - 1px),#506354 8.3333%); }
+:root[data-theme="dark"] input::placeholder { color: #94a398; }

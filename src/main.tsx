@@ -7,4 +7,8 @@ import './branding.css';
 import './machine.css';
 import './printing.css';
 import './context-menu.css';
+import './theme.css';
+import './settings.css';
+import { applyTheme, loadPreferences } from './preferences';
+applyTheme(loadPreferences().theme);
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);

@@ -7,8 +7,8 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 6px;
-  background: #fffefa;
-  border: 1px solid #dce3d5;
+  background: var(--surface-soft, #fffefa);
+  border: 1px solid var(--border, #dce3d5);
   border-radius: 12px;
   box-shadow:
     0 12px 36px #16372526,
@@ -30,7 +30,7 @@
 }
 .object-menu-heading span {
   font-size: 10px;
-  color: #7a826f;
+  color: var(--text-muted, #7a826f);
   line-height: 1.5;
 }
 .object-context-menu button {
@@ -54,29 +54,29 @@
 .object-context-menu button > kbd {
   font-size: 9px;
   font-family: inherit;
-  color: #818976;
+  color: var(--text-muted, #818976);
 }
 .object-context-menu button:focus {
   outline: none;
-  background: #e9f0e3;
-  color: #235945;
+  background: var(--selection, #e9f0e3);
+  color: var(--text-accent, #235945);
   box-shadow: inset 0 0 0 1px #afc5a6;
 }
 .object-context-menu button:hover:not(:disabled) {
-  background: #eef3e9;
+  background: var(--selection, #eef3e9);
 }
 .object-context-menu button:disabled {
   opacity: 0.4;
 }
 .object-context-menu button.danger {
-  color: #a64e40;
+  color: var(--danger-text, #a64e40);
 }
 .object-context-menu button.danger:focus,
 .object-context-menu button.danger:hover {
-  background: #fbefea;
+  background: var(--danger-surface, #fbefea);
 }
 .object-menu-separator {
   height: 1px;
-  background: #e8ecdf;
+  background: var(--surface-soft, #e8ecdf);
   margin: 5px 6px;
 }

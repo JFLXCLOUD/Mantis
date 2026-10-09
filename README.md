@@ -19,12 +19,23 @@ Design locally, keep editable project files, and take your artwork with you as S
 - **Layers and local projects:** search layers, select matching colors, group artwork, recover your current workspace and save portable `.hopper` files.
 - **Portable artwork:** sanitized SVG import, SVG export by canvas or group, mirrored material previews and overhang checks.
 - **Print Then Cut preparation:** export transparent 300 dpi PNG artwork and Letter/A4 PDF proofs, then finish registration and cutting in Design Space. Native sensor registration is still planned.
+- **Your workspace, your appearance:** Light, Dark and Follow Windows themes, with saved preferences. Artwork and print colors stay unchanged.
+- **Release notifications:** check GitHub for updates from App settings, or enable automatic daily checks. Open release notes/downloads in your browser when ready; no automatic installation or restart.
 
 <details>
 <summary>See object editing and print preparation</summary>
 
 ![Object context menu](docs/screenshots/object-context-menu.png)
 ![Print Then Cut artwork preparation and PDF proof](docs/screenshots/print-then-cut.png)
+
+</details>
+
+<details>
+<summary>See dark mode and app settings</summary>
+
+![Dark editor with unchanged artwork colors](docs/screenshots/editor-dark.png)
+![Dark appearance and update settings](docs/screenshots/settings-dark.png)
+![Light appearance and update settings](docs/screenshots/settings-light.png)
 
 </details>
 

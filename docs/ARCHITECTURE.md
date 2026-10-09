@@ -46,4 +46,16 @@ Undo stores snapshots (80 entries). A drag commits one snapshot on pointer relea
 
 ## Known engineering limits
 
-SVG text uses a target text length and Windows system fonts, not glyph outlines. Primitive shapes are intentionally simple. The rectangle tool currently creates rounded rectangles. Conservative SVG import omits resources/effects; it is not a full SVG implementation. No boolean kernel, print engine, toolpath engine or device driver is present.
+SVG text uses a target text length and Windows system fonts, not glyph outlines. Primitive shapes are intentionally simple. The rectangle tool currently creates rounded rectangles. Conservative SVG import omits resources/effects; it is not a full SVG implementation. Native-shape booleans and print-proof export are implemented; a machine toolpath engine and verified cutting driver are not.
+
+## Appearance and release checks (0.7.0)
+
+`src/preferences.ts` stores appearance and automatic-check preferences separately from artwork under `mantis.preferences.v1`. System appearance is the default and follows live Windows color-scheme changes. Semantic CSS tokens theme interface surfaces, controls and dialogs; SVG artwork, canvas grids, paper and export colors remain unchanged. A failed preference write remains usable for the current session and is reported in Settings. The window appears after its first render to avoid showing an unthemed launch background.
+
+`src/useAppSettings.ts` checks after startup when enabled, then at most once per 24 hours, including across restarts. It checks the schedule hourly while open; failed attempts also respect that daily automatic schedule. The default is enabled and the Settings checkbox persists an opt-out. Manual checks remain available. No project, device identifier, account credential or analytics event is included in the request. GitHub receives a normal unauthenticated HTTPS request and its ordinary connection metadata.
+
+`electron/updates.cjs` queries only the public repository's fixed [latest stable release endpoint](https://docs.github.com/en/rest/releases/releases#get-the-latest-release). It uses numeric version comparison, excludes drafts/prereleases, coalesces concurrent requests and caches responses for 60 seconds. Requests have a ten-second abort deadline, reject redirects and cap response bodies at 1 MiB. A 404 is reported as no public release; rate limits, invalid metadata and network failures are errors, not an up-to-date claim.
+
+The sandboxed preload exposes only `mantisUpdates.check()` and `openReleases()`. Both IPC handlers require the exact trusted top-level renderer. Release links are constructed from the fixed repository path and a validated version tag; neither renderer input nor API-provided URLs are passed to [Electron's external URL handler](https://www.electronjs.org/docs/latest/api/shell#shellopenexternalurl-options). Release bodies are not rendered. The app never downloads or executes an update, silently replaces itself, or restarts a project. This workflow supports the current portable Windows preview; signed installer-based automatic installation is future work.
+
+Browser development previews support appearance settings and a normal GitHub releases link. The actual update checker requires Electron. No GitHub releases or tags are created by this feature.

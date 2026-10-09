@@ -1,12 +1,19 @@
 {
   "name": "mantis-studio",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "description": "An independent, open-source craft design studio. Your ideas, without limits.",
-  "repository": { "type": "git", "url": "git+https://github.com/JFLXCLOUD/Mantis.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JFLXCLOUD/Mantis.git"
+  },
   "homepage": "https://github.com/JFLXCLOUD/Mantis#readme",
-  "bugs": { "url": "https://github.com/JFLXCLOUD/Mantis/issues" },
-  "engines": { "node": ">=24.15.0 <25" },
+  "bugs": {
+    "url": "https://github.com/JFLXCLOUD/Mantis/issues"
+  },
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
   "main": "electron/main.cjs",
   "scripts": {
     "brand:build": "node scripts/icons.mjs",
@@ -14,7 +21,7 @@
     "desktop:dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && node scripts/launch.mjs --dev\"",
     "build": "tsc -b && vite build && node scripts/notices.mjs",
     "start": "node scripts/launch.mjs",
-    "test": "vitest run src --maxWorkers=1 && node --test electron/devices/*.test.cjs && npm run test:research",
+    "test": "vitest run src --maxWorkers=1 && node --test electron/*.test.cjs electron/devices/*.test.cjs && npm run test:research",
     "test:research": "node --test scripts/*.test.mjs",
     "research:summary": "node scripts/summarize-explore-capture.mjs",
     "test:e2e": "playwright test",
@@ -30,7 +37,7 @@
     "appId": "studio.hopper.desktop",
     "productName": "Mantis Studio",
     "directories": {
-      "output": "release/v0.6.0"
+      "output": "release/v0.7.0"
     },
     "files": [
       "dist/**/*",
