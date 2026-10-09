@@ -1,0 +1,21 @@
+{
+  "format": "mantis-explore-codec-validation-v1",
+  "provenance": "Local device-implementation analysis and recorded Bluetooth traffic; not capture-only clean-room research.",
+  "results": [
+    {
+      "observation": "earlier-idle",
+      "hostDecoded": 11,
+      "deviceDecoded": 11,
+      "hostByteExactReencodes": 11
+    },
+    {
+      "observation": "fresh-square",
+      "hostDecoded": 327,
+      "deviceDecoded": 327,
+      "hostByteExactReencodes": 327
+    }
+  ],
+  "mantisHardwareCommandsSent": 0,
+  "mantisMotionVerified": false,
+  "keysIncluded": false
+}

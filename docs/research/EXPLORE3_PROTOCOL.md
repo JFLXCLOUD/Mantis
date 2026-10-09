@@ -132,6 +132,26 @@ These observations motivate a fresh connection and identical tool-free fixture i
 
 Before a Mantis sender can be implemented, evidence must establish the session setup/response validation, actual command meanings, units/origin/bounds, accepted-job vs completed-job states and stop/cancel behavior. The existing one-request diagnostic supplies a matching response, not proof that the response means success or a decoded firmware version. The source app keeps job sending disabled until these gaps are resolved.
 
+### Fresh connection plus repeated square
+
+The next 120-second observation captured reconnection and the same tool-free square together. The user confirmed reconnecting, loading, pressing Go, carriage movement and Design Space completion. This trace includes SDP and RFCOMM negotiation; Wireshark automatically dissected Serial Port application data on channel 6, without the manual L2CAP bindings needed for the earlier motion captures.
+
+The [reviewed fresh-session report](explore3-fresh-session-summary.json) contains 2,241 serial fragments reconstructed into **347 host and 347 device frames**. Each direction includes 20 unflagged and 327 flagged frames. The first host data includes the same 64-byte padding. No incomplete application frame remained in the reader. One HCI command record was marked malformed by Wireshark; the application framing result is reported separately and does not claim a loss-free trace of every controller event.
+
+Compared with the earlier complete startup, all 20 unflagged host messages have the same lengths and leading bytes. **18 are byte-identical.** The other two differ at the three bytes following `cf`, and all 48 bytes following `c7`. The `c7` exchange again immediately precedes the switch to flagged traffic. No complete flagged payload or aligned 16-byte block matches across the earlier Go session and this repeated-square session, in either direction.
+
+This strengthens the evidence for session-dependent encoding, but does not establish encryption, authentication, a cipher/mode, a key derivation function or command meanings. A bounded offline candidate check found that the observed 48-byte `c7` bodies did not validate as public points on the six 192-bit curves available in the local Node crypto runtime, in the three tested coordinate layouts. That excludes only those specific representations; it does not identify the mechanism. No values from those bodies were published.
+
+The startup-plus-job observation gap is now filled. More repetitions of the same square are not the next prerequisite: the unresolved requirement is a verified specification or independently established implementation of session encoding and job/stop semantics. No captured job was replayed, no Mantis motion command was sent, and no proprietary implementation or keys were inspected to produce these findings.
+
+Capture SHA-256: `D15EF3B73FBA97E44FD87078C0C2B57A13263D4624651FA3108E739A5DF56182`. Capture and conversion completed, and the owned ETW session stopped. Raw evidence remains private. Mantis stays disconnected while Design Space holds the machine connection.
+
+## Subsequent implementation-informed session decoding
+
+After the complete capture, the owner authorized local analysis of Design Space's device implementation. The [session encoding report](EXPLORE3_SESSION_ENCODING.md) records the changed provenance and verified AES-256 envelope behavior. An independently written codec decoded all 676 encrypted messages across the two complete sessions and exactly re-encoded all 338 host messages. Actual bootstrap/session keys and implementation-analysis artifacts remain private. These later findings supersede the earlier unknown-cipher status; they do not retroactively change the capture-only provenance of the earlier observations.
+
+A fixed session/status diagnostic is ready for physical verification. No Mantis motion, completed cut, safe-stop result or public key-provisioning route is established by the offline result.
+
 ## Test fixture
 
 [pen-square-10mm.svg](../device-tests/explore-3/pen-square-10mm.svg) is an original, single closed 10 mm square centerline. It is artwork, not device instructions. After import into Design Space, explicitly choose **Draw / Pen**, verify width and height are **10 mm**, place it inside the mat with clearance, and use scrap paper and the appropriate pen with the blade removed. Do not accept the import's default Basic Cut operation. If its dimensions or operation differ, correct them before starting.

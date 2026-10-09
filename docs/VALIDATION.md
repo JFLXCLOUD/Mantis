@@ -1,6 +1,19 @@
 # Tool-free motion observation - 8 October 2026
 
+## Implementation-informed codec validation
+
+- The owner authorized local device-component analysis after the capture-only comparison. The [provenance and encoding report](research/EXPLORE3_SESSION_ENCODING.md) records that change; proprietary artifacts and keys remain private.
+- Two independently derived session keys decoded **676 encrypted messages** with valid checksums and lengths. All **338 host messages** re-encoded byte-for-byte. This includes the earlier idle connection and the fresh square capture.
+- **19 offline research tests pass**, including eight new codec/probe tests for synthetic sessions, block boundaries, asymmetric byte order, checksums, malformed frames and the fixed status-only command boundary.
+- The full unit/research run passes **82 tests**: 44 renderer, 19 native and 19 offline research. The fixed probe's command-line verifier also accepts a captured status reply using private local inputs, without exposing a key or raw payload.
+- The PowerShell session probe parses successfully and its dry-run reports zero bytes submitted. Actual Mantis session/status verification remains pending. No motion or job capability was enabled in the desktop app.
+
 ## Follow-up session analysis
+
+- A subsequent fresh-connection-plus-square capture succeeded, with user-confirmed motion/completion. SDP/RFCOMM/Serial Port were automatically dissected. All 2,241 serial fragments reconstructed into 347 frames per direction, including 20 unflagged startup frames and 327 flagged frames each.
+- Comparing full startups: 18 of 20 host messages are byte-identical. The `cf` message changes three body bytes; the `c7` message changes all 48 body bytes. No flagged payload or aligned block matches the prior Go session. This narrows the session investigation but does not decode the commands.
+- A bounded offline public-point candidate check found no match for the observed 48-byte transition bodies on six local 192-bit curves in three tested layouts. This is a negative candidate result, not a cipher identification. No device writes, implementation inspection or key extraction occurred.
+- The fresh trace completed and stopped; private evidence and the [reviewed structural result](research/explore3-fresh-session-summary.json) are retained separately. Job sending stays disabled. The fresh-startup observation described as pending below has now been obtained; session/job/stop semantics remain open.
 
 - Added a device-free comparison tool for startup transitions, payload/block equality and byte-offset changes without exposing payload values. All 11 offline research tests passed, including four new comparator scenarios.
 - Earlier idle and later job observations share no exact flagged payloads. Loading and Go in the later connection share five host payloads; 51 distinct host payloads in Go were absent from loading. These are observations, not decoded job or cryptographic semantics.
