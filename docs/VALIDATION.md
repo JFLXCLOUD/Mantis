@@ -1,5 +1,13 @@
 # Tool-free motion observation - 8 October 2026
 
+## Follow-up session analysis
+
+- Added a device-free comparison tool for startup transitions, payload/block equality and byte-offset changes without exposing payload values. All 11 offline research tests passed, including four new comparator scenarios.
+- Earlier idle and later job observations share no exact flagged payloads. Loading and Go in the later connection share five host payloads; 51 distinct host payloads in Go were absent from loading. These are observations, not decoded job or cryptographic semantics.
+- The next required controlled observation is a fresh connection plus the same tool-free job in one trace. No additional capture or machine command was started during this offline comparison. The renderer/native sender capability is unchanged.
+
+## Physical baseline
+
 - User confirmed an empty mat, empty closed clamps and attendance at Explore 3. Mantis disconnected with zero command bytes; the user operated Design Space 10.6.104.
 - The first 120-second trace covered mat loading only. User clarified that Go was not pressed; rollers moved, carriage stayed still. This was not a square execution failure.
 - During a second 90-second trace, the user pressed Go and reported carriage movement plus Design Space completion. This is an official-app tool-free motion baseline, not Mantis drawing/cutting support.

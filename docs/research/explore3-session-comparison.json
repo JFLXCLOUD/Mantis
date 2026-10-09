@@ -1,0 +1,289 @@
+{
+  "schemaVersion": 1,
+  "observations": {
+    "earlierIdleCaptureSha256": "A52494AC616D9E53ADC8EF670567FD053636411FF5E154A07353009EF297D2F1",
+    "loadingCaptureSha256": "D32671489D7EC2DCE5B1D2BC9397EF0B9EE2CA499073864E0FD568089AEC20F8",
+    "goCaptureSha256": "CEEC32C9ECE254F091419812C387F08342E5399B4B34CBB419969395561D3A12"
+  },
+  "idleVersusGo": {
+    "schemaVersion": 1,
+    "scope": "Two prefiltered observations; equality and framing only, command/session semantics unverified",
+    "replayVerified": false,
+    "transitions": {
+      "left": {
+        "initialHostPaddingBytes": 64,
+        "firstFlaggedFrameCompletionSeconds": 11.900429,
+        "unflaggedHostFramesBeforeFirstFlagged": 20,
+        "precedingUnflaggedPayloadBytes": 49,
+        "precedingUnflaggedLeadingByte": "c7",
+        "laterUnflaggedHostFrames": 0
+      },
+      "right": {
+        "initialHostPaddingBytes": 0,
+        "firstFlaggedFrameCompletionSeconds": 0,
+        "unflaggedHostFramesBeforeFirstFlagged": 0,
+        "precedingUnflaggedPayloadBytes": null,
+        "precedingUnflaggedLeadingByte": null,
+        "laterUnflaggedHostFrames": 0
+      }
+    },
+    "directions": {
+      "hostToDevice": {
+        "left": {
+          "frames": 11,
+          "distinctPayloads": 3,
+          "distinctAligned16ByteBlocks": 3,
+          "framesWithPayloadMultipleOf16": 11
+        },
+        "right": {
+          "frames": 569,
+          "distinctPayloads": 56,
+          "distinctAligned16ByteBlocks": 68,
+          "framesWithPayloadMultipleOf16": 569
+        },
+        "sharedDistinctFlaggedPayloads": 0,
+        "sharedDistinctAligned16ByteBlocks": 0,
+        "rightDistinctFlaggedPayloadsAbsentFromLeft": 56
+      },
+      "deviceToHost": {
+        "left": {
+          "frames": 11,
+          "distinctPayloads": 11,
+          "distinctAligned16ByteBlocks": 11,
+          "framesWithPayloadMultipleOf16": 11
+        },
+        "right": {
+          "frames": 569,
+          "distinctPayloads": 569,
+          "distinctAligned16ByteBlocks": 571,
+          "framesWithPayloadMultipleOf16": 569
+        },
+        "sharedDistinctFlaggedPayloads": 0,
+        "sharedDistinctAligned16ByteBlocks": 0,
+        "rightDistinctFlaggedPayloadsAbsentFromLeft": 569
+      }
+    },
+    "unflaggedHostComparisonByPosition": [
+      {
+        "index": 0,
+        "leftPayloadBytes": 62,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 1,
+        "leftPayloadBytes": 4,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 2,
+        "leftPayloadBytes": 4,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 3,
+        "leftPayloadBytes": 1,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 4,
+        "leftPayloadBytes": 1,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 5,
+        "leftPayloadBytes": 4,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 6,
+        "leftPayloadBytes": 3,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 7,
+        "leftPayloadBytes": 3,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 8,
+        "leftPayloadBytes": 3,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 9,
+        "leftPayloadBytes": 3,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 10,
+        "leftPayloadBytes": 1,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 11,
+        "leftPayloadBytes": 3,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 12,
+        "leftPayloadBytes": 3,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 13,
+        "leftPayloadBytes": 3,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 14,
+        "leftPayloadBytes": 1,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 15,
+        "leftPayloadBytes": 1,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 16,
+        "leftPayloadBytes": 4,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 17,
+        "leftPayloadBytes": 3,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 18,
+        "leftPayloadBytes": 3,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      },
+      {
+        "index": 19,
+        "leftPayloadBytes": 49,
+        "rightPayloadBytes": null,
+        "sameLengthAndLeadingByte": false,
+        "exactMatch": false,
+        "changedOffsets": null
+      }
+    ]
+  },
+  "loadingVersusGo": {
+    "schemaVersion": 1,
+    "scope": "Two prefiltered observations; equality and framing only, command/session semantics unverified",
+    "replayVerified": false,
+    "transitions": {
+      "left": {
+        "initialHostPaddingBytes": 0,
+        "firstFlaggedFrameCompletionSeconds": 0,
+        "unflaggedHostFramesBeforeFirstFlagged": 0,
+        "precedingUnflaggedPayloadBytes": null,
+        "precedingUnflaggedLeadingByte": null,
+        "laterUnflaggedHostFrames": 0
+      },
+      "right": {
+        "initialHostPaddingBytes": 0,
+        "firstFlaggedFrameCompletionSeconds": 0,
+        "unflaggedHostFramesBeforeFirstFlagged": 0,
+        "precedingUnflaggedPayloadBytes": null,
+        "precedingUnflaggedLeadingByte": null,
+        "laterUnflaggedHostFrames": 0
+      }
+    },
+    "directions": {
+      "hostToDevice": {
+        "left": {
+          "frames": 330,
+          "distinctPayloads": 7,
+          "distinctAligned16ByteBlocks": 8,
+          "framesWithPayloadMultipleOf16": 330
+        },
+        "right": {
+          "frames": 569,
+          "distinctPayloads": 56,
+          "distinctAligned16ByteBlocks": 68,
+          "framesWithPayloadMultipleOf16": 569
+        },
+        "sharedDistinctFlaggedPayloads": 5,
+        "sharedDistinctAligned16ByteBlocks": 6,
+        "rightDistinctFlaggedPayloadsAbsentFromLeft": 51
+      },
+      "deviceToHost": {
+        "left": {
+          "frames": 329,
+          "distinctPayloads": 329,
+          "distinctAligned16ByteBlocks": 329,
+          "framesWithPayloadMultipleOf16": 329
+        },
+        "right": {
+          "frames": 569,
+          "distinctPayloads": 569,
+          "distinctAligned16ByteBlocks": 571,
+          "framesWithPayloadMultipleOf16": 569
+        },
+        "sharedDistinctFlaggedPayloads": 0,
+        "sharedDistinctAligned16ByteBlocks": 0,
+        "rightDistinctFlaggedPayloadsAbsentFromLeft": 569
+      }
+    },
+    "unflaggedHostComparisonByPosition": []
+  }
+}

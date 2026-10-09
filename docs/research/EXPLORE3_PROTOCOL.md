@@ -108,6 +108,30 @@ Capture SHA-256: Load `D32671489D7EC2DCE5B1D2BC9397EF0B9EE2CA499073864E0FD568089
 
 Next: record the same fixture across a fresh connection including startup, compare the sessions offline and establish a behavior specification for session setup, job acceptance and stop/cancel. Only then implement a bounded Mantis motion operation. Replaying the observed opaque job traffic is not a verified sender.
 
+## Session comparison and remaining specification
+
+The [offline comparator](../../scripts/compare-explore-sessions.mjs) checks complete frame streams in both directions, compares opaque payload and aligned 16-byte-block equality, identifies the transition from unflagged to flagged host traffic, and compares unflagged host messages by position. It reports changed byte offsets without reporting their values. A position comparison does not assign command meanings or infer a missing handshake. Output never grants replay capability.
+
+```powershell
+node scripts/compare-explore-sessions.mjs <first-fragments.private.json> <second-fragments.private.json>
+```
+
+Four comparator tests cover fragmented/coalesced delivery, padding, changed sessions, shared blocks, startup differences, direction separation, truncation and payload exclusion. Together with the readers, 11 offline research tests pass. This code cannot open a device or send commands and is not packaged in the desktop app.
+
+The [reviewed comparison](explore3-session-comparison.json) establishes:
+
+| Comparison | Observed result | Limit |
+| --- | --- | --- |
+| Earlier startup/idle session vs later Go capture | No exact flagged host or device payloads, or aligned 16-byte blocks, are shared | Not a controlled identical-job comparison; absence of matches alone does not prove encryption or key rotation |
+| Loading vs Go within the later connection | Five distinct host payloads and six distinct aligned blocks recur; 51 distinct Go-stage host payloads were absent from loading | Exact byte repetition does not identify status, motion, acceptance or stop commands |
+| Device responses across loading and Go | No exact flagged payload repeats across these observations | Could include changing state, counters, nonce or other session behavior; meanings unknown |
+| Flagged frame sizes | All flagged payloads in these observations have lengths divisible by 16 | Consistent with block-oriented encoding; not proof of a specific cipher or mode |
+| Earlier startup transition | 20 unflagged host frames; last is 49 payload bytes beginning `c7`, followed by flagged traffic. Its 48-byte body receives a 48-byte payload response | Candidate session-setup exchange, not a verified authentication algorithm |
+
+These observations motivate a fresh connection and identical tool-free fixture in one trace, with connection startup captured before Go. A trace may still be insufficient if the protocol depends on secret material that is not exchanged openly. FreeKnife's [public open letter](https://github.com/OddPig/FreeKnife/blob/main/OPENLETTER.md) describes an AES-key prerequisite for that separate controller, whose README only claims Explore Air 2 testing. This is a lead, not an Explore 3 cryptographic specification. No third-party controller implementation, Design Space source/binaries, extracted keys or firmware were used to produce this comparison.
+
+Before a Mantis sender can be implemented, evidence must establish the session setup/response validation, actual command meanings, units/origin/bounds, accepted-job vs completed-job states and stop/cancel behavior. The existing one-request diagnostic supplies a matching response, not proof that the response means success or a decoded firmware version. The source app keeps job sending disabled until these gaps are resolved.
+
 ## Test fixture
 
 [pen-square-10mm.svg](../device-tests/explore-3/pen-square-10mm.svg) is an original, single closed 10 mm square centerline. It is artwork, not device instructions. After import into Design Space, explicitly choose **Draw / Pen**, verify width and height are **10 mm**, place it inside the mat with clearance, and use scrap paper and the appropriate pen with the blade removed. Do not accept the import's default Basic Cut operation. If its dimensions or operation differ, correct them before starting.
