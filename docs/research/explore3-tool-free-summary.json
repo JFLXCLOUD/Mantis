@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "model": "Explore 3",
+  "firmware": "unknown",
+  "officialAppVersion": "10.6.104",
+  "provenance": "User-operated tool-free Draw attempt on authorized hardware; Mantis sent no machine commands.",
+  "decodingLimits": "Existing connection: setup not captured. Observed L2CAP CIDs were manually decoded as RFCOMM channel 6. Payload meanings remain unknown.",
+  "observations": [
+    {
+      "stage": "Load",
+      "userObservation": "Rollers moved; user confirmed Go was not pressed.",
+      "captureDurationLimitSeconds": 120,
+      "captureSha256": "D32671489D7EC2DCE5B1D2BC9397EF0B9EE2CA499073864E0FD568089AEC20F8",
+      "structure": {
+        "schemaVersion": 1,
+        "scope": "One prefiltered serial session; structure only, semantics unverified",
+        "durationSeconds": 77.809786,
+        "initialHostPaddingBytes": 0,
+        "hostToDevice": {
+          "fragments": 330,
+          "bytes": 5956,
+          "frames": 330,
+          "flaggedFrames": 330,
+          "unflaggedFrames": 0,
+          "payloadLengths": {
+            "16": 329,
+            "32": 1
+          },
+          "distinctFrames": 7,
+          "repeatedFrames": 323,
+          "medianFrameCompletionGapSeconds": 0.163399
+        },
+        "deviceToHost": {
+          "fragments": 1784,
+          "bytes": 5922,
+          "frames": 329,
+          "flaggedFrames": 329,
+          "unflaggedFrames": 0,
+          "payloadLengths": {
+            "16": 329
+          },
+          "distinctFrames": 329,
+          "repeatedFrames": 0,
+          "medianFrameCompletionGapSeconds": 0.157458
+        }
+      }
+    },
+    {
+      "stage": "Go",
+      "userObservation": "User reported carriage movement and Design Space completion after pressing Go.",
+      "captureDurationLimitSeconds": 90,
+      "captureSha256": "CEEC32C9ECE254F091419812C387F08342E5399B4B34CBB419969395561D3A12",
+      "structure": {
+        "schemaVersion": 1,
+        "scope": "One prefiltered serial session; structure only, semantics unverified",
+        "durationSeconds": 89.984887,
+        "initialHostPaddingBytes": 0,
+        "hostToDevice": {
+          "fragments": 569,
+          "bytes": 10434,
+          "frames": 569,
+          "flaggedFrames": 569,
+          "unflaggedFrames": 0,
+          "payloadLengths": {
+            "16": 562,
+            "32": 5,
+            "64": 1,
+            "80": 1
+          },
+          "distinctFrames": 56,
+          "repeatedFrames": 513,
+          "medianFrameCompletionGapSeconds": 0.168121
+        },
+        "deviceToHost": {
+          "fragments": 3097,
+          "bytes": 10274,
+          "frames": 569,
+          "flaggedFrames": 569,
+          "unflaggedFrames": 0,
+          "payloadLengths": {
+            "16": 567,
+            "32": 2
+          },
+          "distinctFrames": 569,
+          "repeatedFrames": 0,
+          "medianFrameCompletionGapSeconds": 0.157483
+        }
+      }
+    }
+  ]
+}

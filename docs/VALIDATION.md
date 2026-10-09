@@ -1,4 +1,12 @@
-# Public source preparation - 8 October 2026
+# Tool-free motion observation - 8 October 2026
+
+- User confirmed an empty mat, empty closed clamps and attendance at Explore 3. Mantis disconnected with zero command bytes; the user operated Design Space 10.6.104.
+- The first 120-second trace covered mat loading only. User clarified that Go was not pressed; rollers moved, carriage stayed still. This was not a square execution failure.
+- During a second 90-second trace, the user pressed Go and reported carriage movement plus Design Space completion. This is an official-app tool-free motion baseline, not Mantis drawing/cutting support.
+- Both captures converted successfully and the owned ETW sessions stopped. Since connection setup preceded capture, offline analysis explicitly mapped the observed L2CAP channels to RFCOMM. The application reader reconstructed 569 host and 569 device frames in the Go trace; message contents remain opaque.
+- [Research notes and reviewed structural summaries](research/EXPLORE3_PROTOCOL.md#observed-tool-free-result) record exact bounds, digests, decoding assumptions and user observations. Raw captures, identifiers and payloads remain private. Measured drawing, Mantis-originated motion and job stop/cancel remain unverified.
+
+## Public source preparation - 8 October 2026
 
 - Production build passed; generated dependency notices retain license wording with normalized trailing whitespace.
 - 44 renderer tests, 19 native device tests and 7 offline research tests passed (70 total).

@@ -37,7 +37,7 @@ Meet **Manti**, our praying mantis mascot, in the [brand kit](docs/BRANDING.md).
 | Maker, Explore, Joy and Venture planning | 15 model profiles with transport and workflow guidance; a profile is not a cutting driver |
 | Windows USB / Bluetooth discovery | Device metadata and pairing/radio diagnostics; BLE transport remains planned |
 | Explore 3 Bluetooth connection | Physically verified RFCOMM data link, monitoring, connection cancellation and disconnect |
-| Explore 3 startup research | Separate diagnostic reproduced one observed request/response; its meaning remains unverified |
+| Explore 3 protocol research | Separate diagnostic reproduced one startup exchange; a tool-free Design Space job produced observed motion/completion. Mantis job commands remain unverified |
 | Machine configuration and job sending | Not implemented; Send cut job stays disabled |
 | Motion, drawing, cutting and job stop/cancel | Not implemented or physically validated |
 | Print Then Cut | Artwork/proof export works; native calibration, registration and cutting are pending |

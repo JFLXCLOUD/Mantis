@@ -82,7 +82,31 @@ The tool reconstructs each direction independently, accepts the exact observed i
 
 The [reviewed reconnect summary](explore3-idle-summary.json) reconstructs **31 host and 31 device frames** from **188 fragments** (32 host, 156 device). Each direction contains 20 unflagged and 11 flagged frames. The observed application span is 29.559283 seconds; startup padding accounts for 64 host bytes. Equal frame counts do not prove request/reply semantics. Repeated opaque frames do not establish encryption or authentication behavior, and timing is measured when a frame completes, not when a command executes.
 
-This is an idle-session baseline for later comparison, not a job encoder. The public summary was generated from the previously recorded private trace; no new hardware commands were sent. Firmware identity, session mechanism, coordinates, job acceptance and stop behavior are still unresolved. The next physical pen baseline is pending compatible pen, mat and scrap paper; see [release readiness](../RELEASE_READINESS.md).
+This is an idle-session baseline for later comparison, not a job encoder. The public summary was generated from the previously recorded private trace; no new hardware commands were sent in that analysis. Firmware identity, session mechanism, coordinates, job acceptance and stop behavior are still unresolved. A tool-free motion observation can precede the measured pen baseline; see [release readiness](../RELEASE_READINESS.md).
+
+## Tool-free motion observation
+
+A pen is not required to observe carriage and roller movement. The initial attempt can use the same fixture as Draw / Pen in Design Space, with both tool housings removed, clamps closed and a compatible empty mat. The operator must attend the clear machine with its power button reachable. This is an experimental observation of the official app's behavior, not a documented tool-free mode or a Mantis motion command.
+
+Prepare the 10 mm square on the Canvas first. Start the bounded trace before Make, connection, loading and Go. Choose On Mat and verify Draw / Pen rather than accepting the default Basic Cut import operation. Load only when Design Space requests it; press Go only during the confirmed capture window. Record whether the carriage/rollers moved and whether Design Space reported completion. Do not count a loading motion as executing the square. If the tool-free setup is refused, record the result and stop; do not bypass sensors or load checks.
+
+[Cricut's Make-screen guide](https://help.cricut.com/hc/en-us/articles/26751753338007-Make-screen-Design-Space-Guide) describes the connection, tools/materials and Go stages. Its desktop workflow checks for a loaded mat/material. [The loading guide](https://help.cricut.com/hc/en-us/articles/360009554073-How-to-load-unload-mats-and-materials-Cricut-Explore-and-Cricut-Maker-series-machines) describes mat measurement before Go. These sources do not document or guarantee acceptance of an empty-tool drawing job.
+
+Tool-free movement supplies a first motion baseline but does not validate drawn dimensions, tool contact, cutting pressure or stop behavior. The pen/material release gates remain separate. Captured bytes must be analyzed, not automatically replayed from Mantis.
+
+### Observed tool-free result
+
+On 8 October 2026 local time (9 October UTC), the user confirmed an empty mat, both tool housings removed, clamps closed and attendance beside the clear Explore 3. Mantis's data link was explicitly disconnected, with zero application command bytes sent. Design Space 10.6.104 was opened and the user confirmed the 10 mm fixture was ready on the Canvas as Draw / Pen. Firmware remains unknown.
+
+- **Load stage:** a 120-second capture completed. The user reported rollers moving with the carriage still, then clarified that only Load had been pressed. This was mat loading, not a failed or completed square job. It contains 330 host frames and 329 device frames; every frame is flagged. Host payloads are 16 bytes except one 32-byte payload.
+- **Go stage:** a separate 90-second capture completed. The user pressed Go and reported **carriage movement and Design Space completion** with no tools installed. The reader reconstructed 569 host and 569 device frames from 3,666 serial fragments, with no incomplete application frame left over. Every frame is flagged. Host payloads comprise 562 of 16 bytes, five of 32 bytes, one of 64 bytes and one of 80 bytes; device payloads comprise 567 of 16 bytes and two of 32 bytes. The larger host messages occur between 28.970682 and 47.563282 seconds into the capture; no individual message is labeled as a motion or stop command.
+- **Trace limits:** both captures began after the existing Bluetooth connection was established, so they lack connection/service negotiation. Initial automatic dissection stopped at L2CAP. Offline decoding bound the observed dynamic CIDs `0x0042` and `0x0082` to RFCOMM; the resulting traffic is channel 6 UIH, consistent with the earlier independently observed Serial Port connection. This explicit decoder assumption does not replace a fresh capture including startup. All application payloads remain opaque; framing, equality and timing do not establish their command meanings or cryptographic mechanism.
+- **Evidence limit:** physical motion and official-app completion are the user's observations. No pen trace exists to measure dimensions; there is no cut-quality, pause/cancel or Mantis-originated motion result. This demonstrates that a pen is unnecessary for this initial tool-free observation on the tested Explore 3, not general compatibility for every model or firmware.
+- Both bounded traces stopped and converted successfully. No Mantis ETW trace remained active. Raw logs/fragments and detailed observations remain in ignored local research storage; only the [reviewed structural summary](explore3-tool-free-summary.json) is public. Mantis remains disconnected while Design Space owns the machine connection.
+
+Capture SHA-256: Load `D32671489D7EC2DCE5B1D2BC9397EF0B9EE2CA499073864E0FD568089AEC20F8`; Go `CEEC32C9ECE254F091419812C387F08342E5399B4B34CBB419969395561D3A12`.
+
+Next: record the same fixture across a fresh connection including startup, compare the sessions offline and establish a behavior specification for session setup, job acceptance and stop/cancel. Only then implement a bounded Mantis motion operation. Replaying the observed opaque job traffic is not a verified sender.
 
 ## Test fixture
 
