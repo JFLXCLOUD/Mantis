@@ -8,6 +8,10 @@
 4. **Broader Cricut coverage:** independent Maker, Explore, Joy and Venture adapters, including a separate BLE track. Track each model/firmware/transport explicitly; do not equate a dropdown entry with cutting support.
 5. **Public application release:** source and contributor workflow live at [JFLXCLOUD/Mantis](https://github.com/JFLXCLOUD/Mantis). Hold downloads until machine validation passes, then finish Windows distribution, signing and updates.
 
+## 0.10.0 - Object color palette and advanced picker (implemented locally)
+
+Selected objects offer 20 named swatches and an advanced saturation/brightness area, hue/saturation/brightness sliders and exact HEX/RGB entry. Advanced changes preview on canvas until Apply; Cancel or Escape restores the original color. One application is one undo step. Mixed selections recolor editable native layers together, while locked/hidden layers and imported SVG colors remain protected. Existing opaque HEX project storage and export behavior are unchanged.
+
 ## 0.9.0 - Curved editable text (implemented locally)
 
 Text layers have Curve up, Straight and Curve down controls plus a signed 180-degree slider with live preview, single-step undo and Escape cancellation. Measured glyph bounds keep selection and resizing aligned with the curve. Curved text remains editable in project v4 and exports as SVG text on a local path, including print artwork/proofs. Earlier project versions migrate without altering artwork. Imported text-path references are restricted to local paths and scoped per placement. Font outlining and machine sending remain pending.

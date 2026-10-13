@@ -11,6 +11,7 @@ import './theme.css';
 import './settings.css';
 import './materials.css';
 import './text-curve.css';
+import './colors.css';
 import { applyTheme, loadPreferences } from './preferences';
 applyTheme(loadPreferences().theme);
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);

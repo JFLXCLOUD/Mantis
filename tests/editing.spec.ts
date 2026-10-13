@@ -79,7 +79,9 @@ test('duplicate in place preserves appearance; matching color and search help ma
   for (const key of ['x', 'y', 'width', 'height', 'rotation', 'fill']) expect(copy[key]).toEqual(original[key]);
   await page.getByRole('button', { name: /Select matching color/ }).click();
   await expect(page.getByText('2 objects selected', { exact: false })).toBeVisible();
-  await page.getByLabel('Object color', { exact: true }).fill('#123456');
+  await page.getByRole('button', { name: 'Advanced color picker' }).click();
+  await page.getByLabel('HEX color', { exact: true }).fill('#123456');
+  await page.getByRole('button', { name: 'Apply color' }).click();
   p = await snapshot(page); expect(p.objects[0].fill).toBe('#123456'); expect(p.objects[3].fill).toBe('#123456'); expect(p.objects[2].fill).toBe('#df896f');
   await page.getByLabel('Search layers').fill('other');
   await expect(page.locator('.layer-row')).toHaveCount(1);

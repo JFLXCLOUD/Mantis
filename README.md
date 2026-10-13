@@ -16,6 +16,7 @@ Design locally, keep editable project files, and take your artwork with you as S
 - **Precise transforms:** drag to resize freely or lock proportions, rotate, flip, align, distribute and repeat. Work in inches or millimeters with grid snapping.
 - **Vector tools:** native shapes, editable text, Weld, Subtract, Intersect and Slice. Combine native shapes into editable paths with holes.
 - **Curved text:** bend editable words up or down, adjust the arc with a slider and reset to straight. Curves survive resizing, project saves, SVG export and print preparation.
+- **Color your artwork:** choose from 20 named swatches or open the advanced picker for hue, saturation, brightness and exact HEX/RGB values. Preview changes, apply or cancel, and recolor multiple editable layers together.
 - **Fast object actions:** right-click the canvas or layers for duplicate, group, combine, repeat, arrange, hide, lock and delete. Keyboard navigation and undo are included.
 - **Layers and local projects:** search layers, select matching colors, group artwork, recover your current workspace and save portable `.hopper` files.
 - **Portable artwork:** sanitized SVG import, SVG export by canvas or group, mirrored material previews and overhang checks.

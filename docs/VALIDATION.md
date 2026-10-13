@@ -1,3 +1,13 @@
+# Object palette and advanced color picker - 12 October 2026
+
+- Windows 0.10.0 package built successfully. No release or tag was published.
+- All **100 unit/offline tests** passed: 57 renderer, 24 native and 19 offline research. New tests cover HEX normalization, invalid/alpha inputs, RGB bounds and HSV conversion across the palette and neutral extremes.
+- **43 browser/Electron scenarios passed**, with one hardware-only check skipped. New coverage verifies basic palette application, save/reload/export, mixed selection, Draw stroke colors, locked/hidden/SVG protection, advanced preview isolation from autosave, validation, Escape cancellation, single-step undo, pointer/keyboard controls and selection-change cancellation. Dark-mode controls remain reachable at 1100 by 740 without horizontal overflow.
+- The initial focused run found two test-fixture mistakes (a selector targeted the transparent hit rectangle and an SVG fixture omitted its root element). Corrected fixtures passed the focused run and the full suite.
+- The packaged app applied an exact custom color and reopened it correctly in an isolated profile. The preview script now waits for the actual stored color before reload. Light-mode artwork and both themed picker surfaces were inspected; isolated dark screenshots still exhibit the previously recorded blank-canvas capture behavior, so no new dark screenshot was published.
+- Backed up and normally closed 0.9.0, opened 0.10.0 and verified existing project, machine, material and appearance storage remained byte-for-byte unchanged. A native layer was selected to show the palette. Temporary preview profiles were removed.
+- No hardware connection or command was requested.
+
 # Curved editable text - 12 October 2026
 
 - Local Windows 0.9.0 package built successfully. No release or tag was published.

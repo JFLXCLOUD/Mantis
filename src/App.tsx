@@ -3,9 +3,11 @@ import { AppSettings } from './AppSettings';
 import { useAppSettings } from './useAppSettings';
 import { CurvedText } from './CurvedText';
 import { TextCurveControl } from './TextCurveControl';
+import { ColorControl } from './ColorControl';
 import { scopeSvgTextPaths } from './svgReferences';
 import {
   useEffect,
+  useCallback,
   useId,
   useMemo,
   useRef,
@@ -281,6 +283,10 @@ export default function App() {
   }>(() => ({ past: [], present: initialProject(), future: [] }));
   const project = history.present;
   const [curvePreview, setCurvePreview] = useState<DesignObject | null>(null);
+  const [colorPreview, setColorPreview] = useState<{
+    key: string;
+    color: string;
+  } | null>(null);
   const [selection, setSelection] = useState<string[]>([]);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
@@ -328,6 +334,14 @@ export default function App() {
   const scale = unit === "in" ? 96 : 96 / 25.4;
   const selected = project.objects.filter((o) => selection.includes(o.id));
   const editable = selected.filter((o) => !o.locked && o.visible);
+  const recolorable = editable.filter((o) => o.type !== "svg");
+  const colorKey = JSON.stringify(
+    selected.map((o) => [o.id, o.fill, o.locked, o.visible, o.type]),
+  );
+  const previewColor = useCallback(
+    (color: string | null) => setColorPreview(color ? { key: colorKey, color } : null),
+    [colorKey],
+  );
   const single = selected.length === 1 ? selected[0] : undefined;
   const editableUnits = selectionUnits(editable).length;
   const commit = (update: Project | ((p: Project) => Project)) =>
@@ -889,6 +903,10 @@ export default function App() {
   }
   const preview = new Map(dragObjects(drag).map((o) => [o.id, o]));
   if (curvePreview && single?.id === curvePreview.id && !single.locked) preview.set(curvePreview.id, curvePreview);
+  if (colorPreview?.key === colorKey) {
+    for (const o of recolorable)
+      preview.set(o.id, { ...(preview.get(o.id) || o), fill: colorPreview.color });
+  }
   const displayed = project.objects.map((o) => preview.get(o.id) || o);
   function updateDrag(e: ReactPointerEvent<SVGSVGElement>) {
     const current = dragRef.current;
@@ -1729,17 +1747,21 @@ export default function App() {
                       <option value="guide">Guide only</option>
                     </select>
                   </label>
-                  <label className="color-field">
-                    Color
-                    <input
-                      aria-label="Object color"
-                      type="color"
-                      value={single?.fill || selected[0].fill}
-                      disabled={!editable.length || single?.type === "svg"}
-                      onChange={(e) => patch({ fill: e.target.value })}
-                    />
-                  </label>
                 </div>
+                <ColorControl
+                  key={JSON.stringify(selected.map((o) => [o.id, o.locked, o.visible, o.type]))}
+                  colors={(recolorable.length ? recolorable : selected).map((o) => o.fill)}
+                  disabled={!recolorable.length}
+                  onPreview={previewColor}
+                  onCommit={(fill) => commit((p) => ({
+                    ...p,
+                    objects: p.objects.map((o) =>
+                      selection.includes(o.id) && o.visible && !o.locked && o.type !== "svg"
+                        ? { ...o, fill }
+                        : o,
+                    ),
+                  }))}
+                />
                 {single?.type === "svg" && (
                   <p className="field-note">
                     Imported SVG keeps its internal colors as one artwork layer.

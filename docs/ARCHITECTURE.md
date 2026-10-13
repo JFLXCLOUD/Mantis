@@ -48,6 +48,10 @@ Undo stores snapshots (80 entries). A drag commits one snapshot on pointer relea
 
 SVG text uses a target text length and Windows system fonts, not glyph outlines. Primitive shapes are intentionally simple. The rectangle tool currently creates rounded rectangles. Conservative SVG import omits resources/effects; it is not a full SVG implementation. Native-shape booleans and print-proof export are implemented; a machine toolpath engine and verified cutting driver are not.
 
+## Object colors (0.10.0)
+
+`src/ColorControl.tsx` provides named swatches and a local advanced draft with HSV controls and validated HEX/RGB fields. `src/colors.ts` owns color conversion and validation. Canvas previews are separate from project/history/autosave/export data and scoped to the selected layers and their committed colors. Apply commits once; Cancel, Escape or selection changes discard the preview. Only visible, unlocked native objects are recolored; Draw/Score/Guide use the same color as their stroke. Imported SVG contents remain intact. Project v4 continues to store opaque six-digit HEX values, with no alpha or schema changes.
+
 ## Curved text (0.9.0)
 
 Text layers optionally carry an integer `textCurve` from -180 (up) to +180 (down), with zero/absent meaning straight. A nonzero curve requires `textCurveRatio`, the original straight run's width-to-height ratio. `src/textCurve.ts` builds a circular baseline and measures the browser's shaped glyph bounds in an isolated SVG. A bounded 256-entry metric cache is shared by canvas and exports. Curving preserves the object's center and text scale while updating its envelope; subsequent object resizing scales that envelope and its text together. Fonts remain installed system fonts, and text is not converted to outlines.
