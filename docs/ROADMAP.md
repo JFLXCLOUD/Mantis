@@ -8,6 +8,16 @@
 4. **Broader Cricut coverage:** independent Maker, Explore, Joy and Venture adapters, including a separate BLE track. Track each model/firmware/transport explicitly; do not equate a dropdown entry with cutting support.
 5. **Public application release:** source and contributor workflow live at [JFLXCLOUD/Mantis](https://github.com/JFLXCLOUD/Mantis). Hold downloads until machine validation passes, then finish Windows distribution, signing and updates.
 
+## 0.12.0 - Searchable original shape library (implemented locally)
+
+The Create sidebar opens an offline library of 36 original designs, including
+four shamrock/clover options. Search names and aliases or browse Nature,
+Animals, Celebrations and Essentials. One click inserts a native editable path
+with preserved proportions and undo support. Original library geometries are
+dedicated to CC0 for personal and commercial projects. The catalog is generated
+from auditable original geometry, not fetched from an unlicensed image search.
+See [the library guide](SHAPE_LIBRARY.md).
+
 ## 0.11.0 - Organized properties, fonts and board colors (implemented locally)
 
 The inspector offers mutually exclusive Color, Size & position, Effects and Board settings dropdowns. Text editing, font choice, italic and curves are grouped under Effects. Windows font discovery lists installed families through a restricted local IPC method; TTF/OTF/WOFF/WOFF2 imports are validated and stored in a bounded local font library. Fonts load before workspace rendering and used imported fonts are embedded in SVG/print output. Projects reference fonts and require the same local fonts on another computer. Board color is a saved workspace preview with contrasting grid lines; it is excluded from artwork, job drafts and exports.

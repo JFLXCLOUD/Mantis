@@ -13,6 +13,7 @@ import './materials.css';
 import './text-curve.css';
 import './colors.css';
 import './property-menus.css';
+import './shape-library.css';
 import { loadImportedFonts } from './fonts';
 import { applyTheme, loadPreferences } from './preferences';
 applyTheme(loadPreferences().theme);

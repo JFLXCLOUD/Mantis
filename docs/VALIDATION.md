@@ -1,3 +1,12 @@
+# Original shape library - 12 October 2026
+
+- **109 unit/offline tests passed**: 63 renderer, 27 native and 19 offline research. New coverage checks search aliases/plurals, unique entries, closed geometry, finite dimensions, original proportions, holes, small boards and native project/SVG round-trips for all 36 shapes.
+- The full 51-scenario UI run passed 49 and skipped physical hardware discovery. It exposed a properties-menu timing race after SVG import: a delayed selection effect could close a newly opened menu. Resetting the menu in a layout effect fixes the before-paint ordering. All 14 editing, properties/font and library scenarios then passed, including the previously failing case.
+- Library browser checks cover offline shamrock search, insertion, single-step undo/redo, recolor, save/reload, SVG export, category filtering, empty results, Escape/focus restoration, light/dark minimum-window layouts and the 1,000-object limit. An initial new test used an incomplete Undo button label; the corrected selector passed.
+- Windows 0.12.0 built and packaged locally. An isolated packaged profile passed search, insertion and saved-project recovery. All 36 original silhouettes and both themed dialog screenshots were visually reviewed. The isolated preview profile was removed.
+- Backed up current local storage and IndexedDB, closed 0.11.0 normally and opened 0.12.0. All five existing storage entries remained unchanged apart from permitted update-check timing. The library was opened to shamrock results without inserting or changing any user artwork.
+- The original catalog has an explicit CC0 dedication and auditable generator; the dedication ships with the app. No external artwork, font files, API keys or private project data were added. No hardware command, public release or tag was created.
+
 # Property menus, board color and fonts - 12 October 2026
 
 - **106 unit/offline tests passed**: 60 renderer, 27 native and 19 offline research. Font checks cover family validation/escaping, import size/type boundaries, fixed and bounded Windows font discovery, trusted-frame IPC and board-color validation.

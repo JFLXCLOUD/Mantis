@@ -6,11 +6,14 @@ import { TextCurveControl } from './TextCurveControl';
 import { ColorControl } from './ColorControl';
 import { PropertyMenu } from './PropertyMenu';
 import { FontPicker } from './FontPicker';
+import { ShapeLibrary } from './ShapeLibrary';
+import { createLibraryObject } from './shapeCatalog';
 import { fontFamily } from './fonts';
 import { BOARD_COLOR_KEY, loadBoardColor, darkBoard } from './board';
 import { scopeSvgTextPaths } from './svgReferences';
 import {
   useEffect,
+  useLayoutEffect,
   useCallback,
   useId,
   useMemo,
@@ -319,6 +322,7 @@ export default function App() {
     | "combine"
     | "print"
     | "settings"
+    | "library"
     | null
   >(null);
   const [toast, setToast] = useState("");
@@ -348,7 +352,9 @@ export default function App() {
   const scale = unit === "in" ? 96 : 96 / 25.4;
   const selected = project.objects.filter((o) => selection.includes(o.id));
   const selectedKey = selection.join(',');
-  useEffect(() => setPropertyMenu(null), [selectedKey]);
+  // Reset before paint so a newly opened menu cannot be closed by a late
+  // selection effect after artwork import or library insertion.
+  useLayoutEffect(() => setPropertyMenu(null), [selectedKey]);
   const editable = selected.filter((o) => !o.locked && o.visible);
   const recolorable = editable.filter((o) => o.type !== "svg");
   const colorKey = JSON.stringify(
@@ -467,7 +473,7 @@ export default function App() {
         'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]',
       ) || []),
     ];
-    focusable()[0]?.focus();
+    (root?.querySelector<HTMLElement>('[data-autofocus]') || focusable()[0])?.focus();
     const trap = (e: KeyboardEvent) => {
       if (e.key !== "Tab") return;
       const items = focusable(),
@@ -1166,6 +1172,11 @@ export default function App() {
                 <h2>What will you make?</h2>
               </div>
               <div className="quick-tools">
+                <button onClick={() => setDialog("library")}>
+                  <Shapes />
+                  <span>Shape library</span>
+                  <Search size={14} />
+                </button>
                 <button onClick={() => add("text")}>
                   <Type />
                   <span>Add text</span>
@@ -2199,11 +2210,11 @@ export default function App() {
         <div className="modal-backdrop" onClick={() => setDialog(null)}>
           <section
             ref={modal}
-            className={`modal ${dialog === "prepare" ? "prepare-modal" : dialog === "machine" || dialog === "materials" || dialog === "print" ? "machine-modal" : ""}`}
+            className={`modal ${dialog === "library" ? "shape-library-modal" : dialog === "prepare" ? "prepare-modal" : dialog === "machine" || dialog === "materials" || dialog === "print" ? "machine-modal" : ""}`}
             role="dialog"
             aria-modal="true"
             aria-label={
-              dialog === "settings" ? "App settings" : dialog === "print"
+              dialog === "library" ? "Shape library" : dialog === "settings" ? "App settings" : dialog === "print"
                 ? "Print Then Cut"
                 : dialog === "combine"
                   ? "Combine shapes"
@@ -2230,6 +2241,14 @@ export default function App() {
               <PrintSetup project={project} selectedIds={selection} />
             )}
             {dialog === 'settings' && <AppSettings settings={appSettings} />}
+            {dialog === 'library' && <ShapeLibrary full={project.objects.length >= 1000} onAdd={shape => {
+              if (project.objects.length >= 1000) return notify("This project has reached the 1,000-object limit.");
+              const object = createLibraryObject(shape, project);
+              commit(p => ({ ...p, objects: [...p.objects, object] }));
+              setSelection([object.id]);
+              setDialog(null);
+              notify(`${shape.name} added to your canvas`);
+            }} />}
             {dialog === "combine" && (
               <>
                 <span className="eyebrow">MAKE SOMETHING NEW</span>

@@ -21,6 +21,12 @@ Public documentation describes the intended experience, not implementation sourc
 
 ## Future interoperability work
 
+The 0.12.0 searchable library contains 36 original geometric designs created
+for Mantis. Its auditable generator uses original paths and primitives; no
+stock artwork, proprietary templates or font outlines were used. Those
+geometries are separately [dedicated to CC0](../SHAPE_LIBRARY_LICENSE.md).
+See the [library documentation](SHAPE_LIBRARY.md) for regeneration and contribution rules.
+
 The 0.5.0 vector tools use MIT-licensed [Paper.js core](https://paperjs.org/reference/pathitem/) for independent geometry operations. PDF proofs use MIT-licensed [jsPDF](https://github.com/parallax/jsPDF). Runtime dependency licenses, including transitive dependencies, are bundled in THIRD_PARTY_NOTICES.txt. Print Then Cut requirements and public Cricut sources are recorded in [the print workflow](PRINT_THEN_CUT.md). No Cricut registration marks or machine protocol were inferred from its private implementation.
 
 Keep device research separate from the editor. Record the provenance and redistribution terms of any specification, sample, or library used. Do not accept leaked/proprietary code or resources. Work on user-owned or explicitly authorized hardware; do not bypass accounts or access controls. Do not describe a model as supported until a real test matrix demonstrates the relevant operations and safe stop behavior.

@@ -15,6 +15,7 @@ Design locally, keep editable project files, and take your artwork with you as S
 
 - **Precise transforms:** drag to resize freely or lock proportions, rotate, flip, align, distribute and repeat. Work in inches or millimeters with grid snapping.
 - **Vector tools:** native shapes, editable text, Weld, Subtract, Intersect and Slice. Combine native shapes into editable paths with holes.
+- **Searchable shape library:** 36 original vector designs, including shamrocks, clovers, flowers, animals, celebration shapes and tags. Search by name or keyword, browse categories and add editable shapes in one click, entirely offline. The [original library shapes are dedicated to CC0](SHAPE_LIBRARY_LICENSE.md), free for personal and commercial projects without attribution.
 - **Curved text:** bend editable words up or down, adjust the arc with a slider and reset to straight. Curves survive resizing, project saves, SVG export and print preparation.
 - **Organized editing:** compact Color, Size & position, Effects and Board settings dropdowns keep controls out of the way until needed. Text content, fonts, italic styling and curves live under Effects.
 - **Your fonts:** search installed Windows font families or import TTF, OTF, WOFF and WOFF2 files. Imported fonts stay in a local library and are included in SVG/print output; portable project files reference fonts, so another computer needs the same fonts.
@@ -32,6 +33,16 @@ Design locally, keep editable project files, and take your artwork with you as S
 <summary>See the organized properties menus and custom board color</summary>
 
 ![Compact editing menus beside curved text on a cream board](docs/screenshots/properties-menus.png)
+
+</details>
+
+<details>
+<summary>Search the original shape library</summary>
+
+![Shamrock search in the light shape library](docs/screenshots/shape-library-light.png)
+![Shamrock search in the dark shape library](docs/screenshots/shape-library-dark.png)
+
+Browse the [library guide](docs/SHAPE_LIBRARY.md) for available categories and free-use terms.
 
 </details>
 
