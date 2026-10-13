@@ -15,11 +15,13 @@ export function ColorControl({
   disabled,
   onPreview,
   onCommit,
+  label = 'Object color',
 }: {
   colors: string[];
   disabled: boolean;
   onPreview(color: string | null): void;
   onCommit(color: string): void;
+  label?: string;
 }) {
   const initial = colors[0] || "#285c48";
   const mixed = new Set(colors.map((c) => c.toLowerCase())).size > 1;
@@ -93,7 +95,7 @@ export function ColorControl({
         }
       }}
     >
-      <legend>Object color</legend>
+      <legend>{label}</legend>
       <div className="color-summary">
         <span
           className={`color-chip ${mixed && !open ? "mixed" : ""}`}

@@ -1,3 +1,4 @@
+import { fontFamily } from './fonts';
 import { useId } from "react";
 import type { DesignObject } from "./model";
 import { curveLayout, curveTransform, TEXT_EM } from "./textCurve";
@@ -17,7 +18,7 @@ export function CurvedText({
         <path id={id} d={layout.path} />
       </defs>
       <text
-        fontFamily={object.font}
+        fontFamily={fontFamily(object.font)}
         fontSize={TEXT_EM}
         fontStyle={object.italic ? "italic" : "normal"}
         {...paint}

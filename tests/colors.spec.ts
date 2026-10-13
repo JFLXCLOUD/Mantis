@@ -1,3 +1,4 @@
+import { openProperties } from './property-helpers';
 import { test, expect, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 const object = (id: string, extra = {}) => ({
@@ -18,7 +19,7 @@ const object = (id: string, extra = {}) => ({
 async function fixture(page: Page, objects = [object("First")]) {
   await page.goto("/");
   await page
-    .locator("input[type=file]")
+    .getByLabel("Import artwork or project", { exact: true })
     .setInputFiles({
       name: "colors.hopper",
       mimeType: "application/json",
@@ -34,6 +35,7 @@ async function fixture(page: Page, objects = [object("First")]) {
       ),
     });
   await page.getByRole("button", { name: "Select First", exact: true }).click();
+  await openProperties(page, 'Color');
 }
 async function saved(page: Page) {
   await expect(
@@ -64,6 +66,7 @@ test("basic palette applies, undoes, persists and exports exact colors", async (
   await saved(page);
   await page.reload();
   await page.getByRole("button", { name: "Select First", exact: true }).click();
+  await openProperties(page, 'Color');
   await expect(
     page.getByRole("button", { name: "Blue #2979ff", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
@@ -129,6 +132,8 @@ test("mixed selection recolors editable objects and protects SVG and locked laye
     await page
       .getByRole("button", { name: `Select ${name}`, exact: true })
       .click({ modifiers: ["Shift"] });
+  await openProperties(page, 'Color');
+  await openProperties(page, "Color");
   await expect(page.getByText("Mixed colors", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Pink #ec78a4", exact: true }).click();
   const p = await saved(page);
@@ -143,12 +148,14 @@ test("mixed selection recolors editable objects and protects SVG and locked laye
     page.locator('[data-object-id="Second"] > g > rect').first(),
   ).toHaveAttribute("stroke", "#ec78a4");
   await page.getByRole("button", { name: "Select SVG", exact: true }).click();
+  await openProperties(page, 'Color');
   await expect(
     page.getByRole("button", { name: "Advanced color picker" }),
   ).toBeDisabled();
   await page
     .getByRole("button", { name: "Select Locked", exact: true })
     .click();
+  await openProperties(page, 'Color');
   await expect(
     page.getByRole("button", { name: "Blue #2979ff", exact: true }),
   ).toBeDisabled();
@@ -177,6 +184,7 @@ test("pointer and keyboard picker controls work in dark mode at minimum window s
   await page.getByRole("button", { name: "Advanced color picker" }).click();
   await page.getByLabel("HEX color").fill("#abcdef");
   await page.getByRole("button", { name: "Select Other", exact: true }).click();
+  await openProperties(page, 'Color');
   await expect(
     page.getByRole("button", { name: "Advanced color picker" }),
   ).toHaveAttribute("aria-expanded", "false");

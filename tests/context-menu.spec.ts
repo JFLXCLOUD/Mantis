@@ -19,7 +19,7 @@ async function load(
   objects = [object("One", 96), object("Two", 336), object("Three", 576)],
 ) {
   await page.goto("/");
-  await page.locator("input[type=file]").setInputFiles({
+  await page.getByLabel("Import artwork or project", { exact: true }).setInputFiles({
     name: "menu.hopper",
     mimeType: "application/json",
     buffer: Buffer.from(

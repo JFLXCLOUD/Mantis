@@ -1,3 +1,13 @@
+# Property menus, board color and fonts - 12 October 2026
+
+- **106 unit/offline tests passed**: 60 renderer, 27 native and 19 offline research. Font checks cover family validation/escaping, import size/type boundaries, fixed and bounded Windows font discovery, trusted-frame IPC and board-color validation.
+- The full UI run passed 45 scenarios, skipped hardware discovery and found two outdated import/menu test assumptions. Tests now address the project uploader explicitly and wait for SVG import before opening its properties. All 16 editor/curve scenarios then passed, including both failures. All four new property/font scenarios passed again after the SVG round-trip font check was added.
+- New checks cover initially collapsed menus, Escape focus restoration, preview cancellation, system font search, custom-family project reopening, board color persistence/grid contrast and unchanged project/export contents. Invalid font files are rejected. Real font import survives page reload, duplicate imports reuse their family, SVG output includes the font, and PNG bytes match the equivalent installed Arial font. Reimported SVG artwork includes its local imported font in subsequent print output.
+- Read-only Windows discovery found **261 installed font families**, including Arial and Segoe UI. Tests import the local Windows Arial file without publishing it.
+- Windows 0.11.0 packaged successfully. In an isolated packaged profile, font discovery, custom import, full application restart and board-color recovery passed. The minimum 1100 by 740 window remained usable. The reviewed compact light-mode screenshot uses original sample artwork; font bytes and private project data were not published. The previously recorded blank-canvas behavior still occurred in isolated dark captures, so those captures were not published. Temporary preview profiles were removed.
+- Backed up the existing workspace, closed 0.10.0 normally and opened 0.11.0. Existing project, material, machine and appearance storage entries remained byte-for-byte identical. A native object was selected to expose the compact menus; artwork was not changed.
+- No hardware connection or command was requested.
+
 # Object palette and advanced color picker - 12 October 2026
 
 - Windows 0.10.0 package built successfully. No release or tag was published.

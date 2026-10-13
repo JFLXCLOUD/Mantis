@@ -4,6 +4,10 @@ import { useAppSettings } from './useAppSettings';
 import { CurvedText } from './CurvedText';
 import { TextCurveControl } from './TextCurveControl';
 import { ColorControl } from './ColorControl';
+import { PropertyMenu } from './PropertyMenu';
+import { FontPicker } from './FontPicker';
+import { fontFamily } from './fonts';
+import { BOARD_COLOR_KEY, loadBoardColor, darkBoard } from './board';
 import { scopeSvgTextPaths } from './svgReferences';
 import {
   useEffect,
@@ -71,7 +75,6 @@ import {
 import {
   blankProject,
   bounds,
-  COLORS,
   createObject,
   demoProject,
   id,
@@ -190,7 +193,7 @@ function Artwork({ object: o }: { object: DesignObject }) {
         <text
           x="0"
           y={o.height * 0.8}
-          fontFamily={o.font}
+          fontFamily={fontFamily(o.font)}
           fontSize={o.height}
           fontStyle={o.italic ? "italic" : "normal"}
           textLength={o.width}
@@ -287,6 +290,17 @@ export default function App() {
     key: string;
     color: string;
   } | null>(null);
+  const [propertyMenu, setPropertyMenu] = useState<string | null>(null);
+  const [boardColor, setBoardColor] = useState(loadBoardColor);
+  const [boardPreview, setBoardPreview] = useState<string | null>(null);
+  const canvasColor = boardPreview || boardColor;
+  const isDarkBoard = darkBoard(canvasColor);
+  const menu = (name: string) => ({ open: propertyMenu === name, onToggle: (open: boolean) => setPropertyMenu(open ? name : null) });
+  function changeBoardColor(color: string) {
+    setBoardColor(color);
+    try { localStorage.setItem(BOARD_COLOR_KEY, color); }
+    catch { setToast('Board color could not be saved. It will last for this session.'); }
+  }
   const [selection, setSelection] = useState<string[]>([]);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
@@ -333,6 +347,8 @@ export default function App() {
   const modal = useRef<HTMLElement>(null);
   const scale = unit === "in" ? 96 : 96 / 25.4;
   const selected = project.objects.filter((o) => selection.includes(o.id));
+  const selectedKey = selection.join(',');
+  useEffect(() => setPropertyMenu(null), [selectedKey]);
   const editable = selected.filter((o) => !o.locked && o.visible);
   const recolorable = editable.filter((o) => o.type !== "svg");
   const colorKey = JSON.stringify(
@@ -1557,7 +1573,7 @@ export default function App() {
                     <path
                       d="M24 0H0V24"
                       fill="none"
-                      stroke="#e9ece4"
+                      stroke={isDarkBoard ? "#ffffff18" : "#0000000d"}
                       strokeWidth="1"
                     />
                   </pattern>
@@ -1571,7 +1587,7 @@ export default function App() {
                     <path
                       d="M96 0H0V96"
                       fill="none"
-                      stroke="#d8dfd1"
+                      stroke={isDarkBoard ? "#ffffff30" : "#00000020"}
                       strokeWidth="1.4"
                     />
                   </pattern>
@@ -1579,8 +1595,10 @@ export default function App() {
                 <rect
                   width={project.width}
                   height={project.height}
-                  fill={grid ? "url(#big-grid)" : "#ffffff"}
+                  data-testid="board-background"
+                  fill={canvasColor}
                 />
+                {grid && <rect width={project.width} height={project.height} fill="url(#big-grid)" pointerEvents="none" />}
                 {displayed
                   .filter((o) => o.visible)
                   .map((o) => (
@@ -1748,6 +1766,7 @@ export default function App() {
                     </select>
                   </label>
                 </div>
+                <PropertyMenu title="Color" summary="Palette & advanced picker" {...menu("color")}>
                 <ColorControl
                   key={JSON.stringify(selected.map((o) => [o.id, o.locked, o.visible, o.type]))}
                   colors={(recolorable.length ? recolorable : selected).map((o) => o.fill)}
@@ -1790,6 +1809,8 @@ export default function App() {
                     Select matching color<span>Recolor together</span>
                   </button>
                 )}
+                </PropertyMenu>
+                <PropertyMenu title="Size & position" summary="Dimensions, rotation & proportions" {...menu("transform")}>
                 <button
                   className={`proportion-toggle ${aspect ? "locked" : "free"}`}
                   aria-label="Lock proportions"
@@ -1890,7 +1911,9 @@ export default function App() {
                     </div>
                   </fieldset>
                 )}
+                </PropertyMenu>
                 {single?.type === "text" && (
+                  <PropertyMenu title="Effects" summary="Text, fonts, style & curves" {...menu("effects")}>
                   <div className="text-properties">
                     <label className="field-label">
                       Your words
@@ -1904,30 +1927,11 @@ export default function App() {
                         }
                       />
                     </label>
-                    <div className="field-row">
-                      <select
-                        aria-label="Font"
-                        value={single.font}
-                        disabled={single.locked}
-                        onChange={(e) => patch({ font: e.target.value })}
-                      >
-                        {["Georgia", "Arial", "Verdana", "Courier New"].map(
-                          (f) => (
-                            <option key={f}>{f}</option>
-                          ),
-                        )}
-                      </select>
-                      <button
-                        className={`italic-button ${single.italic ? "active" : ""}`}
-                        disabled={single.locked}
-                        onClick={() => patch({ italic: !single.italic })}
-                        aria-label="Italic"
-                      >
-                        I
-                      </button>
-                    </div>
+                    <FontPicker key={`font-${single.id}`} value={single.font || 'Georgia'} disabled={single.locked} onChange={font => patch({ font })} />
+                    <button className={`italic-button ${single.italic ? 'active' : ''}`} disabled={single.locked} onClick={() => patch({ italic: !single.italic })} aria-label="Italic" aria-pressed={!!single.italic}>Italic</button>
                     <TextCurveControl key={single.id} object={single} onPreview={setCurvePreview} onCommit={o => commitObjects([o])} />
                   </div>
+                  </PropertyMenu>
                 )}
                 {selected.length > 1 && (
                   <button
@@ -1963,6 +1967,9 @@ export default function App() {
                     <span>Select an object to fine-tune it.</span>
                   </div>
                 </div>
+              </>
+            )}
+            <PropertyMenu title="Board settings" summary="Canvas size & preview color" {...menu('board')}>
                 <label className="field-label">
                   Canvas size
                   <select
@@ -1988,37 +1995,11 @@ export default function App() {
                     )}
                   </select>
                 </label>
-                <div className="palette-label">
-                  A palette to get you started
-                </div>
-                <div className="swatches">
-                  {COLORS.map((color) => (
-                    <button
-                      key={color}
-                      aria-label={`Add ${color} shape`}
-                      title="Add a shape in this color"
-                      style={{ background: color }}
-                      onClick={() => {
-                        const object = {
-                          ...createObject("rect", project.objects.length),
-                          fill: color,
-                        };
-                        if (project.objects.length >= 1000)
-                          return notify("Object limit reached.");
-                        commit({
-                          ...project,
-                          objects: [...project.objects, object],
-                        });
-                        setSelection([object.id]);
-                      }}
-                    />
-                  ))}
-                </div>
-                <p className="field-note">
-                  Start with a color. See where it takes you.
-                </p>
-              </>
-            )}
+
+              <p className="board-note">Board color is a workspace preview. It does not add a layer or change print and SVG backgrounds.</p>
+              <ColorControl label="Board color" colors={[boardColor]} disabled={false} onPreview={setBoardPreview} onCommit={changeBoardColor} />
+              <button className="board-reset" onClick={() => { setBoardPreview(null); changeBoardColor('#ffffff'); }}>Reset to white</button>
+            </PropertyMenu>
           </div>
           <div className="layers-heading">
             <div>
@@ -2179,6 +2160,7 @@ export default function App() {
       <input
         ref={file}
         type="file"
+        aria-label="Import artwork or project"
         accept=".svg,.hopper,.json"
         hidden
         onChange={(e) => {

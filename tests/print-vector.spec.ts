@@ -1,3 +1,4 @@
+import { openProperties } from './property-helpers';
 import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 const shape = (id: string, x: number, extra = {}) => ({
@@ -18,7 +19,7 @@ const shape = (id: string, x: number, extra = {}) => ({
 });
 async function load(page: import("@playwright/test").Page, objects: unknown[]) {
   await page.goto("/");
-  await page.locator("input[type=file]").setInputFiles({
+  await page.getByLabel("Import artwork or project", { exact: true }).setInputFiles({
     name: "test.hopper",
     mimeType: "application/json",
     buffer: Buffer.from(
@@ -47,8 +48,11 @@ test("combine preserves holes, supports recolor/resize, and undo restores origin
   await expect(page.getByLabel("Layer name", { exact: true })).toHaveValue(
     "Subtract",
   );
+  await openProperties(page, 'Size & position');
   await page.getByLabel("Width", { exact: true }).fill("3");
+  await openProperties(page, 'Size & position');
   await page.getByLabel("Width", { exact: true }).press("Enter");
+  await openProperties(page, 'Size & position');
   await expect(page.getByLabel("Height", { exact: true })).toHaveValue("3");
   const filePromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Save project", exact: true }).click();

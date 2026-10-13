@@ -1,9 +1,10 @@
+import { openProperties } from './property-helpers';
 import { test, expect, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 async function textFixture(page: Page) {
   await page.goto("/");
   await page
-    .locator("input[type=file]")
+    .getByLabel("Import artwork or project", { exact: true })
     .setInputFiles({
       name: "text.hopper",
       mimeType: "application/json",
@@ -36,6 +37,7 @@ async function textFixture(page: Page) {
       ),
     });
   await page.getByRole("button", { name: "Select Words", exact: true }).click();
+  await openProperties(page, 'Effects');
 }
 async function saved(page: Page) {
   await expect(
@@ -96,6 +98,7 @@ test("up/down curves keep editable words, fit selection bounds, reset and surviv
   await saved(page);
   await page.reload();
   await page.getByRole("button", { name: "Select Words", exact: true }).click();
+  await openProperties(page, 'Effects');
   await expect(
     page.getByRole("slider", { name: "Text curve", exact: true }),
   ).toHaveValue("60");
@@ -111,7 +114,7 @@ test("up/down curves keep editable words, fit selection bounds, reset and surviv
   expect(final.objects[0].textCurve).toBe(0);
   const project = await exportFile(page, "Save project");
   await page
-    .locator("input[type=file]")
+    .getByLabel("Import artwork or project", { exact: true })
     .setInputFiles({
       name: "reopened.hopper",
       mimeType: "application/json",
@@ -160,12 +163,13 @@ test("curved SVGs retain local text paths when reimported and copied, and PNG ex
 }) => {
   await textFixture(page);
   await page.getByRole("button", { name: "Curve up", exact: true }).click();
+  await openProperties(page, 'Size & position');
   await page.getByLabel("Width", { exact: true }).fill("4");
   const svg = (await exportFile(page)).toString("utf8");
   expect(svg).toContain("<textPath");
   expect(svg).toContain("HELLO MANTIS");
   await page
-    .locator("input[type=file]")
+    .getByLabel("Import artwork or project", { exact: true })
     .setInputFiles({
       name: "curve.svg",
       mimeType: "image/svg+xml",
@@ -192,6 +196,7 @@ test("curved SVGs retain local text paths when reimported and copied, and PNG ex
   ).toBe(true);
   // Print only the original editable text, avoiding imported full-canvas bounds.
   await page.getByRole("button", { name: "Select Words", exact: true }).click();
+  await openProperties(page, 'Effects');
   await page
     .getByRole("button", { name: "Print Then Cut", exact: false })
     .click();

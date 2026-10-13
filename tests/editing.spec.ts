@@ -1,17 +1,19 @@
+import { openProperties } from './property-helpers';
 import { test, expect, type Page } from '@playwright/test';
 
 const base = (id: string, x = 192, extra = {}) => ({ id, name: id, type: 'rect', x, y: 240, width: 192, height: 96, rotation: 0, fill: '#285c48', operation: 'cut', visible: true, locked: false, ...extra });
 async function fixture(page: Page, objects = [base('First')]) {
   await page.goto('/');
-  await page.locator('input[type=file]').setInputFiles({ name: 'legacy.hopper', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ format: 'hopper', version: 1, name: 'Transform test', width: 1152, height: 1152, objects })) });
+  await page.getByLabel("Import artwork or project", { exact: true }).setInputFiles({ name: 'legacy.hopper', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ format: 'hopper', version: 1, name: 'Transform test', width: 1152, height: 1152, objects })) });
   await page.getByRole('button', { name: 'Select First', exact: true }).click();
+  await openProperties(page, 'Size & position');
 }
 async function drag(page: Page, handle: string, dx: number, dy: number) {
   const rect = await page.getByTestId(handle).boundingBox();
   const x = rect!.x + rect!.width / 2, y = rect!.y + rect!.height / 2;
   await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x + dx, y + dy, { steps: 6 }); await page.mouse.up();
 }
-async function field(page: Page, name: string) { return Number(await page.getByLabel(name, { exact: true }).inputValue()); }
+async function field(page: Page, name: string) { await openProperties(page, 'Size & position'); return Number(await page.getByLabel(name, { exact: true }).inputValue()); }
 async function snapshot(page: Page) {
   await expect(page.getByText('Saved on this device', { exact: true })).toBeVisible();
   return page.evaluate(() => JSON.parse(localStorage.getItem('hopper.project.v1')!));
@@ -20,6 +22,7 @@ async function snapshot(page: Page) {
 test('unlocked cursor stretch, edge handles, single-step undo and persistence', async ({ page }) => {
   await fixture(page);
   await expect(page.getByRole('button', { name: 'Lock proportions', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await openProperties(page, 'Size & position');
   await page.getByRole('button', { name: 'Lock proportions', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Lock proportions', exact: true })).toHaveAttribute('aria-pressed', 'false');
   await drag(page, 'resize-e', 65, 19);
@@ -32,12 +35,14 @@ test('unlocked cursor stretch, edge handles, single-step undo and persistence', 
   await page.getByRole('button', { name: 'Redo (Ctrl+Shift+Z)', exact: true }).click();
   const saved = await snapshot(page); expect(saved.version).toBe(4);
   await page.reload(); await page.getByRole('button', { name: 'Select First', exact: true }).click();
+  await openProperties(page, 'Size & position');
   expect(await field(page, 'Height')).toBeCloseTo(saved.objects[0].height / 96, 3);
 });
 
 test('locked and Shift resizing preserve proportions; Alt holds the center', async ({ page }) => {
   await fixture(page); await drag(page, 'resize-se', 75, 8);
   await expect.poll(async () => (await field(page, 'Width')) / (await field(page, 'Height'))).toBeCloseTo(2, 2);
+  await openProperties(page, 'Size & position');
   await page.getByRole('button', { name: 'Lock proportions', exact: true }).click();
   await page.keyboard.down('Shift'); await drag(page, 'resize-se', 30, 5); await page.keyboard.up('Shift');
   await expect.poll(async () => (await field(page, 'Width')) / (await field(page, 'Height'))).toBeCloseTo(2, 2);
@@ -48,6 +53,7 @@ test('locked and Shift resizing preserve proportions; Alt holds the center', asy
 
 test('rotated resize anchors the opposite corner and cursor rotation snaps with Shift', async ({ page }) => {
   await fixture(page, [base('First', 300, { rotation: 30 })]);
+  await openProperties(page, 'Size & position');
   await page.getByRole('button', { name: 'Lock proportions', exact: true }).click();
   const anchor = await page.locator('.selection-overlay polygon').getAttribute('points');
   await drag(page, 'resize-se', 58, 23);
@@ -65,6 +71,7 @@ test('Escape cancels a transform and locked layers offer no resize handles', asy
   await page.mouse.move(rect!.x + rect!.width / 2, rect!.y + rect!.height / 2); await page.mouse.down();
   await page.mouse.move(rect!.x + 70, rect!.y + 25); await page.keyboard.press('Escape'); await page.mouse.up();
   await page.getByRole('button', { name: 'Select First', exact: true }).click();
+  await openProperties(page, 'Size & position');
   expect(await field(page, 'Width')).toBe(2);
   await page.getByRole('button', { name: 'Lock First', exact: true }).click();
   await expect(page.getByTestId('resize-se')).toHaveCount(0);
@@ -77,8 +84,10 @@ test('duplicate in place preserves appearance; matching color and search help ma
   let p = await snapshot(page), original = p.objects[0], copy = p.objects[3];
   expect(copy.id).not.toBe(original.id);
   for (const key of ['x', 'y', 'width', 'height', 'rotation', 'fill']) expect(copy[key]).toEqual(original[key]);
+  await openProperties(page, 'Color');
   await page.getByRole('button', { name: /Select matching color/ }).click();
   await expect(page.getByText('2 objects selected', { exact: false })).toBeVisible();
+  await openProperties(page, 'Color');
   await page.getByRole('button', { name: 'Advanced color picker' }).click();
   await page.getByLabel('HEX color', { exact: true }).fill('#123456');
   await page.getByRole('button', { name: 'Apply color' }).click();
@@ -92,7 +101,9 @@ test('duplicate in place preserves appearance; matching color and search help ma
 test('spacing and centering operate on groups without changing their internal layout', async ({ page }) => {
   await fixture(page, [base('First', 100, { width: 50, groupId: 'g' }), base('Partner', 170, { width: 30, groupId: 'g' }), base('Middle', 280, { width: 80 }), base('Last', 800, { width: 70 })]);
   await page.getByRole('button', { name: 'Select Middle', exact: true }).click({ modifiers: ['Shift'] });
+  await openProperties(page, 'Size & position');
   await page.getByRole('button', { name: 'Select Last', exact: true }).click({ modifiers: ['Shift'] });
+  await openProperties(page, 'Size & position');
   await page.getByRole('button', { name: 'Space H', exact: true }).click();
   let p = await snapshot(page);
   expect(p.objects[1].x - p.objects[0].x).toBe(70);
@@ -103,7 +114,9 @@ test('spacing and centering operate on groups without changing their internal la
 
 test('SVG imports stretch to the new dimensions and flip survives export', async ({ page }) => {
   await fixture(page);
-  await page.locator('input[type=file]').setInputFiles({ name: 'arrow.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100"><rect width="200" height="100" fill="#123456"/></svg>') });
+  await page.getByLabel("Import artwork or project", { exact: true }).setInputFiles({ name: 'arrow.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100"><rect width="200" height="100" fill="#123456"/></svg>') });
+  await expect(page.getByLabel("Layer name", { exact: true })).toHaveValue("arrow");
+  await openProperties(page, 'Size & position');
   await page.getByRole('button', { name: 'Lock proportions', exact: true }).click();
   await drag(page, 'resize-e', 65, 0);
   const object = page.locator('.canvas-object').last(), art = await object.locator('svg rect').boundingBox(), hit = await object.locator(':scope > rect').boundingBox();

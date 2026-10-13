@@ -98,7 +98,7 @@ export function TextCurveControl({
         onPointerCancel={cancel}
         onBlur={() => apply()}
         onKeyDown={(e) => {
-          if (e.key === "Escape") {
+          if (e.key === "Escape" && pendingRef.current !== null) {
             e.preventDefault();
             e.stopPropagation();
             cancel();

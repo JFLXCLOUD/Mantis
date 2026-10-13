@@ -1,5 +1,6 @@
 import type { DesignObject } from "./model";
 import type { Box } from "./geometry";
+import { fontFamily } from './fonts';
 
 export const MAX_TEXT_CURVE = 180;
 export const TEXT_EM = 100;
@@ -34,7 +35,7 @@ export function curveLayout(o: DesignObject) {
     const textPath = document.createElementNS(ns, "textPath");
     path.id = `measure-curve-${crypto.randomUUID()}`;
     path.setAttribute("d", arc.path);
-    text.setAttribute("font-family", o.font || "Georgia");
+    text.setAttribute("font-family", fontFamily(o.font));
     text.setAttribute("font-size", String(TEXT_EM));
     text.setAttribute("font-style", o.italic ? "italic" : "normal");
     textPath.setAttribute("href", `#${path.id}`);

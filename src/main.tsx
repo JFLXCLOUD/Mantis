@@ -12,6 +12,10 @@ import './settings.css';
 import './materials.css';
 import './text-curve.css';
 import './colors.css';
+import './property-menus.css';
+import { loadImportedFonts } from './fonts';
 import { applyTheme, loadPreferences } from './preferences';
 applyTheme(loadPreferences().theme);
-ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
+void loadImportedFonts().finally(() => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
+});

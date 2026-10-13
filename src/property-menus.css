@@ -1,0 +1,100 @@
+.property-menu {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+.property-menu-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  color: var(--ink);
+  background: var(--surface, #fff);
+  gap: 8px;
+}
+.property-menu-trigger strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+.property-menu-trigger small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 3px;
+}
+.property-menu-trigger:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -3px;
+}
+.property-menu.is-open > .property-menu-trigger {
+  background: var(--surface-soft, #f4f6f0);
+  border-bottom: 1px solid var(--border);
+}
+.property-menu.is-open > .property-menu-trigger > svg {
+  transform: rotate(180deg);
+}
+.property-menu-content {
+  padding: 12px;
+}
+.property-menu-content .object-colors {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.property-menu-content .basic-colors {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.property-menu-content .basic-colors button {
+  height: 25px;
+}
+.property-menu-content .geometry,
+.property-menu-content .text-properties {
+  padding-top: 0;
+  border-top: 0;
+  margin-top: 0;
+}
+.font-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.font-actions > button {
+  font-size: 10px;
+  color: var(--green);
+}
+.font-picker select {
+  width: 100%;
+}
+.font-error {
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--danger-text, #a4382e);
+  margin: 8px 0;
+}
+.font-picker .field-note {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+.text-properties .italic-button {
+  width: auto;
+  padding: 7px 12px;
+  margin: 8px 0;
+}
+.board-note {
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 8px 0 12px;
+}
+.board-reset {
+  font-size: 11px;
+  color: var(--green);
+  margin-top: 10px;
+  padding: 6px 0;
+}

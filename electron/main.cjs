@@ -1,5 +1,6 @@
 const { app, BrowserWindow, session, ipcMain, shell, nativeTheme } = require("electron");
 const { registerUpdateIpc } = require("./updates.cjs");
+const { registerFontIpc } = require("./fonts.cjs");
 const { pathToFileURL } = require("node:url");
 const { registerMachineIpc } = require("./devices/ipc.cjs");
 const path = require("node:path");
@@ -44,6 +45,7 @@ app.whenReady().then(() => {
   registerUpdateIpc(ipcMain, window, isDev ? "http://127.0.0.1:5173/" : pathToFileURL(entry).href, {
     version: app.getVersion(), openExternal: (url) => shell.openExternal(url),
   });
+  registerFontIpc(ipcMain, window, isDev ? "http://127.0.0.1:5173/" : pathToFileURL(entry).href);
   if (isDev) window.loadURL("http://127.0.0.1:5173/");
   else window.loadFile(entry);
 });

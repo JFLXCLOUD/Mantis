@@ -8,6 +8,10 @@
 4. **Broader Cricut coverage:** independent Maker, Explore, Joy and Venture adapters, including a separate BLE track. Track each model/firmware/transport explicitly; do not equate a dropdown entry with cutting support.
 5. **Public application release:** source and contributor workflow live at [JFLXCLOUD/Mantis](https://github.com/JFLXCLOUD/Mantis). Hold downloads until machine validation passes, then finish Windows distribution, signing and updates.
 
+## 0.11.0 - Organized properties, fonts and board colors (implemented locally)
+
+The inspector offers mutually exclusive Color, Size & position, Effects and Board settings dropdowns. Text editing, font choice, italic and curves are grouped under Effects. Windows font discovery lists installed families through a restricted local IPC method; TTF/OTF/WOFF/WOFF2 imports are validated and stored in a bounded local font library. Fonts load before workspace rendering and used imported fonts are embedded in SVG/print output. Projects reference fonts and require the same local fonts on another computer. Board color is a saved workspace preview with contrasting grid lines; it is excluded from artwork, job drafts and exports.
+
 ## 0.10.0 - Object color palette and advanced picker (implemented locally)
 
 Selected objects offer 20 named swatches and an advanced saturation/brightness area, hue/saturation/brightness sliders and exact HEX/RGB entry. Advanced changes preview on canvas until Apply; Cancel or Escape restores the original color. One application is one undo step. Mixed selections recolor editable native layers together, while locked/hidden layers and imported SVG colors remain protected. Existing opaque HEX project storage and export behavior are unchanged.

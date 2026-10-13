@@ -1,4 +1,5 @@
 const { contextBridge, ipcRenderer } = require("electron");
+contextBridge.exposeInMainWorld("mantisFonts", Object.freeze({ list: () => ipcRenderer.invoke("mantis:list-fonts") }));
 contextBridge.exposeInMainWorld("mantisUpdates", Object.freeze({
   check: () => ipcRenderer.invoke("mantis:check-updates"),
   openReleases: () => ipcRenderer.invoke("mantis:open-releases"),

@@ -1,3 +1,4 @@
+import { openProperties } from './property-helpers';
 import { test, expect, _electron as electron } from '@playwright/test';
 import { readFile, mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -9,7 +10,9 @@ test('editor: layers, undo, geometry, repeat, saving and reload', async ({ page 
   await expect(page.getByLabel('Project name')).toHaveValue('Good things grow here');
   await page.getByRole('button', { name: 'Add heart', exact: true }).click();
   await expect(page.getByLabel('Layer name', { exact: true })).toHaveValue('Heart');
+  await openProperties(page, 'Size & position');
   await page.getByLabel('Width', { exact: true }).fill('2'); await page.getByLabel('Width', { exact: true }).press('Enter');
+  await openProperties(page, 'Size & position');
   await expect(page.getByLabel('Height', { exact: true })).toHaveValue('2');
   await page.getByRole('button', { name: 'Repeat pattern' }).click();
   await page.getByRole('button', { name: 'Create 6 repeats' }).click();
@@ -26,14 +29,16 @@ test('editor: layers, undo, geometry, repeat, saving and reload', async ({ page 
 
 test('SVG import, safe project reload, mirrored exports and bounds preflight', async ({ page }) => {
   await page.goto('/');
-  await page.locator('input[type=file]').setInputFiles({ name: 'sample.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="192" height="96" viewBox="0 0 192 96"><script>window.pwned=true</script><rect width="192" height="96" fill="#123456"/></svg>') });
+  await page.getByLabel("Import artwork or project", { exact: true }).setInputFiles({ name: 'sample.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="192" height="96" viewBox="0 0 192 96"><script>window.pwned=true</script><rect width="192" height="96" fill="#123456"/></svg>') });
   await expect(page.getByLabel('Layer name', { exact: true })).toHaveValue('sample');
+  await openProperties(page, 'Size & position');
   await expect(page.getByLabel('Width', { exact: true })).toHaveValue('2');
   const imported = page.locator('.canvas-object').last();
   const artBounds = await imported.locator('svg rect').boundingBox();
   const hitBounds = await imported.locator(':scope > rect').boundingBox();
   expect(artBounds!.width).toBeCloseTo(hitBounds!.width, 0);
   expect(artBounds!.height).toBeCloseTo(hitBounds!.height, 0);
+  await openProperties(page, 'Size & position');
   await page.getByLabel('X', { exact: true }).fill('-1'); await page.getByLabel('X', { exact: true }).press('Enter');
   await page.getByRole('button', { name: 'Prepare', exact: true }).click();
   await expect(page.getByText('1 objects extend off the canvas')).toBeVisible();
@@ -46,11 +51,15 @@ test('SVG import, safe project reload, mirrored exports and bounds preflight', a
 
 test('dragging creates one undo step; hidden and locked layers are protected', async ({ page }) => {
   await page.goto('/'); await page.getByRole('button', { name: 'Add star', exact: true }).click();
+  await openProperties(page, 'Size & position');
   const xBefore = await page.getByLabel('X', { exact: true }).inputValue();
   const target = page.locator('.canvas-object').last(); const rect = await target.boundingBox();
   await page.mouse.move(rect!.x + rect!.width / 2, rect!.y + rect!.height / 2); await page.mouse.down(); await page.mouse.move(rect!.x + rect!.width / 2 + 55, rect!.y + rect!.height / 2 + 20, { steps: 6 }); await page.mouse.up();
+  await openProperties(page, 'Size & position');
   await expect(page.getByLabel('X', { exact: true })).not.toHaveValue(xBefore);
+  await openProperties(page, 'Size & position');
   await page.getByRole('button', { name: 'Undo (Ctrl+Z)', exact: true }).click(); await expect(page.getByLabel('X', { exact: true })).toHaveValue(xBefore);
+  await openProperties(page, 'Size & position');
   await page.getByRole('button', { name: 'Lock Star', exact: true }).click(); await expect(page.getByLabel('Width', { exact: true })).toBeDisabled();
   await page.getByRole('button', { name: 'Hide Star', exact: true }).click(); await expect(page.locator('.canvas-object')).toHaveCount(9);
 });
@@ -66,6 +75,7 @@ test('starter and smaller Windows viewport render without overflow or errors', a
 test('saved projects reopen intact and invalid input leaves the canvas unchanged', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Add text', exact: true }).click();
+  await openProperties(page, 'Effects');
   await page.getByLabel('Text content', { exact: true }).fill('Hopper & friends');
   await page.getByLabel('Project name', { exact: true }).fill('My saved project');
   const pending = page.waitForEvent('download'); await page.getByRole('button', { name: 'Save project', exact: true }).click();
@@ -73,12 +83,13 @@ test('saved projects reopen intact and invalid input leaves the canvas unchanged
   await page.getByRole('button', { name: 'Projects', exact: true }).click();
   await page.getByRole('button', { name: 'New blank project' }).click(); await page.getByRole('button', { name: 'Start fresh' }).click();
   await expect(page.getByText('0 editable objects')).toBeVisible();
-  await page.locator('input[type=file]').setInputFiles({ name: 'saved.hopper', mimeType: 'application/json', buffer: await readFile(projectPath) });
+  await page.getByLabel("Import artwork or project", { exact: true }).setInputFiles({ name: 'saved.hopper', mimeType: 'application/json', buffer: await readFile(projectPath) });
   await expect(page.getByLabel('Project name')).toHaveValue('My saved project');
   await expect(page.getByText('10 editable objects')).toBeVisible();
   await page.getByRole('button', { name: 'Select Your words', exact: true }).click();
+  await openProperties(page, 'Effects');
   await expect(page.getByLabel('Text content', { exact: true })).toHaveValue('Hopper & friends');
-  await page.locator('input[type=file]').setInputFiles({ name: 'invalid.hopper', mimeType: 'application/json', buffer: Buffer.from('{"format":"hopper","version":99,"objects":[]}') });
+  await page.getByLabel("Import artwork or project", { exact: true }).setInputFiles({ name: 'invalid.hopper', mimeType: 'application/json', buffer: Buffer.from('{"format":"hopper","version":99,"objects":[]}') });
   await expect(page.getByRole('status')).toContainText('Unsupported project format');
   await expect(page.getByText('10 editable objects')).toBeVisible();
 });

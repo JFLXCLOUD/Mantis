@@ -16,6 +16,9 @@ Design locally, keep editable project files, and take your artwork with you as S
 - **Precise transforms:** drag to resize freely or lock proportions, rotate, flip, align, distribute and repeat. Work in inches or millimeters with grid snapping.
 - **Vector tools:** native shapes, editable text, Weld, Subtract, Intersect and Slice. Combine native shapes into editable paths with holes.
 - **Curved text:** bend editable words up or down, adjust the arc with a slider and reset to straight. Curves survive resizing, project saves, SVG export and print preparation.
+- **Organized editing:** compact Color, Size & position, Effects and Board settings dropdowns keep controls out of the way until needed. Text content, fonts, italic styling and curves live under Effects.
+- **Your fonts:** search installed Windows font families or import TTF, OTF, WOFF and WOFF2 files. Imported fonts stay in a local library and are included in SVG/print output; portable project files reference fonts, so another computer needs the same fonts.
+- **Board color:** preview artwork against a color of your choice, with a contrasting grid. This workspace preference does not alter artwork or export backgrounds.
 - **Color your artwork:** choose from 20 named swatches or open the advanced picker for hue, saturation, brightness and exact HEX/RGB values. Preview changes, apply or cancel, and recolor multiple editable layers together.
 - **Fast object actions:** right-click the canvas or layers for duplicate, group, combine, repeat, arrange, hide, lock and delete. Keyboard navigation and undo are included.
 - **Layers and local projects:** search layers, select matching colors, group artwork, recover your current workspace and save portable `.hopper` files.
@@ -24,6 +27,13 @@ Design locally, keep editable project files, and take your artwork with you as S
 - **Material library:** browse 15 starter materials, search by category, save favorites and create your own profiles with supplier, weight/thickness and notes. Job drafts retain a material snapshot; profiles are planning notes, not verified cutting presets.
 - **Your workspace, your appearance:** Light, Dark and Follow Windows themes, with saved preferences. Artwork and print colors stay unchanged.
 - **Release notifications:** check GitHub for updates from App settings, or enable automatic daily checks. Open release notes/downloads in your browser when ready; no automatic installation or restart.
+
+<details>
+<summary>See the organized properties menus and custom board color</summary>
+
+![Compact editing menus beside curved text on a cream board](docs/screenshots/properties-menus.png)
+
+</details>
 
 <details>
 <summary>See object editing and print preparation</summary>

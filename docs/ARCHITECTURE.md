@@ -48,6 +48,16 @@ Undo stores snapshots (80 entries). A drag commits one snapshot on pointer relea
 
 SVG text uses a target text length and Windows system fonts, not glyph outlines. Primitive shapes are intentionally simple. The rectangle tool currently creates rounded rectangles. Conservative SVG import omits resources/effects; it is not a full SVG implementation. Native-shape booleans and print-proof export are implemented; a machine toolpath engine and verified cutting driver are not.
 
+## Property menus, fonts and board colors (0.11.0)
+
+`PropertyMenu` renders compact, mutually exclusive inspector dropdowns with explicit expanded state and Escape/focus restoration. Selection changes collapse menus; unmounting their controls discards color/curve previews. Effects owns text, fonts, italic and curves. Board color lives separately under `mantis.board-color.v1`; it affects only the canvas background and grid contrast.
+
+`electron/fonts.cjs` lists installed Windows families using a fixed, encoded PowerShell command and `System.Drawing.Text.InstalledFontCollection`. The process is hidden, limited to 15 seconds/2 MB, accepts no renderer arguments and validates the trusted top frame. `src/fonts.ts` validates imported font bytes through the browser's FontFace parser, deduplicates by SHA-256 and persists in IndexedDB (`mantis-fonts`). Limits are 10 MB per file, 50 fonts and 50 MB total. Startup awaits local fonts before measuring curved text. Font families are bounded strings and safely quoted when used in CSS/SVG.
+
+Projects continue using v4 and store font family references rather than font files; older builds reject newly supported family names instead of silently substituting them. Missing imported fonts are identified in Effects. Used imported font bytes are included as local data font faces in SVG and print renderings. Only `font-src data:` was added to CSP; no remote font access or renderer Node privileges are exposed. Font files are not included in the source repository. Fonts remain editable text rather than outlined cutting paths.
+
+Implementation references: [Windows installed font families](https://learn.microsoft.com/en-us/dotnet/api/system.drawing.text.installedfontcollection?view=windowsdesktop-10.0) and [browser FontFace loading](https://developer.mozilla.org/en-US/docs/Web/API/FontFace).
+
 ## Object colors (0.10.0)
 
 `src/ColorControl.tsx` provides named swatches and a local advanced draft with HSV controls and validated HEX/RGB fields. `src/colors.ts` owns color conversion and validation. Canvas previews are separate from project/history/autosave/export data and scoped to the selected layers and their committed colors. Apply commits once; Cancel, Escape or selection changes discard the preview. Only visible, unlocked native objects are recolored; Draw/Score/Guide use the same color as their stroke. Imported SVG contents remain intact. Project v4 continues to store opaque six-digit HEX values, with no alpha or schema changes.

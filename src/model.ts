@@ -1,4 +1,5 @@
 export { bounds } from "./geometry";
+import { validFontName } from './fonts';
 export type Shape =
   | "rect"
   | "ellipse"
@@ -217,7 +218,7 @@ export function validateProject(input: unknown): Project {
       o.type === "text" &&
       (typeof o.text !== "string" ||
         o.text.length > 1000 ||
-        !["Georgia", "Arial", "Verdana", "Courier New"].includes(o.font || ""))
+        !validFontName(o.font))
     )
       throw new Error("Invalid text layer.");
     if (o.textCurve !== undefined && (o.type !== 'text' || !Number.isInteger(o.textCurve) || Math.abs(o.textCurve) > 180))

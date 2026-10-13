@@ -1,3 +1,4 @@
+import { embeddedFonts } from './fonts';
 import { objectMarkup } from "./io";
 import { type Box } from "./geometry";
 import { type DesignObject } from "./model";
@@ -70,7 +71,7 @@ export function printArtworkSvg(
   pixelWidth: number,
   pixelHeight: number,
 ) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${pixelWidth}" height="${pixelHeight}" viewBox="${box.x} ${box.y} ${box.width} ${box.height}">${objects.map(objectMarkup).join("")}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${pixelWidth}" height="${pixelHeight}" viewBox="${box.x} ${box.y} ${box.width} ${box.height}">${embeddedFonts(objects)}${objects.map(objectMarkup).join("")}</svg>`;
 }
 // Canvas PNGs default to 96 dpi. Replace/add a real pHYs chunk for 300 dpi.
 export function pngDensity(bytes: Uint8Array): Uint8Array<ArrayBuffer> {
