@@ -27,6 +27,8 @@ export type DesignObject = {
   text?: string;
   font?: string;
   italic?: boolean;
+  textCurve?: number;
+  textCurveRatio?: number;
   svg?: string;
   pathData?: string;
   groupId?: string;
@@ -36,7 +38,7 @@ export type DesignObject = {
 };
 export type Project = {
   format: "hopper";
-  version: 3;
+  version: 4;
   name: string;
   width: number;
   height: number;
@@ -84,7 +86,7 @@ export function createObject(type: Shape, index = 0): DesignObject {
 export function blankProject(): Project {
   return {
     format: "hopper",
-    version: 3,
+    version: 4,
     name: "Untitled project",
     width: 1152,
     height: 1152,
@@ -142,7 +144,7 @@ export function validateProject(input: unknown): Project {
   const p = input as Omit<Project, "version"> & { version: number };
   if (
     p.format !== "hopper" ||
-    ![1, 2, 3].includes(p.version) ||
+    ![1, 2, 3, 4].includes(p.version) ||
     !Array.isArray(p.objects) ||
     p.objects.length > 1000
   )
@@ -218,6 +220,10 @@ export function validateProject(input: unknown): Project {
         !["Georgia", "Arial", "Verdana", "Courier New"].includes(o.font || ""))
     )
       throw new Error("Invalid text layer.");
+    if (o.textCurve !== undefined && (o.type !== 'text' || !Number.isInteger(o.textCurve) || Math.abs(o.textCurve) > 180))
+      throw new Error('Invalid text curve.');
+    if ((o.textCurveRatio !== undefined && (o.type !== 'text' || !Number.isFinite(o.textCurveRatio) || o.textCurveRatio < 0.00001 || o.textCurveRatio > 100000)) ||
+      (o.textCurve && o.textCurveRatio === undefined)) throw new Error('Invalid text curve proportions.');
     if (o.groupId !== undefined && typeof o.groupId !== "string")
       throw new Error("Invalid group.");
     if (
@@ -234,7 +240,7 @@ export function validateProject(input: unknown): Project {
   }
   return {
     format: "hopper",
-    version: 3,
+    version: 4,
     name: p.name,
     width: p.width,
     height: p.height,

@@ -5,3 +5,5 @@ The editor, object menu, Print Then Cut preparation, dark editor and appearance/
 Review each new screenshot before adding it to the `.gitignore` allowlist. Tests may overwrite local screenshots; publication still requires review of the resulting image.
 
 The material-library light/dark and custom-profile screenshots were reviewed from an isolated Windows 0.8.0 package. All names, supplier descriptions and notes are demonstration data; no device or personal project details are shown.
+
+The text-curve light/dark screenshots were reviewed from an isolated Windows 0.9.0 package, using original demonstration artwork. Both directions, the curve control and selection bounds are visible; the user's saved workspace was not used for these screenshots.

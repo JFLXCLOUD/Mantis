@@ -21,14 +21,14 @@ The application is now Mantis Studio. The default desktop profile remains `%APPD
 
 All coordinates are in SVG user units at 96 units per inch. Millimeters are a display/input conversion. The file canvas dimensions specify exported physical size. Positive rotation is clockwise in the SVG coordinate system, around each object's center. Layer order is back to front. Hidden objects remain in project files but are omitted from SVG export. Guide objects are omitted from export and preparation.
 
-## `.hopper` v3 (reads v1 and v2)
+## `.hopper` v4 (reads v1, v2 and v3)
 
 UTF-8 JSON, readable without Mantis Studio:
 
 ```json
 {
   "format": "hopper",
-  "version": 3,
+  "version": 4,
   "name": "My project",
   "width": 1152,
   "height": 1152,
@@ -38,7 +38,7 @@ UTF-8 JSON, readable without Mantis Studio:
 
 An object has `id`, `name`, `type`, `x`, `y`, `width`, `height`, `rotation`, hex `fill`, `operation`, `visible`, and `locked`. Optional fields include `groupId`, text content/font/italic, sanitized nested SVG, and the v2 `flipX`, `flipY`, and `skewX` transforms. Transform order about the object's center is rotation, horizontal shear, then reflection. The geometry helpers, renderer, hit regions, bounds and SVG exporter share this representation.
 
-Version 1/2 files open with their original geometry and are saved as version 3. Native `path` layers store normalized 100-by-100 SVG path geometry in `pathData`; object dimensions and transforms remain editable. Nonzero winding retains holes. The format bump prevents older readers from silently misrendering new paths. The autosave storage key stays `hopper.project.v1` so an existing workspace is found; the document inside it is versioned independently. Unknown versions are rejected. Using v2 prevents the 0.1.0 reader from silently accepting a reflected/sheared project and displaying it incorrectly. Original project files are never rewritten by opening them. Imports and local recovery pass through the same validation and SVG sanitation.
+Version 1/2/3 files open with their original geometry and are saved as version 4. Native `path` layers store normalized 100-by-100 SVG path geometry in `pathData`; object dimensions and transforms remain editable. Nonzero winding retains holes. The v4 format adds curved text and prevents older readers from silently showing curved words as straight. The autosave storage key stays `hopper.project.v1` so an existing workspace is found; the document inside it is versioned independently. Unknown versions are rejected. Original project files are never rewritten by opening them. Imports and local recovery pass through the same validation and SVG sanitation.
 
 Groups are editing relationships only. Each member retains its geometry and color. Repeat and duplicate assign new group IDs per copied group. Alignment and equal-gap distribution treat each selected group as one unit. Locked/hidden layers are excluded from cursor transforms and quick layout actions. Mat review retains original positioning and splits native objects by color and operation. Imported SVGs receive separate groups because their internal colors are not decomposed. The imported SVG viewport fills its object's dimensions so unlocked resizing visibly stretches the artwork instead of letterboxing it.
 
@@ -47,6 +47,14 @@ Undo stores snapshots (80 entries). A drag commits one snapshot on pointer relea
 ## Known engineering limits
 
 SVG text uses a target text length and Windows system fonts, not glyph outlines. Primitive shapes are intentionally simple. The rectangle tool currently creates rounded rectangles. Conservative SVG import omits resources/effects; it is not a full SVG implementation. Native-shape booleans and print-proof export are implemented; a machine toolpath engine and verified cutting driver are not.
+
+## Curved text (0.9.0)
+
+Text layers optionally carry an integer `textCurve` from -180 (up) to +180 (down), with zero/absent meaning straight. A nonzero curve requires `textCurveRatio`, the original straight run's width-to-height ratio. `src/textCurve.ts` builds a circular baseline and measures the browser's shaped glyph bounds in an isolated SVG. A bounded 256-entry metric cache is shared by canvas and exports. Curving preserves the object's center and text scale while updating its envelope; subsequent object resizing scales that envelope and its text together. Fonts remain installed system fonts, and text is not converted to outlines.
+
+The slider's preview never enters project storage/history. Pointer release, keyboard adjustment or blur commits once; Escape or pointer cancellation discards the preview. Locked layers disable the control. A quick undo/redo back to the already-saved document restores the saved indicator instead of leaving a canceled autosave marked in progress.
+
+Canvas and exported SVG use local `<textPath>` references, scoped per render/export. The sanitizer allows definitions/text paths while retaining only references to paths inside the same sanitized document; external/unresolved references and active content are removed. Imported placements receive separate IDs so copied layers and Prepare previews cannot share a baseline accidentally. PNG/PDF use the same markup and measured artwork bounds. See the SVG documentation for [text on paths](https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/textPath) and [glyph bounds](https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox).
 
 ## Material planning (0.8.0)
 

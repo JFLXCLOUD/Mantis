@@ -1,8 +1,13 @@
 import { version as appVersion } from "../package.json";
 import { AppSettings } from './AppSettings';
 import { useAppSettings } from './useAppSettings';
+import { CurvedText } from './CurvedText';
+import { TextCurveControl } from './TextCurveControl';
+import { scopeSvgTextPaths } from './svgReferences';
 import {
   useEffect,
+  useId,
+  useMemo,
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
@@ -177,6 +182,8 @@ function Artwork({ object: o }: { object: DesignObject }) {
           ry={o.height / 2}
           {...props}
         />
+      ) : o.type === "text" && o.textCurve ? (
+        <CurvedText object={o} paint={props} />
       ) : o.type === "text" ? (
         <text
           x="0"
@@ -191,11 +198,7 @@ function Artwork({ object: o }: { object: DesignObject }) {
           {o.text}
         </text>
       ) : o.type === "svg" ? (
-        <svg
-          width={o.width}
-          height={o.height}
-          dangerouslySetInnerHTML={{ __html: o.svg || "" }}
-        />
+        <ImportedArtwork object={o} />
       ) : (
         <path
           d={o.type === "path" ? o.pathData : paths[o.type]}
@@ -205,6 +208,11 @@ function Artwork({ object: o }: { object: DesignObject }) {
       )}
     </g>
   );
+}
+function ImportedArtwork({ object: o }: { object: DesignObject }) {
+  const id = `placed-svg-${useId()}`;
+  const markup = useMemo(() => scopeSvgTextPaths(o.svg || '', id), [o.svg, id]);
+  return <svg width={o.width} height={o.height} dangerouslySetInnerHTML={{ __html: markup }} />;
 }
 function NumberField({
   label,
@@ -272,6 +280,7 @@ export default function App() {
     future: Project[];
   }>(() => ({ past: [], present: initialProject(), future: [] }));
   const project = history.present;
+  const [curvePreview, setCurvePreview] = useState<DesignObject | null>(null);
   const [selection, setSelection] = useState<string[]>([]);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
@@ -403,7 +412,10 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [toast]);
   useEffect(() => {
-    if (JSON.stringify(project) === lastSaved.current) return;
+    if (JSON.stringify(project) === lastSaved.current) {
+      setSaved(current => current === "Saving locally…" ? "Saved on this device" : current);
+      return;
+    }
     setSaved("Saving locally…");
     const timer = setTimeout(() => {
       try {
@@ -876,6 +888,7 @@ export default function App() {
     return rotateSelection(current.originals, angle);
   }
   const preview = new Map(dragObjects(drag).map((o) => [o.id, o]));
+  if (curvePreview && single?.id === curvePreview.id && !single.locked) preview.set(curvePreview.id, curvePreview);
   const displayed = project.objects.map((o) => preview.get(o.id) || o);
   function updateDrag(e: ReactPointerEvent<SVGSVGElement>) {
     const current = dragRef.current;
@@ -1891,6 +1904,7 @@ export default function App() {
                         I
                       </button>
                     </div>
+                    <TextCurveControl key={single.id} object={single} onPreview={setCurvePreview} onCommit={o => commitObjects([o])} />
                   </div>
                 )}
                 {selected.length > 1 && (

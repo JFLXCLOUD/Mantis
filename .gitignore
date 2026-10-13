@@ -30,3 +30,5 @@ docs/screenshots/*
 !docs/screenshots/material-library-dark.png
 !docs/screenshots/material-library-light.png
 !docs/screenshots/material-custom-dark.png
+!docs/screenshots/text-curve-light.png
+!docs/screenshots/text-curve-dark.png

@@ -15,6 +15,7 @@ Design locally, keep editable project files, and take your artwork with you as S
 
 - **Precise transforms:** drag to resize freely or lock proportions, rotate, flip, align, distribute and repeat. Work in inches or millimeters with grid snapping.
 - **Vector tools:** native shapes, editable text, Weld, Subtract, Intersect and Slice. Combine native shapes into editable paths with holes.
+- **Curved text:** bend editable words up or down, adjust the arc with a slider and reset to straight. Curves survive resizing, project saves, SVG export and print preparation.
 - **Fast object actions:** right-click the canvas or layers for duplicate, group, combine, repeat, arrange, hide, lock and delete. Keyboard navigation and undo are included.
 - **Layers and local projects:** search layers, select matching colors, group artwork, recover your current workspace and save portable `.hopper` files.
 - **Portable artwork:** sanitized SVG import, SVG export by canvas or group, mirrored material previews and overhang checks.
@@ -41,6 +42,14 @@ Design locally, keep editable project files, and take your artwork with you as S
 </details>
 
 Meet **Manti**, our praying mantis mascot, in the [brand kit](docs/BRANDING.md). Earlier Hopper projects and local workspaces remain compatible.
+
+<details>
+<summary>See curved text</summary>
+
+![Editable text curved up and down with a live curve control](docs/screenshots/text-curve-light.png)
+![Curved text editing in dark mode](docs/screenshots/text-curve-dark.png)
+
+</details>
 
 <details>
 <summary>See the material library</summary>

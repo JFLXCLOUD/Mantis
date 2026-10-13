@@ -1,3 +1,14 @@
+# Curved editable text - 12 October 2026
+
+- Local Windows 0.9.0 package built successfully. No release or tag was published.
+- All **97 unit/research tests** passed: 54 renderer, 24 native and 19 offline research. Added project-v4 migration/validation, arc-direction and local-only SVG text-path sanitation/scoping tests.
+- The full local UI run passed 38 scenarios and skipped hardware discovery. One existing error-notification assertion exposed the curve readout's duplicate live-status role; replacing it with regular text resolved the conflict. All nine editor/curve scenarios then passed, including that failure; the other 30 scenarios had already passed. No hardware check was enabled.
+- Curve scenarios verify up/down direction, center preservation, glyphs fitting the selection, editable accented text/italics, saved-project reload, one-step slider undo/redo, Escape cancellation, lock protection, resize/export, independent imported/copied path references and nonempty PNG output.
+- Packaged-app visual checks passed in light/dark mode and at the 1100 by 740 minimum window. Both curve directions and selection bounds were reviewed using an isolated sample project; the temporary profile was removed. Capture waits for painting after theme changes.
+- One isolated light-mode capture showed a blank cached canvas after dismissing a notification; resizing the preview repainted it correctly. Its SVG DOM and exports were intact, and the live user window rendered curved text normally. Screenshot preparation includes a viewport repaint; this observation does not establish a general redraw fix.
+- Closed 0.8.0 normally and privately backed up its workspace storage. Read the backup in an isolated reference profile, then verified the original project, machine, material and appearance storage entries remained identical after opening 0.9.0. The user's text layer was selected to expose the new control; no artwork was changed.
+- Curved text remains font-dependent editable SVG text, not outlined machine toolpaths. Project v4 protects curves from older readers that only understand straight text. Direct cutting remains unavailable and no device connection/command was requested.
+
 # Material planning library - 9 October 2026
 
 - Local Windows 0.8.0 package built successfully. No release or tag was published.

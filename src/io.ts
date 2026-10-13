@@ -1,5 +1,7 @@
 import DOMPurify from "dompurify";
 import { objectTransform } from "./geometry";
+import { curveLayout, curveTransform, TEXT_EM } from './textCurve';
+import { scopeTextPathReferences, scopeSvgTextPaths } from './svgReferences';
 import {
   createObject,
   paths,
@@ -33,6 +35,8 @@ export function sanitizeSvg(raw: string): string {
       "polygon",
       "text",
       "tspan",
+      "defs",
+      "textPath",
       "title",
       "desc",
     ],
@@ -72,6 +76,10 @@ export function sanitizeSvg(raw: string): string {
       "text-anchor",
       "textLength",
       "lengthAdjust",
+      "id",
+      "href",
+      "xlink:href",
+      "startOffset",
     ],
     ALLOW_DATA_ATTR: false,
     ALLOW_ARIA_ATTR: false,
@@ -91,6 +99,7 @@ export function sanitizeSvg(raw: string): string {
         el.removeAttribute(attr.name);
   }
   const root = doc.documentElement;
+  scopeTextPathReferences(root, `import-${crypto.randomUUID()}`);
   root.setAttribute("width", "100%");
   root.setAttribute("height", "100%");
   root.setAttribute("preserveAspectRatio", "none");
@@ -158,10 +167,13 @@ export function objectMarkup(o: DesignObject): string {
     body = `<rect width="${o.width}" height="${o.height}" rx="${Math.min(o.width, o.height) * 0.12}" ${attrs}/>`;
   else if (o.type === "ellipse")
     body = `<ellipse cx="${o.width / 2}" cy="${o.height / 2}" rx="${o.width / 2}" ry="${o.height / 2}" ${attrs}/>`;
-  else if (o.type === "text")
+  else if (o.type === "text" && o.textCurve) {
+    const layout = curveLayout(o), id = `export-curve-${crypto.randomUUID()}`;
+    body = `<g transform="${curveTransform(o, layout.box)}"><defs><path id="${id}" d="${layout.path}"/></defs><text font-family="${escape(o.font || 'Georgia')}" font-size="${TEXT_EM}" font-style="${o.italic ? 'italic' : 'normal'}" ${attrs}><textPath href="#${id}" textLength="${layout.length}" lengthAdjust="spacingAndGlyphs">${escape(o.text || '')}</textPath></text></g>`;
+  } else if (o.type === "text")
     body = `<text x="0" y="${o.height * 0.8}" font-family="${escape(o.font || "Georgia")}" font-size="${o.height}" font-style="${o.italic ? "italic" : "normal"}" textLength="${o.width}" lengthAdjust="spacingAndGlyphs" ${attrs}>${escape(o.text || "")}</text>`;
   else if (o.type === "svg")
-    body = `<svg width="${o.width}" height="${o.height}">${o.svg}</svg>`;
+    body = `<svg width="${o.width}" height="${o.height}">${scopeSvgTextPaths(o.svg || '', `export-import-${crypto.randomUUID()}`)}</svg>`;
   else
     body = `<path d="${escape(o.type === "path" ? o.pathData || "" : paths[o.type])}" transform="scale(${o.width / 100} ${o.height / 100})" ${attrs}/>`;
   return `<g data-name="${escape(o.name)}" data-operation="${o.operation}" transform="${objectTransform(o)}">${body}</g>`;
