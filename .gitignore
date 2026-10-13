@@ -40,3 +40,9 @@ docs/screenshots/*
 !docs/screenshots/text-studio-style.png
 !docs/screenshots/text-studio-inline.png
 !docs/screenshots/artwork-library-expanded.png
+!docs/screenshots/workshop-offset.png
+!docs/screenshots/workshop-contour.png
+!docs/screenshots/workshop-text-layout.png
+!docs/screenshots/workshop-mats.png
+!docs/screenshots/canvas-inline.png
+!docs/screenshots/canvas-guides.png

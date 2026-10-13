@@ -4,6 +4,11 @@ The editor, object menu, Print Then Cut preparation, dark editor and appearance/
 
 Review each new screenshot before adding it to the `.gitignore` allowlist. Tests may overwrite local screenshots; publication still requires review of the resulting image.
 
+The four `workshop-*` screenshots were reviewed from an isolated Windows 0.14.0
+profile. They show native offset/contour controls, text layout and compact mat
+planning with original demonstration text, a geometric gift tag and the Mantis
+daisy. They contain no Design Space assets or user project/device information.
+
 The text-studio style/inline and expanded artwork-library screenshots were
 reviewed from an isolated Windows 0.13.0 profile. The canvas uses original
 demonstration text and a Mantis daisy; the library shows MIT-licensed Tabler
@@ -17,3 +22,9 @@ was also visually reviewed locally.
 The material-library light/dark and custom-profile screenshots were reviewed from an isolated Windows 0.8.0 package. All names, supplier descriptions and notes are demonstration data; no device or personal project details are shown.
 
 The text-curve light/dark screenshots were reviewed from an isolated Windows 0.9.0 package, using original demonstration artwork. Both directions, the curve control and selection bounds are visible; the user's saved workspace was not used for these screenshots.
+# Canvas interaction update (0.14.1)
+
+`canvas-inline.png` and `canvas-guides.png` were captured and visually reviewed
+in the packaged Windows app with an isolated profile and original sample
+artwork. They show the native in-place text field and drag alignment guides.
+No user project, account information or machine identifiers are included.

@@ -1,105 +1,124 @@
-import { useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { DesignObject } from "./model";
 import { fontFamily } from "./fonts";
+import { objectTransform } from "./geometry";
 
+// The native text surface shares the object's rotation, shear, reflection,
+// zoom and scrolling. Curves return after the straight text edit is finished.
 export function CanvasTextEditor({
   object,
-  anchor,
   onDone,
   onCancel,
 }: {
   object: DesignObject;
-  anchor: { x: number; y: number; width: number; height: number };
   onDone(text: string): void;
   onCancel(): void;
 }) {
   const [value, setValue] = useState(object.text || "");
-  const input = useRef<HTMLTextAreaElement>(null),
-    root = useRef<HTMLDivElement>(null);
+  const input = useRef<HTMLTextAreaElement>(null);
   const draft = useRef(value);
   draft.current = value;
   const finish = useRef(onDone);
   finish.current = onDone;
   const closed = useRef(false);
   function done() {
-    if (!closed.current) {
-      closed.current = true;
-      finish.current(draft.current);
-    }
+    if (closed.current) return;
+    closed.current = true;
+    finish.current(draft.current);
   }
   useLayoutEffect(() => {
-    input.current?.focus();
+    input.current?.focus({ preventScroll: true });
     input.current?.select();
-    const outside = (e: PointerEvent) => {
-      if (!root.current?.contains(e.target as Node)) done();
+    const outside = (event: PointerEvent) => {
+      if (event.target !== input.current) done();
     };
-    document.addEventListener("pointerdown", outside);
-    return () => document.removeEventListener("pointerdown", outside);
+    document.addEventListener("pointerdown", outside, true);
+    return () => document.removeEventListener("pointerdown", outside, true);
   }, []);
-  const width = Math.min(600, Math.max(260, anchor.width + 24));
-  const height = Math.min(260, Math.max(95, anchor.height + 20));
-  return createPortal(
-    <div
-      ref={root}
-      className="canvas-text-editor"
-      style={{
-        width,
-        left: Math.max(12, Math.min(anchor.x - 12, innerWidth - width - 12)),
-        top: Math.max(12, Math.min(anchor.y - 10, innerHeight - height - 70)),
-      }}
+  const layout = useMemo(() => {
+    const context = document.createElement("canvas").getContext("2d")!;
+    context.font = `${object.italic ? "italic " : ""}${object.bold ? "bold " : ""}100px ${fontFamily(object.font)}`;
+    const lines = value.split("\n");
+    const width =
+      Math.max(
+        20,
+        ...lines.map(
+          (line) =>
+            context.measureText(line || " ").width +
+            Math.max(0, [...line].length - 1) * (object.letterSpacing || 0),
+        ),
+      ) + 4;
+    const lineHeight = 100 * (object.lineSpacing || 1.2);
+    return { width, height: lines.length * lineHeight, lineHeight };
+  }, [
+    value,
+    object.font,
+    object.bold,
+    object.italic,
+    object.letterSpacing,
+    object.lineSpacing,
+  ]);
+  return (
+    <g
+      transform={objectTransform(object)}
+      onPointerDown={(event) => event.stopPropagation()}
+      onDoubleClick={(event) => event.stopPropagation()}
     >
-      <textarea
-        ref={input}
-        aria-label="Edit text on canvas"
-        maxLength={1000}
-        value={value}
-        style={{
-          height,
-          fontFamily: fontFamily(object.font),
-          fontWeight: object.bold ? "bold" : "normal",
-          fontStyle: object.italic ? "italic" : "normal",
-          fontSize: Math.min(
-            42,
-            Math.max(
-              18,
-              (anchor.height / Math.max(1, value.split("\n").length)) * 0.7,
-            ),
-          ),
-        }}
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          e.stopPropagation();
-          if (e.key === "Escape") {
-            e.preventDefault();
-            closed.current = true;
-            onCancel();
-          }
-          if (
-            e.key === "Enter" &&
-            (e.ctrlKey || e.metaKey) &&
-            !e.nativeEvent.isComposing
-          ) {
-            e.preventDefault();
-            done();
-          }
-        }}
+      <rect
+        width={object.width}
+        height={object.height}
+        fill="none"
+        stroke="#bf38ad"
+        strokeWidth="1"
+        vectorEffect="non-scaling-stroke"
+        pointerEvents="none"
       />
-      <div>
-        <small>Enter: new line · Ctrl+Enter: done</small>
-        <button
-          onClick={() => {
-            closed.current = true;
-            onCancel();
+      <foreignObject
+        width={layout.width}
+        height={layout.height}
+        transform={`scale(${object.width / layout.width} ${object.height / layout.height})`}
+      >
+        <textarea
+          ref={input}
+          className="canvas-inline-input"
+          aria-label="Edit text on canvas"
+          aria-describedby="canvas-edit-hint"
+          maxLength={1000}
+          wrap="off"
+          spellCheck={false}
+          value={value}
+          style={{
+            fontFamily: fontFamily(object.font),
+            fontSize: 100,
+            lineHeight: `${layout.lineHeight}px`,
+            fontWeight: object.bold ? 700 : 400,
+            fontStyle: object.italic ? "italic" : "normal",
+            textDecoration: object.underline ? "underline" : "none",
+            letterSpacing: object.letterSpacing || 0,
+            textAlign: object.textAlign || "left",
+            color: object.fill,
+            caretColor: object.fill,
           }}
-        >
-          Cancel
-        </button>
-        <button className="button primary" onClick={done}>
-          Done
-        </button>
-      </div>
-    </div>,
-    document.body,
+          onChange={(event) => setValue(event.target.value)}
+          onBlur={done}
+          onKeyDown={(event) => {
+            event.stopPropagation();
+            if (event.nativeEvent.isComposing) return;
+            if (event.key === "Escape") {
+              event.preventDefault();
+              closed.current = true;
+              onCancel();
+            } else if (
+              event.key === "Enter" &&
+              (event.ctrlKey || event.metaKey)
+            ) {
+              event.preventDefault();
+              done();
+              input.current?.closest("svg")?.focus({ preventScroll: true });
+            }
+          }}
+        />
+      </foreignObject>
+    </g>
   );
 }

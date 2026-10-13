@@ -4,9 +4,20 @@
 
 1. **First real device workflow:** use the confirmed Explore 3 and verified Bluetooth data link to establish identity/status and session behavior, then bounded motion/pen jobs, stop/cancel, disconnect recovery and a validated cut job. One observed startup request has been reproduced. Tool-free Draw jobs in Design Space produced user-observed carriage movement and completion, including a fresh-session capture with startup. Authorized local device-component analysis now supports an independently written session codec, verified offline against 676 messages. The next step is a fresh Mantis session/status probe, followed by job/stop validation. Public key provisioning remains unresolved. A pen is needed later for measured drawing validation, not initial motion observation. See the [first-release gates](RELEASE_READINESS.md).
 2. **Print Then Cut:** extend the preparation workflow with editable cut contours, sticker offsets and bleed. Native sensor registration and calibration require the verified Explore adapter and physical printer/machine tests. Project/material planning follows with a project library, reusable material notes and mat layout.
-3. **Vector editing:** offsets, editable nodes and text outlines. Curved editable text and Weld/union, subtract, intersect and slice for native shapes are implemented. Make exported artwork reliably editable and cuttable in other tools while device work progresses.
+3. **Vector editing:** text/import offsets, editable nodes and text outlines. Native shape offsets and restorable contours are implemented. Curved editable text and Weld/union, subtract, intersect and slice for native shapes are implemented. Make exported artwork reliably editable and cuttable in other tools while device work progresses.
 4. **Broader Cricut coverage:** independent Maker, Explore, Joy and Venture adapters, including a separate BLE track. Track each model/firmware/transport explicitly; do not equate a dropdown entry with cutting support.
 5. **Public application release:** source and contributor workflow live at [JFLXCLOUD/Mantis](https://github.com/JFLXCLOUD/Mantis). Hold downloads until machine validation passes, then finish Windows distribution, signing and updates.
+
+## 0.14.0 - Shape workshop, text layout and mat planning (implemented locally)
+
+A hands-on Design Space UI review informed independent native-shape offsets,
+insets, contour hiding/restoration, Exclude and material-color consolidation.
+Text layout adds word wrapping and editable line/letter separation. Preparation
+adds copies, mat sizes, margins, gaps, compact arrangement and additional mats,
+with SVG and draft exports matching the preview. Projects use v6 to preserve
+contour sources. Full text offsets, automatic reflow, reversible combinations,
+Attach/Flatten and native cutting remain tracked gaps; see the
+[feature review](DESIGN_SPACE_FEATURE_REVIEW.md).
 
 ## 0.13.0 - Text studio, top controls and expanded artwork (implemented locally)
 

@@ -21,6 +21,14 @@ Public documentation describes the intended experience, not implementation sourc
 
 ## Future interoperability work
 
+The October 12, 2026 editor comparison used the installed Design Space's rendered
+interface and public help documentation. It did not inspect its implementation
+or copy its assets. The [feature review](DESIGN_SPACE_FEATURE_REVIEW.md) separates
+direct UI observations from documented behavior and unverified workflows.
+Mantis 0.14.0 uses independently written layout/contour logic and the open-source
+Clipper library for polygon offsets. Full Boost and bundled JSBN notices ship
+with the application.
+
 The 0.12.0 searchable library contains 36 original geometric designs created
 for Mantis. Its auditable generator uses original paths and primitives; no
 stock artwork, proprietary templates or font outlines were used. Those

@@ -15,6 +15,7 @@ import './colors.css';
 import './property-menus.css';
 import './shape-library.css';
 import './studio-layout.css';
+import './shape-tools.css';
 import { loadImportedFonts } from './fonts';
 import { applyTheme, loadPreferences } from './preferences';
 applyTheme(loadPreferences().theme);

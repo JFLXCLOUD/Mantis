@@ -6,11 +6,12 @@ import { createObject, paths, type DesignObject } from "./model";
 const scope = new paper.PaperScope();
 scope.setup(new scope.Size(1, 1));
 scope.settings.insertItems = false;
-export type CombineMode = "weld" | "subtract" | "intersect" | "slice";
+export type CombineMode = "weld" | "subtract" | "intersect" | "exclude" | "slice";
 export const combineLabels: Record<CombineMode, string> = {
   weld: "Weld",
   subtract: "Subtract",
   intersect: "Intersect",
+  exclude: "Exclude",
   slice: "Slice",
 };
 export function vectorPath(o: DesignObject): paper.PathItem {
@@ -70,6 +71,9 @@ export function combineObjects(
     result = [input.slice(1).reduce((a, b) => a[method](b, options), input[0])];
   }
   const output = result.flatMap((path, index) => {
+    // Exclude can return disjoint pieces with opposite windings. Normalize
+    // islands and holes before measuring their filled area or exporting.
+    if (mode === "exclude") path.reorient(false, true);
     const b = path.bounds.clone();
     if (
       Math.abs((path as paper.CompoundPath).area) < 0.001 ||

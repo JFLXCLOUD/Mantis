@@ -114,7 +114,7 @@ test("up/down curves keep editable words, fit selection bounds, reset and surviv
     0,
   );
   const final = await saved(page);
-  expect(final.version).toBe(5);
+  expect(final.version).toBe(6);
   expect(final.objects[0].textCurve).toBe(0);
   const project = await exportFile(page, "Save project");
   await page

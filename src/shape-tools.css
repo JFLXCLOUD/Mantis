@@ -1,0 +1,122 @@
+.shape-tool-options {
+  display: grid;
+  gap: 12px;
+}
+.shape-tool-options h3 {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  margin: 0;
+  color: var(--green);
+}
+.shape-tool-options p {
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--muted);
+}
+.shape-tool-options .field-label {
+  margin: 0;
+}
+.shape-tool-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.shape-tool-check input,
+.contour-item input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--green);
+}
+.contour-result {
+  width: 100%;
+  height: 135px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.contour-list {
+  max-height: 220px;
+  overflow: auto;
+  display: grid;
+  gap: 6px;
+}
+.contour-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--green);
+}
+.contour-item svg {
+  width: 38px;
+  height: 38px;
+  background: var(--surface-soft);
+}
+.contour-item span {
+  flex: 1;
+  font-size: 12px;
+}
+.contour-actions {
+  display: flex;
+  gap: 12px;
+}
+.contour-actions button {
+  font-size: 12px;
+  text-decoration: underline;
+  color: var(--green);
+}
+.material-color-groups {
+  max-height: 230px;
+  overflow: auto;
+  display: grid;
+  gap: 6px;
+  margin: 18px 0;
+}
+.material-color-groups > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  background: var(--surface-soft);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.material-color-groups strong {
+  flex: 1;
+}
+.material-color-swatch {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+}
+.material-colors .field-label {
+  width: 50%;
+}
+.context-toolbar .shape-menu-trigger {
+  font-size: 11px;
+}
+
+.mat-plan-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+.mat-plan-options .field-label {
+  flex: 1;
+  min-width: 100px;
+  margin: 0;
+}
+.mat-plan-options input,
+.mat-plan-options select {
+  width: 100%;
+}
+.contour-actions button[aria-pressed="true"] {
+  font-weight: 700;
+  text-decoration-thickness: 2px;
+}

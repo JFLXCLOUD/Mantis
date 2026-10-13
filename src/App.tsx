@@ -5,6 +5,11 @@ import { CurvedText } from './CurvedText';
 import { ColorControl } from './ColorControl';
 import { PropertyMenu } from './PropertyMenu';
 import { TextOptions } from './TextOptions';
+import { OffsetControl, ContourControl, MaterialColors } from './ShapeToolControls';
+import { planMats } from './matLayout';
+import { separateText } from './textLayoutTools';
+import { makeJobDraft, loadPreferences as loadJobPreferences } from './machine';
+import { isNativeShape } from './shapeTools';
 import { CanvasTextEditor } from './CanvasTextEditor';
 import { richText, styledTextMarkup } from './richText';
 import { ShapeLibrary } from './ShapeLibrary';
@@ -92,6 +97,7 @@ import {
 } from "./model";
 import { download, exportSvg, filename, importSvg, readProject } from "./io";
 import { SelectionFrame } from "./SelectionFrame";
+import { alignDrag, type AlignmentGuide } from "./alignmentGuides";
 import { MachineSetup } from "./MachineSetup";
 import { PrintSetup } from "./PrintSetup";
 import { ObjectContextMenu, type ContextAction } from "./ObjectContextMenu";
@@ -284,6 +290,9 @@ type Drag = {
   ids: string[];
   box: ReturnType<typeof bounds>;
   originals: DesignObject[];
+  pointerStart?: { x: number; y: number; scaleX: number; scaleY: number };
+  active?: boolean;
+  guides?: AlignmentGuide[];
 };
 export default function App() {
   const appSettings = useAppSettings();
@@ -293,16 +302,18 @@ export default function App() {
     future: Project[];
   }>(() => ({ past: [], present: initialProject(), future: [] }));
   const project = history.present;
-  const [textEditing, setTextEditing] = useState<{object: DesignObject; anchor: {x:number;y:number;width:number;height:number}} | null>(null);
+  const [textEditing, setTextEditing] = useState<DesignObject | null>(null);
   function editTextOnCanvas(object: DesignObject) {
     if (object.locked || object.type !== 'text' || !object.visible) return;
     const node = [...(canvas.current?.querySelectorAll<SVGGElement>('[data-object-id]') || [])].find(el => el.dataset.objectId === object.id);
     if (!node) return;
-    const box = node.getBoundingClientRect();
     setSelection([object.id]); setPropertyMenu(null); setDrag(null);
-    setTextEditing({object,anchor:{x:box.x,y:box.y,width:box.width,height:box.height}});
+    setTextEditing(object);
   }
   const [curvePreview, setCurvePreview] = useState<DesignObject | null>(null);
+  const [shapeTool, setShapeTool] = useState<"offset" | "contour" | null>(null);
+  const [offsetPreview, setOffsetPreview] = useState<DesignObject[]>([]);
+  const [contourPreview, setContourPreview] = useState<DesignObject | null>(null);
   const [colorPreview, setColorPreview] = useState<{
     key: string;
     color: string;
@@ -341,6 +352,7 @@ export default function App() {
     | "print"
     | "settings"
     | "library"
+    | "colors"
     | null
   >(null);
   const [toast, setToast] = useState("");
@@ -360,6 +372,10 @@ export default function App() {
   const [repeatRows, setRepeatRows] = useState(2),
     [repeatCols, setRepeatCols] = useState(3),
     [repeatGap, setRepeatGap] = useState(0.25);
+  const [planCopies,setPlanCopies] = useState(1);
+  const [planLayout,setPlanLayout] = useState<"canvas"|"compact">("canvas");
+  const [planSize,setPlanSize] = useState("canvas");
+  const [planMargin,setPlanMargin] = useState(24),[planGap,setPlanGap] = useState(12);
   const [mirror, setMirror] = useState(false),
     [matIndex, setMatIndex] = useState(0);
   const viewport = useRef<HTMLDivElement>(null),
@@ -845,11 +861,11 @@ export default function App() {
   function point(
     e: ReactPointerEvent<SVGSVGElement | SVGGElement | SVGRectElement>,
   ) {
-    const rect = canvas.current!.getBoundingClientRect();
-    return {
-      x: ((e.clientX - rect.left) / rect.width) * project.width,
-      y: ((e.clientY - rect.top) / rect.height) * project.height,
-    };
+    return new DOMPoint(e.clientX, e.clientY).matrixTransform(canvas.current!.getScreenCTM()!.inverse());
+  }
+  function pointerStart(e: ReactPointerEvent) {
+    const matrix = canvas.current!.getScreenCTM()!;
+    return { x: e.clientX, y: e.clientY, scaleX: matrix.a, scaleY: matrix.d };
   }
   function beginDrag(
     e: ReactPointerEvent<SVGGElement | SVGRectElement>,
@@ -858,6 +874,8 @@ export default function App() {
   ) {
     e.stopPropagation();
     if (e.button !== 0 || o?.locked) return;
+    e.preventDefault();
+    canvas.current?.focus({ preventScroll: true });
     const ids = o
       ? selection.includes(o.id) && !e.shiftKey
         ? selection
@@ -882,6 +900,7 @@ export default function App() {
       ids,
       box: bounds(originals),
       originals,
+      pointerStart: pointerStart(e),
     });
   }
   function dragObjects(current: Drag | null): DesignObject[] {
@@ -925,6 +944,7 @@ export default function App() {
   }
   const preview = new Map(dragObjects(drag).map((o) => [o.id, o]));
   if (curvePreview && single?.id === curvePreview.id && !single.locked) preview.set(curvePreview.id, curvePreview);
+  if (contourPreview && single?.id === contourPreview.id && !single.locked) preview.set(contourPreview.id, contourPreview);
   if (colorPreview?.key === colorKey) {
     for (const o of recolorable)
       preview.set(o.id, { ...(preview.get(o.id) || o), fill: colorPreview.color });
@@ -933,12 +953,23 @@ export default function App() {
   function updateDrag(e: ReactPointerEvent<SVGSVGElement>) {
     const current = dragRef.current;
     if (!current) return null;
-    const p = point(e),
-      increment = snap && current.kind === "move" ? 12 : 1;
+    const start = current.pointerStart;
+    // Selection alone must never become an edit, even if the hand jitters or
+    // responsive layout changes between pointer-down and pointer-up.
+    if (start && !current.active && Math.hypot(e.clientX - start.x, e.clientY - start.y) < 4) return current;
+    const p = point(e);
+    let dx = start ? (e.clientX - start.x) / start.scaleX : p.x - current.startX;
+    let dy = start ? (e.clientY - start.y) / start.scaleY : p.y - current.startY;
+    let guides: AlignmentGuide[] = [];
+    if (current.kind === 'move' && !e.altKey) {
+      const matched = alignDrag(current.box, { x: dx, y: dy }, project.objects.filter(o => !current.ids.includes(o.id)), project.width, project.height, (snap ? 6 : 0.75) / (start?.scaleX || fit * zoom), snap);
+      guides = matched.guides;
+      dx = snap && !guides.some(g => g.axis === 'x') ? Math.round(dx / 12) * 12 : matched.x;
+      dy = snap && !guides.some(g => g.axis === 'y') ? Math.round(dy / 12) * 12 : matched.y;
+    }
     const next = {
       ...current,
-      dx: Math.round((p.x - current.startX) / increment) * increment,
-      dy: Math.round((p.y - current.startY) / increment) * increment,
+      dx, dy, guides, active: true,
       proportional: aspect || e.shiftKey,
       centered: e.altKey,
       shift: e.shiftKey,
@@ -1072,22 +1103,18 @@ export default function App() {
       `Created ${repeatRows * repeatCols} repeats, including the original.`,
     );
   }
-  const groups = materialGroups(project),
-    activeMat = groups[Math.min(matIndex, groups.length - 1)];
-  const outOfBounds = project.objects.filter(
-    (o) =>
-      o.visible &&
-      o.operation !== "guide" &&
-      (() => {
-        const b = bounds([o]);
-        return (
-          b.x < 0 ||
-          b.y < 0 ||
-          b.x + b.width > project.width ||
-          b.y + b.height > project.height
-        );
-      })(),
-  );
+  const [matWidth,matHeight] = planSize === "canvas" ? [project.width,project.height] : planSize.split("x").map(Number);
+  const planned = useMemo(() => {
+    try { return {groups:planMats(project,{width:matWidth,height:matHeight,copies:planCopies,layout:planLayout,margin:planMargin,gap:planGap}),error:""}; }
+    catch(error) { return {groups:[] as ReturnType<typeof materialGroups>,error:(error as Error).message}; }
+  },[project,matWidth,matHeight,planCopies,planLayout,planMargin,planGap]);
+  const groups = planned.groups,activeMat = groups[Math.min(matIndex,groups.length-1)];
+  const layoutProject = {...project,width:matWidth,height:matHeight};
+  const customPlan = planSize !== "canvas" || planCopies !== 1 || planLayout !== "canvas";
+  const outOfBounds = (customPlan ? groups.flatMap(g=>g.objects) : project.objects).filter(o=> {
+    if(!o.visible||o.operation==='guide') return false;
+    const b=bounds([o]);return b.x<0||b.y<0||b.x+b.width>matWidth||b.y+b.height>matHeight;
+  });
   const zoomPercent = Math.round(fit * zoom * 100);
 
   return (
@@ -1697,9 +1724,33 @@ export default function App() {
                 </PropertyMenu>
                 {single?.type === "text" && (
                   <PropertyMenu title="Effects" summary="Text, fonts, style & curves" {...menu("effects")}>
-                  <TextOptions object={single} onPatch={patch} onPreview={setCurvePreview} onCommit={o => commitObjects([o])} onEdit={() => editTextOnCanvas(single)} />
+                  <TextOptions object={single} onPatch={patch} onPreview={setCurvePreview} onCommit={o => commitObjects([o])} onEdit={() => editTextOnCanvas(single)} onSeparate={mode => {
+                    try {
+                      const pieces = separateText(single,mode);
+                      if (!pieces.length) throw Error("Enter some words first.");
+                      commit(validateProject({...project,objects:project.objects.flatMap(o=>o.id===single.id?pieces:[o])}));
+                      setSelection(pieces.map(o=>o.id)); setPropertyMenu(null); notify(`Created ${pieces.length} editable text layers. Undo restores the original.`);
+                    } catch(error) { notify((error as Error).message); }
+                  }} />
                   </PropertyMenu>
                 )}
+                <PropertyMenu title="Shape tools" summary="Offset & contour" {...menu("shape-tools")}>
+                  <div className="shape-tool-options">
+                    <div className="contour-actions">
+                      <button aria-pressed={shapeTool === "offset"} onClick={() => setShapeTool("offset")}>Offset</button>
+                      <button aria-pressed={shapeTool === "contour"} disabled={!single || !isNativeShape(single)} onClick={() => setShapeTool("contour")}>Contour</button>
+                    </div>
+                    {!shapeTool && <p>Add a border or simplify paths in native shapes and library artwork.</p>}
+                    {shapeTool === "offset" && <OffsetControl objects={selected} unit={unit} onPreview={setOffsetPreview} onApply={objects => {
+                      try {
+                        const firstIndex = project.objects.findIndex(o => selection.includes(o.id));
+                        commit(validateProject({...project,objects:[...project.objects.slice(0,firstIndex),...objects,...project.objects.slice(firstIndex)]}));
+                        setPropertyMenu(null); setSelection(objects.map(o=>o.id)); notify("Offset added. Your original artwork is unchanged.");
+                      } catch(error) { notify((error as Error).message); }
+                    }}/>}
+                    {shapeTool === "contour" && single && <ContourControl key={single.id} object={single} onPreview={setContourPreview} onApply={object => {commitObjects([object]);setPropertyMenu(null);notify("Contours updated. Reopen Contour to restore hidden paths.");}}/>}
+                  </div>
+                </PropertyMenu>
                 {selected.length > 1 && (
                   <button
                     className="button secondary wide"
@@ -1838,6 +1889,8 @@ export default function App() {
                 viewBox={`0 0 ${project.width} ${project.height}`}
                 onPointerDown={(e) => {
                   if (e.button !== 0) return;
+                  e.preventDefault();
+                  e.currentTarget.focus({ preventScroll: true });
                   const p = point(e);
                   e.currentTarget.setPointerCapture(e.pointerId);
                   if (!e.shiftKey) setSelection([]);
@@ -1850,6 +1903,7 @@ export default function App() {
                     ids: e.shiftKey ? selection : [],
                     box: bounds([]),
                     originals: [],
+                    pointerStart: pointerStart(e),
                   });
                 }}
                 onPointerMove={updateDrag}
@@ -1892,6 +1946,7 @@ export default function App() {
                   fill={canvasColor}
                 />
                 {grid && <rect width={project.width} height={project.height} fill="url(#big-grid)" pointerEvents="none" />}
+                <g data-testid="offset-preview" pointerEvents="none" opacity="0.65">{offsetPreview.map(o => <Artwork key={o.id} object={o}/>)}</g>
                 {displayed
                   .filter((o) => o.visible)
                   .map((o) => (
@@ -1902,7 +1957,7 @@ export default function App() {
                       className={`canvas-object ${o.locked ? "locked" : ""}`}
                       onPointerDown={(e) => beginDrag(e, o)}
                     >
-                      <Artwork object={o} />
+                      {textEditing?.id !== o.id && <Artwork object={o} />}
                       <rect
                         x={0}
                         y={0}
@@ -1917,6 +1972,7 @@ export default function App() {
                 <SelectionFrame
                   objects={displayed.filter(
                     (o) =>
+                      !textEditing &&
                       selection.includes(o.id) &&
                       o.visible &&
                       (!editable.length || !o.locked),
@@ -1925,6 +1981,13 @@ export default function App() {
                   editable={editable.length > 0}
                   onHandle={(e, handle) => beginDrag(e, undefined, handle)}
                 />
+                {drag?.guides?.map((guide, i) => <g key={i} className="alignment-guide" data-testid="alignment-guide" data-axis={guide.axis} data-target={guide.canvas ? 'canvas' : 'object'} pointerEvents="none">
+                  {([['#ffffff', 3], ['#bf38ad', 1.2]] as const).map(([stroke, width]) => <line key={stroke} x1={guide.axis === 'x' ? guide.position : guide.from} x2={guide.axis === 'x' ? guide.position : guide.to} y1={guide.axis === 'y' ? guide.position : guide.from} y2={guide.axis === 'y' ? guide.position : guide.to} stroke={stroke} strokeWidth={Number(width)} vectorEffect="non-scaling-stroke" strokeDasharray="5 3" />)}
+                </g>)}
+                {textEditing && <CanvasTextEditor key={textEditing.id} object={textEditing} onCancel={() => { setTextEditing(null); canvas.current?.focus({preventScroll:true}); }} onDone={text => {
+                  commit(p => ({...p, objects:p.objects.map(o => o.id === textEditing.id && !o.locked ? {...o,text,...(text.includes('\n')?{textCurve:0,textCurveRatio:undefined}:{})} : o)}));
+                  setTextEditing(null);
+                }} />}
                 {drag?.kind === "marquee" && (
                   <rect
                     x={Math.min(drag.startX, drag.startX + drag.dx)}
@@ -1964,14 +2027,16 @@ export default function App() {
               </IconButton>
               <button
                 className={`snap-button ${snap ? "on" : ""}`}
+                title="Snap to alignment guides and grid. Hold Alt while dragging to bypass snapping."
+                aria-pressed={snap}
                 onClick={() => setSnap(!snap)}
               >
                 <Grip size={15} />
                 Snap {snap ? "on" : "off"}
               </button>
             </div>
-            <span className="selection-hint">
-              {selected.length
+            <span className="selection-hint" id="canvas-edit-hint">
+              {textEditing ? "Type on canvas · Click away or Ctrl+Enter to finish · Esc to cancel" : selected.length
                 ? `${selected.length} ${selected.length === 1 ? "object" : "objects"} selected · Shift + click to add`
                 : "Drag to select · Drop an SVG to import"}
             </span>
@@ -2009,6 +2074,7 @@ export default function App() {
               <span>{project.objects.length}</span>
             </div>
             <div>
+              <IconButton title="Material colors" onClick={() => setDialog("colors")}><Palette /></IconButton>
               <IconButton
                 title="Move selection backward"
                 disabled={!editable.length}
@@ -2196,10 +2262,6 @@ export default function App() {
           close={closeContextMenu}
         />
       )}
-      {textEditing && <CanvasTextEditor key={textEditing.object.id} object={textEditing.object} anchor={textEditing.anchor} onCancel={() => setTextEditing(null)} onDone={text => {
-        commit(p => ({...p, objects:p.objects.map(o => o.id === textEditing.object.id && !o.locked ? {...o,text,...(text.includes('\n')?{textCurve:0,textCurveRatio:undefined}:{})} : o)}));
-        setTextEditing(null);
-      }} />}
       {dialog && (
         <div className="modal-backdrop" onClick={() => setDialog(null)}>
           <section
@@ -2208,7 +2270,7 @@ export default function App() {
             role="dialog"
             aria-modal="true"
             aria-label={
-              dialog === "library" ? "Shape library" : dialog === "settings" ? "App settings" : dialog === "print"
+              dialog === "colors" ? "Material colors" : dialog === "library" ? "Shape library" : dialog === "settings" ? "App settings" : dialog === "print"
                 ? "Print Then Cut"
                 : dialog === "combine"
                   ? "Combine shapes"
@@ -2235,6 +2297,7 @@ export default function App() {
               <PrintSetup project={project} selectedIds={selection} />
             )}
             {dialog === 'settings' && <AppSettings settings={appSettings} />}
+            {dialog === 'colors' && <MaterialColors objects={project.objects} onApply={objects => {commit({...project,objects});setDialog(null);notify("Material colors matched. Undo restores the previous colors.");}}/>}
             {dialog === 'library' && <ShapeLibrary full={project.objects.length >= 1000} onAdd={shape => {
               if (project.objects.length >= 1000) return notify("This project has reached the 1,000-object limit.");
               const object = createLibraryObject(shape, project);
@@ -2254,7 +2317,7 @@ export default function App() {
                 </p>
                 <div className="combine-options">
                   {(
-                    ["weld", "subtract", "intersect", "slice"] as CombineMode[]
+                    ["weld", "subtract", "intersect", "exclude", "slice"] as CombineMode[]
                   ).map((mode) => (
                     <button
                       className="button secondary"
@@ -2270,6 +2333,7 @@ export default function App() {
                               "Remove upper shapes from the bottom layer.",
                             intersect:
                               "Keep only the area shared by every shape.",
+                            exclude: "Remove overlapping areas; keep the remaining pieces.",
                             slice:
                               "Split two shapes into outside and overlap pieces.",
                           }[mode]
@@ -2293,9 +2357,9 @@ export default function App() {
             {(dialog === "machine" || dialog === "materials") && (
               <MachineSetup
                 initialMaterialLibrary={dialog === "materials"}
-                project={project}
-                initialGroup={matIndex}
-                setGroup={setMatIndex}
+                project={customPlan && activeMat ? {...layoutProject,objects:activeMat.objects} : project}
+                initialGroup={customPlan ? 0 : matIndex}
+                setGroup={customPlan ? () => {} : setMatIndex}
                 mirror={mirror}
                 setMirror={setMirror}
                 back={() => setDialog("prepare")}
@@ -2467,24 +2531,34 @@ export default function App() {
                 <span className="eyebrow">FROM IDEA TO SOMETHING REAL</span>
                 <h2>A little prep. A lovely result.</h2>
                 <p>
-                  Review your artwork by color and operation. Positions stay
-                  exactly as designed.
+                  Review by color and operation. Keep your canvas arrangement or fit copies onto mats. Your canvas artwork stays unchanged.
                 </p>
+                <div className="mat-plan-options">
+                  <label className="field-label">Layout<select aria-label="Mat layout" value={planLayout} onChange={e=>{setPlanLayout(e.target.value as typeof planLayout);setMatIndex(0);}}><option value="canvas">Keep canvas positions</option><option value="compact">Compact arrangement</option></select></label>
+                  <label className="field-label">Mat size<select aria-label="Preparation mat size" value={planSize} onChange={e=>{setPlanSize(e.target.value);setMatIndex(0);}}><option value="canvas">Use canvas size</option><option value="1152x1152">12 × 12 in</option><option value="1152x2304">12 × 24 in</option><option value="816x1056">Letter</option></select></label>
+                  <label className="field-label">Copies<input aria-label="Project copies" type="number" min={1} max={50} step={1} value={planCopies} onChange={e=>{setPlanCopies(Number(e.target.value));setMatIndex(0);}}/></label>
+                  {planLayout === "compact" && <>
+                    <label className="field-label">Margin ({unit})<input aria-label="Mat margin" type="number" min={0} max={192/scale} step={0.05} value={Number((planMargin/scale).toFixed(3))} onChange={e=>setPlanMargin(Number(e.target.value)*scale)}/></label>
+                    <label className="field-label">Gap ({unit})<input aria-label="Object gap" type="number" min={0} max={96/scale} step={0.05} value={Number((planGap/scale).toFixed(3))} onChange={e=>setPlanGap(Number(e.target.value)*scale)}/></label>
+                  </>}
+                </div>
+                <p className="field-note">Compact layout keeps same-color, same-operation groups together and adds mats as needed. Different operations remain separate; Attach and mixed-operation jobs are still planned.</p>
+                {planned.error && <p className="machine-error" role="alert">{planned.error}</p>}
                 <div className="prepare-layout">
                   <div className="mat-preview">
                     <svg
-                      viewBox={`0 0 ${project.width} ${project.height}`}
+                      viewBox={`0 0 ${matWidth} ${matHeight}`}
                       aria-label="Material preview"
                     >
                       <rect
-                        width={project.width}
-                        height={project.height}
+                        width={matWidth}
+                        height={matHeight}
                         fill="#fff"
                       />
                       <g
                         transform={
                           mirror
-                            ? `translate(${project.width} 0) scale(-1 1)`
+                            ? `translate(${matWidth} 0) scale(-1 1)`
                             : undefined
                         }
                       >
@@ -2494,13 +2568,13 @@ export default function App() {
                       </g>
                     </svg>
                     <span>
-                      {project.width / 96} × {project.height / 96} in ·{" "}
+                      {matWidth / 96} × {matHeight / 96} in ·{" "}
                       {mirror ? "Mirrored" : "Original orientation"}
                     </span>
                   </div>
                   <div className="prepare-controls">
                     <div className="section-heading">
-                      <h3>Artwork groups</h3>
+                      <h3>Artwork groups / mats</h3>
                       <span className="pill">{groups.length}</span>
                     </div>
                     <div className="material-list">
@@ -2529,6 +2603,11 @@ export default function App() {
                         </button>
                       ))}
                     </div>
+                    {customPlan && activeMat && <button className="button secondary wide" onClick={() => {
+                      const draft = makeJobDraft({...layoutProject,objects:activeMat.objects},loadJobPreferences(),0,mirror);
+                      download(JSON.stringify(draft,null,2),`${filename(project.name)}-mat-${Math.min(matIndex,groups.length-1)+1}.mantisjob`,"application/json");
+                      notify("Planned mat saved as a job draft.");
+                    }}>Save this mat draft</button>}
                     {!groups.length && (
                       <p>Add visible artwork to prepare an export.</p>
                     )}
@@ -2560,8 +2639,8 @@ export default function App() {
                       onClick={() => {
                         if (!activeMat) return;
                         download(
-                          exportSvg(project, activeMat.objects, mirror),
-                          `${filename(project.name)}-group-${matIndex + 1}.svg`,
+                          exportSvg(layoutProject, activeMat.objects, mirror),
+                          `${filename(project.name)}-group-${Math.min(matIndex, groups.length - 1) + 1}.svg`,
                           "image/svg+xml",
                         );
                         notify("Artwork group exported.");
@@ -2586,6 +2665,7 @@ export default function App() {
                   </div>
                   <button
                     className="button secondary machine-setup-link"
+                    disabled={!!planned.error}
                     onClick={() => setDialog("machine")}
                   >
                     Machine &amp; job setup <ArrowUpRight size={15} />

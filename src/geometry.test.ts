@@ -81,7 +81,7 @@ describe('layout and project compatibility', () => {
   });
   it('opens v1 projects with preserved geometry and writes v2 to protect transforms from older readers', () => {
     const old = { ...demoProject(), version: 1 }, next = validateProject(old);
-    expect(next.version).toBe(5); expect(next.objects).toEqual(old.objects);
+    expect(next.version).toBe(6); expect(next.objects).toEqual(old.objects);
     const o = object({ flipX: true, skewX: 10 });
     const p = { ...demoProject(), objects: [o] };
     expect(readProject(JSON.stringify(p)).objects).toEqual([o]);

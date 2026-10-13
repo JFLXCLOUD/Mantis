@@ -45,9 +45,13 @@ export function PropertyMenu({
       if (!path.includes(root.current!)) toggle.current(false);
     };
     window.addEventListener("resize", place);
+    // The compact toolbar scrolls horizontally; keep its popout on the trigger.
+    const toolbar = root.current?.closest('.context-toolbar');
+    toolbar?.addEventListener("scroll", place);
     document.addEventListener("click", dismiss);
     return () => {
       window.removeEventListener("resize", place);
+      toolbar?.removeEventListener("scroll", place);
       document.removeEventListener("click", dismiss);
     };
   }, [open]);

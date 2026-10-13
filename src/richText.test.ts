@@ -20,7 +20,7 @@ describe("editable typography", () => {
     };
     project.objects = [text];
     const saved = readProject(JSON.stringify(project));
-    expect(saved.version).toBe(5);
+    expect(saved.version).toBe(6);
     expect(saved.objects[0]).toEqual(text);
     const svg = exportSvg(saved);
     expect(svg).toContain('font-weight="700"');
@@ -76,6 +76,6 @@ describe("editable typography", () => {
     expect(richText(old.objects[0])).toBe(false);
     const current = readProject(JSON.stringify(old));
     expect(current.objects).toEqual(old.objects);
-    expect(current.version).toBe(5);
+    expect(current.version).toBe(6);
   });
 });

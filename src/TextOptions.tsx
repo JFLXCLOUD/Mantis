@@ -2,20 +2,25 @@ import { useState, useId } from "react";
 import type { DesignObject } from "./model";
 import { FontPicker } from "./FontPicker";
 import { TextCurveControl } from "./TextCurveControl";
+import { wrapWords } from "./textLayoutTools";
 export function TextOptions({
   object: o,
   onPatch,
   onPreview,
   onCommit,
   onEdit,
+  onSeparate,
 }: {
   object: DesignObject;
   onPatch(p: Partial<DesignObject>): void;
   onPreview(o: DesignObject | null): void;
   onCommit(o: DesignObject): void;
   onEdit(): void;
+  onSeparate(mode: "lines" | "letters"): void;
 }) {
   const [tab, setTab] = useState("Text");
+  const [wrapColumns, setWrapColumns] = useState(24);
+  const tabs = ["Text", "Style", "Curve", "Layout"];
   const tabId = useId();
   return (
     <div className="text-options">
@@ -24,7 +29,7 @@ export function TextOptions({
         role="tablist"
         aria-label="Text options"
       >
-        {["Text", "Style", "Curve"].map((name, i) => (
+        {tabs.map((name, i) => (
           <button
             key={name}
             role="tab"
@@ -40,9 +45,10 @@ export function TextOptions({
                   e.key === "Home"
                     ? 0
                     : e.key === "End"
-                      ? 2
-                      : (i + (e.key === "ArrowRight" ? 1 : 2)) % 3;
-                setTab(["Text", "Style", "Curve"][next]);
+                      ? tabs.length - 1
+                      : (i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) %
+                        tabs.length;
+                setTab(tabs[next]);
                 (
                   e.currentTarget.parentElement?.children[next] as HTMLElement
                 ).focus();
@@ -317,6 +323,74 @@ export function TextOptions({
               />
             )}
           </>
+        )}
+        {tab === "Layout" && (
+          <fieldset disabled={o.locked} className="text-format-options">
+            <legend>Arrange your words</legend>
+            <label className="field-label">
+              Wrap after about this many characters
+              <input
+                aria-label="Wrap line length"
+                type="number"
+                min={4}
+                max={100}
+                step={1}
+                value={wrapColumns}
+                onChange={(e) => setWrapColumns(Number(e.target.value))}
+              />
+            </label>
+            <button
+              className="button secondary wide"
+              disabled={
+                !Number.isInteger(wrapColumns) ||
+                wrapColumns < 4 ||
+                wrapColumns > 100
+              }
+              onClick={() =>
+                onPatch({
+                  text: wrapWords(o.text || "", wrapColumns),
+                  textCurve: 0,
+                  textCurveRatio: undefined,
+                })
+              }
+            >
+              Wrap words into lines
+            </button>
+            <p className="field-note">
+              Adds editable line breaks without splitting words. Adjust text
+              height afterward if you need more room.
+            </p>
+            <div className="shape-tool-options">
+              <button
+                className="button secondary"
+                disabled={!o.text?.includes("\n") || !!o.textCurve}
+                onClick={() => onSeparate("lines")}
+              >
+                Separate lines
+              </button>
+              <button
+                className="button secondary"
+                disabled={
+                  !!o.textCurve ||
+                  !!o.bold ||
+                  !!o.underline ||
+                  !!o.letterSpacing ||
+                  !!o.lineSpacing ||
+                  !!o.textAlign ||
+                  !!o.textEffect ||
+                  !!o.text?.includes("\n")
+                }
+                onClick={() => onSeparate("letters")}
+              >
+                Separate letters
+              </button>
+            </div>
+            <p className="field-note">
+              Each piece becomes an editable text layer. Lines retain styling.
+              Letters currently need a plain, straight single line; font
+              ligatures may change when separated. Undo reunites the text.
+            </p>
+          </fieldset>
         )}
       </div>
     </div>

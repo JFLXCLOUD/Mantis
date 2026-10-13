@@ -51,7 +51,7 @@ describe("editable vector operations", () => {
       area({ ...result, width: 200, height: 200 } as ReturnType<typeof square>),
     ).toBeCloseTo(30000, 2);
     expect(exportSvg(p)).toContain(result.pathData);
-    expect(p.version).toBe(5);
+    expect(p.version).toBe(6);
   });
   it("preserves transformed world geometry and does not mutate source layers", () => {
     const objects = [

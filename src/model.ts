@@ -39,6 +39,8 @@ export type DesignObject = {
   textCurveRatio?: number;
   svg?: string;
   pathData?: string;
+  contourSource?: string;
+  hiddenContours?: number[];
   groupId?: string;
   flipX?: boolean;
   flipY?: boolean;
@@ -46,7 +48,7 @@ export type DesignObject = {
 };
 export type Project = {
   format: "hopper";
-  version: 5;
+  version: 6;
   name: string;
   width: number;
   height: number;
@@ -94,7 +96,7 @@ export function createObject(type: Shape, index = 0): DesignObject {
 export function blankProject(): Project {
   return {
     format: "hopper",
-    version: 5,
+    version: 6,
     name: "Untitled project",
     width: 1152,
     height: 1152,
@@ -152,7 +154,7 @@ export function validateProject(input: unknown): Project {
   const p = input as Omit<Project, "version"> & { version: number };
   if (
     p.format !== "hopper" ||
-    ![1, 2, 3, 4, 5].includes(p.version) ||
+    ![1, 2, 3, 4, 5, 6].includes(p.version) ||
     !Array.isArray(p.objects) ||
     p.objects.length > 1000
   )
@@ -221,6 +223,14 @@ export function validateProject(input: unknown): Project {
         !/^[Mm][MmLlHhVvCcSsQqTtAaZz0-9eE.,+\s-]+$/.test(o.pathData))
     )
       throw new Error("Invalid vector path.");
+    if (o.contourSource !== undefined) {
+      if (o.type !== "path" || typeof o.contourSource !== "string" || o.contourSource.length > 200000 ||
+        !/^[Mm][MmLlHhVvCcSsQqTtAaZz0-9eE.,+\s-]+$/.test(o.contourSource)) throw new Error("Invalid contour source.");
+      const count = (o.contourSource.match(/[Mm]/g) || []).length;
+      if (count > 500 || !Array.isArray(o.hiddenContours) || o.hiddenContours.length >= count ||
+        new Set(o.hiddenContours).size !== o.hiddenContours.length ||
+        o.hiddenContours.some(i => !Number.isInteger(i) || i < 0 || i >= count)) throw new Error("Invalid hidden contours.");
+    } else if (o.hiddenContours !== undefined) throw new Error("Missing contour source.");
     if (
       o.type === "text" &&
       (typeof o.text !== "string" ||
@@ -254,7 +264,7 @@ export function validateProject(input: unknown): Project {
   }
   return {
     format: "hopper",
-    version: 5,
+    version: 6,
     name: p.name,
     width: p.width,
     height: p.height,

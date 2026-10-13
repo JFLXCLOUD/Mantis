@@ -34,16 +34,24 @@
 }
 .context-toolbar.inspector {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  height: 66px;
+  min-height: 66px;
+  flex-shrink: 0;
   align-items: center;
   gap: 8px;
   max-height: none;
   padding: 8px 12px;
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
   background: var(--surface, #fff);
   position: relative;
   z-index: 15;
 }
+.context-toolbar > * { flex-shrink: 0; }
+.canvas-viewport { overflow-anchor: none; }
+.alignment-guide { pointer-events: none; }
 .context-toolbar .selected-title {
   display: none;
 }
@@ -215,42 +223,24 @@
 .effect-shadow {
   text-shadow: 3px 3px 0 #78947c70;
 }
-.canvas-text-editor {
-  position: fixed;
-  z-index: 90;
-  border: 2px solid var(--green);
-  background: var(--surface, white);
-  color: var(--ink);
-  border-radius: 10px;
-  box-shadow: 0 12px 40px #0003;
-  padding: 8px;
-}
-.canvas-text-editor textarea {
-  width: 100%;
+/* The field lives in the text object's transformed bounds, without a card. */
+.canvas-inline-input {
   display: block;
-  resize: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 2px;
   border: 0;
-  outline: none;
-  background: var(--surface-soft, #f5f7f2);
-  color: var(--ink);
-  padding: 8px;
-  border-radius: 5px;
+  border-radius: 0;
+  outline: none !important;
+  background: transparent;
+  resize: none;
+  overflow: hidden;
+  user-select: text;
+  cursor: text;
+  box-shadow: none;
 }
-.canvas-text-editor > div {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-top: 8px;
-}
-.canvas-text-editor small {
-  flex: 1;
-  color: var(--muted);
-  font-size: 10px;
-}
-.canvas-text-editor button {
-  font-size: 11px;
-  padding: 6px 8px;
-}
+.canvas-inline-input::selection { background: #bf38ad40; }
 .canvas-object text {
   font-synthesis: weight style;
 }

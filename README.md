@@ -13,12 +13,16 @@ Design locally, keep editable project files, and take your artwork with you as S
 
 ## Create and edit
 
+- **A steady canvas:** selecting and deselecting keeps the board in place. Drag with alignment guides for canvas centers and object edges/centers; hold Alt to bypass snapping.
 - **Precise transforms:** drag to resize freely or lock proportions, rotate, flip, align, distribute and repeat. Work in inches or millimeters with grid snapping.
 - **Vector tools:** native shapes, editable text, Weld, Subtract, Intersect and Slice. Combine native shapes into editable paths with holes.
+- **Shape workshop:** rounded/sharp offsets and insets, restorable contour hiding, Exclude and material-color consolidation. Shape tools currently operate on native shapes and library paths; text/SVG conversion remains planned.
+- **Text layout:** wrap words into editable lines, separate styled lines, or separate plain single-line letters into editable layers. Undo restores the original text.
+- **Mat planning:** choose copies, mat size, margins and gaps; retain canvas positions or compact shapes onto additional mats. Export the selected mat as SVG or a planning draft while preserving the canvas.
 - **Searchable shape library:** 1,055 editable vector designs: 36 Mantis originals plus 1,019 filled Tabler designs. Search names and keywords offline, filter by category or collection, and browse paged previews. Both collections allow personal and commercial use; original designs use CC0 and Tabler designs use MIT with bundled/exported notices. See the [library guide](docs/SHAPE_LIBRARY.md).
 - **Curved text:** bend editable words up or down, adjust the arc with a slider and reset to straight. Curves survive resizing, project saves, SVG export and print preparation.
 - **Room to design:** Color, Size & position, Effects and Board settings now open above the board. The left sidebar collapses to a tool rail, and the right sidebar is dedicated to layers.
-- **A friendlier text studio:** double-click text on the canvas to type, including multiple lines. Finish with Ctrl+Enter or click away; Escape cancels. The Effects popout has Text, Style and Curve tabs, with font previews, bold/italic/underline, text height, spacing, line alignment, case conversion, outline and translucent shadow styles.
+- **A friendlier text studio:** double-click text to type directly in its transformed position on the canvas, including multiple lines, without a popup. Finish with Ctrl+Enter or click away; Escape cancels. The Effects popout has Text, Style, Curve and Layout tabs, with font previews, bold/italic/underline, text height, spacing, line alignment, case conversion, outline and translucent shadow styles.
 - **Your fonts:** search installed Windows font families or import TTF, OTF, WOFF and WOFF2 files. Imported fonts stay in a local library and are included in SVG/print output; portable project files reference fonts, so another computer needs the same fonts.
 - **Board color:** preview artwork against a color of your choice, with a contrasting grid. This workspace preference does not alter artwork or export backgrounds.
 - **Color your artwork:** choose from 20 named swatches or open the advanced picker for hue, saturation, brightness and exact HEX/RGB values. Preview changes, apply or cancel, and recolor multiple editable layers together.
@@ -31,10 +35,20 @@ Design locally, keep editable project files, and take your artwork with you as S
 - **Release notifications:** check GitHub for updates from App settings, or enable automatic daily checks. Open release notes/downloads in your browser when ready; no automatic installation or restart.
 
 <details>
+<summary>See shape tools, text layout and mat planning</summary>
+
+![Native shape offset with an original editable daisy](docs/screenshots/workshop-offset.png)
+![Text wrapping and separation controls](docs/screenshots/workshop-text-layout.png)
+![Three copies arranged by color on preparation mats](docs/screenshots/workshop-mats.png)
+
+</details>
+
+<details>
 <summary>See the text studio and direct canvas editing</summary>
 
 ![Text styling popout above the board, with the left sidebar collapsed](docs/screenshots/text-studio-style.png)
-![Double-click text to type directly on the canvas](docs/screenshots/text-studio-inline.png)
+![Double-click text to type directly on the canvas](docs/screenshots/canvas-inline.png)
+![Alignment guides while dragging original artwork](docs/screenshots/canvas-guides.png)
 
 </details>
 
@@ -64,7 +78,7 @@ Browse the [library guide](docs/SHAPE_LIBRARY.md) for available categories and f
 
 </details>
 
-Meet **Manti**, our praying mantis mascot, in the [brand kit](docs/BRANDING.md). Earlier `.hopper` projects still open directly; new saves use `.mantis`. Existing local workspaces remain compatible.
+Meet **Manti**, our praying mantis mascot, in the [brand kit](docs/BRANDING.md). Earlier `.hopper` projects still open directly; new saves use `.mantis`. Existing local workspaces remain compatible. The [hands-on Design Space comparison](docs/DESIGN_SPACE_FEATURE_REVIEW.md) tracks implemented workflows and remaining gaps.
 
 <details>
 <summary>See curved text</summary>

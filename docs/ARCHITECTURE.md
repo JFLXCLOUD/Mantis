@@ -7,7 +7,7 @@
 The application is now Mantis Studio. The default desktop profile remains `%APPDATA%/hopper-studio`, and legacy document/storage/bridge identifiers remain stable to preserve existing work. An explicit `--user-data-dir` still selects an isolated profile. See [branding](BRANDING.md).
 
 - `src/model.ts`: document types, primitive geometry, original sample, validation, rotated bounds and material grouping.
-- `src/vector.ts`: Paper.js core geometry for weld/subtract/intersect/slice. No PaperScript or eval; renderer CSP stays unchanged. Results use the bottom color, replace selected layers at their highest position and undo atomically. Slice emits bottom-only, intersection and top-only regions; disconnected contours may remain in one compound layer. Empty/subpixel results are omitted; completely empty results leave originals intact.
+- `src/vector.ts`: Paper.js core geometry for weld/subtract/intersect/slice/exclude. No PaperScript or eval; renderer CSP stays unchanged. Results use the bottom color, replace selected layers at their highest position and undo atomically. Slice emits bottom-only, intersection and top-only regions; disconnected contours may remain in one compound layer. Empty/subpixel results are omitted; completely empty results leave originals intact.
 - `src/printing.ts` and `src/PrintSetup.tsx`: DOM-measured artwork bounds, transparent 300 dpi PNGs, physical-size PDF proofs via jsPDF, and explicit handoff guidance. No device commands or fabricated registration marks.
 - `src/geometry.ts`: affine resize/rotation/reflection, corners and bounds, group-aware layout operations.
 - `src/SelectionFrame.tsx`: eight resize handles and the rotation handle, oriented with a selected object's geometry.
@@ -21,7 +21,7 @@ The application is now Mantis Studio. The default desktop profile remains `%APPD
 
 All coordinates are in SVG user units at 96 units per inch. Millimeters are a display/input conversion. The file canvas dimensions specify exported physical size. Positive rotation is clockwise in the SVG coordinate system, around each object's center. Layer order is back to front. Hidden objects remain in project files but are omitted from SVG export. Guide objects are omitted from export and preparation.
 
-## `.mantis` v5 (also reads legacy `.hopper` v1-v4)
+## `.mantis` v6 (also reads `.mantis` / legacy `.hopper` v1-v5)
 
 Starting in 0.12.1, new project downloads use `.mantis`; job planning drafts
 use `.mantisjob`. The project picker accepts `.mantis`, `.hopper` and `.json`,
@@ -29,16 +29,17 @@ alongside SVG artwork. Existing files need no renaming or conversion. Opening
 an older project and saving it creates a new `.mantis` download without
 modifying the original file. Job drafts still have no import/reopen workflow.
 
-Only the filename extensions changed. The internal `format: "hopper"` project
-identifier, `hopper-job-draft` draft identifier, schema versions, profile path,
-application ID and autosave/settings keys remain stable for compatibility.
+The 0.12.1 extension change preserved schema versions. Later editor milestones
+advance the project schema; the internal `format: "hopper"` project identifier,
+`hopper-job-draft` draft identifier, profile path, application ID and existing
+autosave/settings keys remain stable for compatibility.
 
 UTF-8 JSON, readable without Mantis Studio:
 
 ```json
 {
   "format": "hopper",
-  "version": 5,
+  "version": 6,
   "name": "My project",
   "width": 1152,
   "height": 1152,
@@ -48,11 +49,43 @@ UTF-8 JSON, readable without Mantis Studio:
 
 An object has `id`, `name`, `type`, `x`, `y`, `width`, `height`, `rotation`, hex `fill`, `operation`, `visible`, and `locked`. Optional fields include `groupId`, text content/font/italic, sanitized nested SVG, and the v2 `flipX`, `flipY`, and `skewX` transforms. Transform order about the object's center is rotation, horizontal shear, then reflection. The geometry helpers, renderer, hit regions, bounds and SVG exporter share this representation.
 
-Version 1/2/3/4 files open with their original geometry and are saved as version 5. Native `path` layers store normalized 100-by-100 SVG path geometry in `pathData`; object dimensions and transforms remain editable. Nonzero winding retains holes. The v4 format adds curved text and prevents older readers from silently showing curved words as straight. The autosave storage key stays `hopper.project.v1` so an existing workspace is found; the document inside it is versioned independently. Unknown versions are rejected. Original project files are never rewritten by opening them. Imports and local recovery pass through the same validation and SVG sanitation.
+Version 1–5 files open with their original geometry and are saved as version 6. Native `path` layers store normalized 100-by-100 SVG path geometry in `pathData`; object dimensions and transforms remain editable. Nonzero winding retains holes. The v4 format adds curved text and prevents older readers from silently showing curved words as straight. The autosave storage key stays `hopper.project.v1` so an existing workspace is found; the document inside it is versioned independently. Unknown versions are rejected. Original project files are never rewritten by opening them. Imports and local recovery pass through the same validation and SVG sanitation.
 
-Groups are editing relationships only. Each member retains its geometry and color. Repeat and duplicate assign new group IDs per copied group. Alignment and equal-gap distribution treat each selected group as one unit. Locked/hidden layers are excluded from cursor transforms and quick layout actions. Mat review retains original positioning and splits native objects by color and operation. Imported SVGs receive separate groups because their internal colors are not decomposed. The imported SVG viewport fills its object's dimensions so unlocked resizing visibly stretches the artwork instead of letterboxing it.
+Groups are editing relationships only. Each member retains its geometry and color. Repeat and duplicate assign new group IDs per copied group. Alignment and equal-gap distribution treat each selected group as one unit. Locked/hidden layers are excluded from cursor transforms and quick layout actions. Mat review defaults to original positioning and splits native objects by color and operation. Imported SVGs receive separate groups because their internal colors are not decomposed. The imported SVG viewport fills its object's dimensions so unlocked resizing visibly stretches the artwork instead of letterboxing it.
 
 Undo stores snapshots (80 entries). A drag commits one snapshot on pointer release; intermediate frames are previews. Local workspace saving is debounced. Project file export is the durable interchange path. A future implementation should replace snapshot history with compact commands for large projects.
+
+## Shape, text and mat layout (0.14.0)
+
+Project v6 adds optional `contourSource` and `hiddenContours` to native paths.
+The source retains normalized geometry; `pathData` contains the visible result,
+so rendering, exports and geometry operations agree. Restoring contours retains
+object dimensions and affine transforms. Validation bounds source length and
+requires unique valid indices with at least one visible subpath.
+
+`shapeTools.ts` converts native world-space paths to closed polygons, normalizes
+winding per object, merges when requested and uses pinned Clipper 6.4.2 offsets.
+Coordinates use 1/1000 pixel integers, curves flatten at 0.08 pixels, offset
+corners use round or bounded miter joins, and point/output limits reject overly
+complex inputs. Offset creates new paths behind the source layers. Both shape
+panels stage previews and commit once; unmount cancels previews. Exclude
+normalizes disjoint path winding before area checks. Color consolidation protects
+locked, hidden, guide and imported-SVG layers without changing operations.
+
+`textLayoutTools.ts` inserts word-boundary line breaks and creates editable
+line/letter objects. Styled lines use the renderer's measured envelopes; plain
+letters use native SVG advance positions and grapheme segmentation. Affine
+placement retains rotation/reflection/shear. Unsupported shaping or tiny pieces
+fails without replacing the source; all results pass project validation.
+
+`matLayout.ts` keeps original canvas placements by default or uses deterministic
+shelf packing of transformed bounding boxes. Same-color/same-operation group
+members form one placement unit. Copies have independent placement identities;
+new mats are generated as needed. This is not optimal nesting or cross-operation
+Attach. Preparation options remain session state. Mat SVG/draft exports use the
+selected planned geometry and dimensions, while the project canvas and autosave
+remain untouched. Job setup for a custom plan receives that mat only. Existing
+machine send restrictions remain unchanged.
 
 ## Text studio and large artwork catalog (0.13.0)
 
@@ -70,7 +103,7 @@ the result to the object's existing geometry. Outline is a stroked-text
 appearance, not a font-to-path conversion; shadow is translucent duplicated
 text for print artwork. Both remain editable text.
 
-`CanvasTextEditor.tsx` stages typing locally and commits once on Done,
+`CanvasTextEditor.tsx` stages typing locally and commits once on
 Ctrl+Enter or clicking away. Escape discards the draft. Canvas hit testing uses
 the object's actual screen transform so double-clicking works after rotation,
 reflection or skew, including when drag pointer capture retargets the click.
@@ -129,3 +162,27 @@ The `.mantis` project schema remains unchanged. Material preferences are default
 The sandboxed preload exposes only `mantisUpdates.check()` and `openReleases()`. Both IPC handlers require the exact trusted top-level renderer. Release links are constructed from the fixed repository path and a validated version tag; neither renderer input nor API-provided URLs are passed to [Electron's external URL handler](https://www.electronjs.org/docs/latest/api/shell#shellopenexternalurl-options). Release bodies are not rendered. The app never downloads or executes an update, silently replaces itself, or restarts a project. This workflow supports the current portable Windows preview; signed installer-based automatic installation is future work.
 
 Browser development previews support appearance settings and a normal GitHub releases link. The actual update checker requires Electron. No GitHub releases or tags are created by this feature.
+
+
+## Canvas interaction stability (0.14.1)
+
+The contextual toolbar reserves a fixed 66 px row and scrolls horizontally on
+small windows. Selection changes cannot resize the viewport or trigger a new
+fit scale. Pointer gestures capture their initial screen scale and require a
+4 px movement before a click becomes a transform. Screen-to-design mapping
+uses the SVG matrix, including its border offset. Focus never scrolls the mat.
+
+`alignmentGuides.ts` compares selection bounds against canvas center lines and
+visible object edges/centers, including locked reference layers and transformed
+bounds. A 6 screen-pixel threshold snaps to the nearest match when Snap is on;
+nonmatching axes retain grid snapping. Snap off shows guides within 0.75 screen
+pixels without changing positions. Alt bypasses both snapping and guides.
+Guides never enter project data or exports, and Escape cancels the gesture.
+
+`CanvasTextEditor.tsx` now mounts a native textarea in an SVG foreignObject at
+the selected object's exact transformed bounds. There is no dialog, floating
+card or Done button. Its transparent text surface follows zoom and scrolling;
+the source text is hidden while editing, and one commit restores styled SVG
+artwork. Curves are temporarily straight while typing and return on commit,
+unless a newline clears the curve as before. Escape cancels. Typography and
+object dimensions remain intact; this does not implement automatic text reflow.

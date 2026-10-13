@@ -24,8 +24,9 @@ async function include(name, from) {
   const files = (await readdir(location)).filter((file) =>
     /^(licen[sc]e|copying)([.-]|$)/i.test(file),
   );
-  if (!files.length) throw Error(`Missing license file: ${name}`);
-  const license = (
+  if (!files.length && name !== 'clipper-lib') throw Error(`Missing license file: ${name}`);
+  // Upstream clipper-lib ships license references in its source header only.
+  const license = name === 'clipper-lib' ? await readFile('licenses/CLIPPER_LIB.txt', 'utf8') : (
     await Promise.all(
       files.map((file) => readFile(join(location, file), "utf8")),
     )

@@ -35,7 +35,7 @@ test('unlocked cursor stretch, edge handles, single-step undo and persistence', 
   await page.getByRole('button', { name: 'Undo (Ctrl+Z)', exact: true }).click();
   expect(await field(page, 'Width')).toBe(afterEdge); expect(await field(page, 'Height')).toBe(1);
   await page.getByRole('button', { name: 'Redo (Ctrl+Shift+Z)', exact: true }).click();
-  const saved = await snapshot(page); expect(saved.version).toBe(5);
+  const saved = await snapshot(page); expect(saved.version).toBe(6);
   await page.reload(); await page.getByRole('button', { name: 'Select First', exact: true }).click();
   await openProperties(page, 'Size & position');
   expect(await field(page, 'Height')).toBeCloseTo(saved.objects[0].height / 96, 3);
