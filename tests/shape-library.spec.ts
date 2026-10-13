@@ -16,7 +16,7 @@ test("offline shamrock search inserts an editable path with undo, color, save an
   const search = page.getByRole("textbox", { name: "Search shapes" });
   await expect(search).toBeFocused();
   await search.fill("shamrocks");
-  await expect(page.locator(".shape-library-card")).toHaveCount(4);
+  await expect(page.locator(".shape-library-card")).toHaveCount(5);
   await page
     .getByRole("button", { name: "Add Heart-leaf shamrock", exact: true })
     .click();
@@ -66,6 +66,7 @@ test("categories, empty results, keyboard dismissal and minimum-window layouts",
   await page.goto("/");
   const open = page.getByRole("button", { name: "Shape library", exact: true });
   await open.click();
+  await page.getByLabel("Shape collection").selectOption("originals");
   await page.getByRole("button", { name: "Animals", exact: true }).click();
   await expect(page.locator(".shape-library-card")).toHaveCount(5);
   await page.getByLabel("Search shapes").fill("shamrocks");
@@ -73,14 +74,14 @@ test("categories, empty results, keyboard dismissal and minimum-window layouts",
     page.getByText("No shapes found", { exact: true }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Show all shapes" }).click();
-  await expect(page.locator(".shape-library-card")).toHaveCount(36);
+  await expect(page.locator(".shape-library-card")).toHaveCount(40);
   for (const theme of ["light", "dark"]) {
     await page.evaluate(
       (t) => (document.documentElement.dataset.theme = t),
       theme,
     );
     await expect(
-      page.getByText("Mantis originals · CC0", { exact: true }),
+      page.getByText("Free for personal & commercial projects", { exact: true }),
     ).toBeInViewport();
     const box = await page.getByRole("dialog").boundingBox();
     expect(box!.y).toBeGreaterThanOrEqual(0);

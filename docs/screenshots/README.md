@@ -4,6 +4,11 @@ The editor, object menu, Print Then Cut preparation, dark editor and appearance/
 
 Review each new screenshot before adding it to the `.gitignore` allowlist. Tests may overwrite local screenshots; publication still requires review of the resulting image.
 
+The text-studio style/inline and expanded artwork-library screenshots were
+reviewed from an isolated Windows 0.13.0 profile. The canvas uses original
+demonstration text and a Mantis daisy; the library shows MIT-licensed Tabler
+previews with source labels. No user artwork or device details are shown.
+
 The shape-library light/dark dialog screenshots were reviewed from the isolated
 Windows 0.12.0 package. They show four original shamrock/clover search results,
 with no user project or device information. The complete 36-shape contact sheet

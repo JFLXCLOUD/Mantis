@@ -38,6 +38,7 @@ async function textFixture(page: Page) {
     });
   await page.getByRole("button", { name: "Select Words", exact: true }).click();
   await openProperties(page, 'Effects');
+  await page.getByRole('tab', {name:'Curve',exact:true}).click();
 }
 async function saved(page: Page) {
   await expect(
@@ -93,12 +94,15 @@ test("up/down curves keep editable words, fit selection bounds, reset and surviv
       (p: SVGPathElement) => p.getPointAtLength(p.getTotalLength() / 2).y,
     );
   expect(down).toBeGreaterThan(0);
+  await page.getByRole("tab", {name:"Text",exact:true}).click();
   await page.getByLabel("Text content").fill("Café & craft");
+  await page.getByRole("tab", {name:"Style",exact:true}).click();
   await page.getByRole("button", { name: "Italic", exact: true }).click();
   await saved(page);
   await page.reload();
   await page.getByRole("button", { name: "Select Words", exact: true }).click();
   await openProperties(page, 'Effects');
+  await page.getByRole('tab', {name:'Curve',exact:true}).click();
   await expect(
     page.getByRole("slider", { name: "Text curve", exact: true }),
   ).toHaveValue("60");
@@ -110,7 +114,7 @@ test("up/down curves keep editable words, fit selection bounds, reset and surviv
     0,
   );
   const final = await saved(page);
-  expect(final.version).toBe(4);
+  expect(final.version).toBe(5);
   expect(final.objects[0].textCurve).toBe(0);
   const project = await exportFile(page, "Save project");
   await page
@@ -197,6 +201,7 @@ test("curved SVGs retain local text paths when reimported and copied, and PNG ex
   // Print only the original editable text, avoiding imported full-canvas bounds.
   await page.getByRole("button", { name: "Select Words", exact: true }).click();
   await openProperties(page, 'Effects');
+  await page.getByRole('tab', {name:'Curve',exact:true}).click();
   await page
     .getByRole("button", { name: "Print Then Cut", exact: false })
     .click();

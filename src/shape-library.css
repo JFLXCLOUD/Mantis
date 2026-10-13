@@ -185,6 +185,12 @@
   font-size: 12px;
   color: var(--danger-text, #9c302a);
 }
+.library-filters { display: flex; gap: 12px; }
+.library-filters label { display: flex; align-items: center; gap: 8px; flex: 1; color: var(--muted); font-size: 11px; }
+.library-filters select { flex: 1; min-width: 0; padding: 7px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface,white); color: var(--ink); }
+.library-pages { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 11px; color: var(--muted); }
+.library-pages button { padding: 6px 12px; border: 1px solid var(--border); border-radius: 5px; color: var(--ink); }
+.library-pages button:disabled { opacity: .4; cursor: not-allowed; }
 @media (max-width: 1150px) {
   .shape-library-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));

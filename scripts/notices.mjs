@@ -39,6 +39,8 @@ async function include(name, from) {
 }
 for (const name of Object.keys(root.dependencies).sort())
   await include(name, resolve("."));
+// The generated filled-shape catalog ships even though its source package is a build dependency.
+await include('@tabler/icons', resolve('.'));
 // Preserve license wording while keeping generated text free of trailing whitespace.
 notices = notices.replace(/[ \t]+$/gm, "").trimEnd() + "\n";
 await writeFile("THIRD_PARTY_NOTICES.txt", notices);

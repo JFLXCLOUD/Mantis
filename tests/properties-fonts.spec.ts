@@ -24,8 +24,9 @@ test("menus keep text, curves and colors collapsed; switching menus cancels prev
   ).toHaveCount(0);
   await openProperties(page, "Effects");
   await page.getByLabel("Text content").fill("A little magic");
+  await page.getByRole("tab", {name:"Curve", exact:true}).click();
   await page.getByRole("button", { name: "Curve up", exact: true }).click();
-  await page.getByLabel("Text content").press("Escape");
+  await page.getByRole("button", {name:"Curve up", exact:true}).press("Escape");
   await expect(
     page.getByRole("button", { name: "Effects", exact: true }),
   ).toBeFocused();
@@ -87,6 +88,7 @@ test("font search selects actual system families, accepts more than the original
     page.getByLabel("Font", { exact: true }).locator("option"),
   ).toHaveCount(2);
   await page.getByLabel("Font", { exact: true }).selectOption("Segoe UI");
+  await page.getByRole("tab", {name:"Curve", exact:true}).click();
   await page.getByRole("button", { name: "Curve down", exact: true }).click();
   const saved = JSON.parse((await download(page, "Save project")).toString());
   expect(saved.objects.at(-1).font).toBe("Segoe UI");
@@ -139,6 +141,7 @@ test("imported fonts are validated, deduplicated, restored before rendering and 
     buffer: bytes,
   });
   await expect(page.getByLabel("Font", { exact: true })).toHaveValue(family);
+  await page.getByRole("tab", {name:"Curve", exact:true}).click();
   await page.getByRole("button", { name: "Curve up", exact: true }).click();
   await expect
     .poll(() =>

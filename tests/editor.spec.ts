@@ -53,6 +53,7 @@ test('dragging creates one undo step; hidden and locked layers are protected', a
   await page.goto('/'); await page.getByRole('button', { name: 'Add star', exact: true }).click();
   await openProperties(page, 'Size & position');
   const xBefore = await page.getByLabel('X', { exact: true }).inputValue();
+  await page.getByRole('button', {name:'Size & position',exact:true}).click();
   const target = page.locator('.canvas-object').last(); const rect = await target.boundingBox();
   await page.mouse.move(rect!.x + rect!.width / 2, rect!.y + rect!.height / 2); await page.mouse.down(); await page.mouse.move(rect!.x + rect!.width / 2 + 55, rect!.y + rect!.height / 2 + 20, { steps: 6 }); await page.mouse.up();
   await openProperties(page, 'Size & position');

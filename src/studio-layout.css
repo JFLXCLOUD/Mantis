@@ -1,0 +1,309 @@
+.workspace {
+  grid-template-columns: 210px minmax(400px, 1fr) 240px;
+}
+.workspace.left-collapsed {
+  grid-template-columns: 52px minmax(400px, 1fr) 240px;
+}
+.left-panel-content[hidden] {
+  display: none;
+}
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 17px;
+  min-height: 48px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  text-align: left;
+}
+.sidebar-toggle:hover {
+  color: var(--green);
+  background: var(--surface-soft, #f4f6f0);
+}
+.left-collapsed .sidebar-toggle svg {
+  transform: rotate(180deg);
+}
+.collapsed-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 0;
+}
+.context-toolbar.inspector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-height: none;
+  padding: 8px 12px;
+  overflow: visible;
+  background: var(--surface, #fff);
+  position: relative;
+  z-index: 15;
+}
+.context-toolbar .selected-title {
+  display: none;
+}
+.context-toolbar > .field-label {
+  width: 128px;
+  margin: 0;
+  font-size: 9px;
+  gap: 2px;
+}
+.context-toolbar > .field-row {
+  width: 92px;
+  margin: 0;
+}
+.context-toolbar > .field-row .field-label {
+  margin: 0;
+  font-size: 9px;
+}
+.context-toolbar > .field-row select,
+.context-toolbar > .field-label input {
+  padding: 5px 7px;
+  height: 28px;
+  font-size: 11px;
+}
+.context-toolbar .property-menu {
+  margin: 0;
+  border: 0;
+  border-radius: 6px;
+  overflow: visible;
+}
+.context-toolbar .property-menu-trigger {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: auto;
+  gap: 9px;
+}
+.context-toolbar .property-menu-trigger strong {
+  font-size: 11px;
+  white-space: nowrap;
+}
+.context-toolbar .property-menu-trigger small {
+  display: none;
+}
+.context-toolbar .property-menu-content {
+  position: fixed;
+  z-index: 60;
+  width: 390px;
+  max-width: calc(100vw - 24px);
+  overflow: auto;
+  background: var(--surface, #fff);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 14px 45px #0003;
+  overscroll-behavior: contain;
+}
+.context-toolbar > .button {
+  width: auto;
+  font-size: 10px;
+  padding: 9px;
+}
+.right-panel .layers-heading {
+  height: 55px;
+  flex-shrink: 0;
+}
+.right-panel .layers-list {
+  flex: 1;
+}
+.canvas-topline {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.editing-bar {
+  flex-wrap: wrap;
+  min-height: 34px;
+}
+.text-options .field-label {
+  margin: 10px 0;
+}
+.text-options textarea {
+  min-height: 64px;
+  resize: vertical;
+}
+.text-edit-hint {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.text-edit-hint strong {
+  font-family: Georgia, serif;
+  font-size: 19px;
+  color: var(--green);
+}
+.text-edit-hint span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.text-edit-hint .button {
+  justify-self: start;
+  padding: 7px 11px;
+  font-size: 11px;
+}
+.text-format-options {
+  border: 0;
+  border-top: 1px solid var(--border);
+  padding: 12px 0;
+  margin: 12px 0 0;
+}
+.text-format-options legend {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 0 8px 0 0;
+}
+.text-toggle-row,
+.text-case-row {
+  display: flex;
+  gap: 6px;
+}
+.text-toggle-row button,
+.text-case-row button {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  background: var(--surface-soft, #f5f7f2);
+  color: var(--ink);
+}
+.text-toggle-row button[aria-pressed="true"] {
+  background: var(--green);
+  color: var(--on-accent, white);
+}
+.text-toggle-row select {
+  min-width: 0;
+  flex: 1;
+}
+.text-case-row button {
+  flex: 1;
+  padding: 8px 4px;
+  font-size: 10px;
+}
+.text-effect-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.text-effect-tiles button {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 11px;
+  display: grid;
+  gap: 6px;
+  background: var(--surface-soft, #f5f7f2);
+}
+.text-effect-tiles button[aria-pressed="true"] {
+  border-color: var(--green);
+  box-shadow: inset 0 0 0 1px var(--green);
+}
+.effect-sample {
+  font:
+    bold 28px Georgia,
+    serif;
+  color: var(--green);
+}
+.effect-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--green);
+}
+.effect-shadow {
+  text-shadow: 3px 3px 0 #78947c70;
+}
+.canvas-text-editor {
+  position: fixed;
+  z-index: 90;
+  border: 2px solid var(--green);
+  background: var(--surface, white);
+  color: var(--ink);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px #0003;
+  padding: 8px;
+}
+.canvas-text-editor textarea {
+  width: 100%;
+  display: block;
+  resize: none;
+  border: 0;
+  outline: none;
+  background: var(--surface-soft, #f5f7f2);
+  color: var(--ink);
+  padding: 8px;
+  border-radius: 5px;
+}
+.canvas-text-editor > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+}
+.canvas-text-editor small {
+  flex: 1;
+  color: var(--muted);
+  font-size: 10px;
+}
+.canvas-text-editor button {
+  font-size: 11px;
+  padding: 6px 8px;
+}
+.canvas-object text {
+  font-synthesis: weight style;
+}
+.font-preview {
+  padding: 12px;
+  border-radius: 6px;
+  background: var(--surface-soft, #f5f7f2);
+  font-size: 22px;
+  color: var(--green);
+  overflow-wrap: anywhere;
+}
+.text-option-tabs {
+  display: flex;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--surface-soft, #f4f6f0);
+  gap: 4px;
+  margin-bottom: 16px;
+}
+.text-option-tabs button {
+  flex: 1;
+  padding: 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  color: var(--muted);
+}
+.text-option-tabs button[aria-selected="true"] {
+  background: var(--green);
+  color: var(--on-accent, white);
+}
+.text-option-tabs button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+.font-help {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.font-help summary {
+  cursor: pointer;
+}
+@media (max-width: 1200px) {
+  .workspace {
+    grid-template-columns: 190px minmax(360px, 1fr) 215px;
+  }
+  .workspace.left-collapsed {
+    grid-template-columns: 52px minmax(360px, 1fr) 215px;
+  }
+  .context-toolbar {
+    gap: 5px;
+  }
+  .context-toolbar > .field-label {
+    width: 100px;
+  }
+}

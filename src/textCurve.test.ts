@@ -6,11 +6,11 @@ import { readProject, sanitizeSvg } from "./io";
 import { scopeSvgTextPaths } from "./svgReferences";
 
 describe("curved text data and local SVG references", () => {
-  it("migrates older documents without changing artwork and saves version 4", () => {
+  it("migrates older documents without changing artwork and saves version 5", () => {
     const objects = [createObject("text")];
     for (const version of [1, 2, 3]) {
       const p = validateProject({ ...blankProject(), version, objects });
-      expect(p.version).toBe(4);
+      expect(p.version).toBe(5);
       expect(p.objects).toEqual(objects);
     }
   });

@@ -8,6 +8,16 @@
 4. **Broader Cricut coverage:** independent Maker, Explore, Joy and Venture adapters, including a separate BLE track. Track each model/firmware/transport explicitly; do not equate a dropdown entry with cutting support.
 5. **Public application release:** source and contributor workflow live at [JFLXCLOUD/Mantis](https://github.com/JFLXCLOUD/Mantis). Hold downloads until machine validation passes, then finish Windows distribution, signing and updates.
 
+## 0.13.0 - Text studio, top controls and expanded artwork (implemented locally)
+
+Editing controls open above the board; the left sidebar collapses and the right
+sidebar focuses on layers. Double-clicking text opens a canvas editor with
+multiline typing, cancel and one-step undo. Text, Style and Curve tabs organize
+fonts, bold/italic/underline, size, spacing, alignment, case, outline, shadow and
+curves. The offline library contains 1,055 designs across Mantis CC0 originals
+and MIT-licensed Tabler filled artwork, with collection/category filters and
+paged results. Projects save as v5 and read earlier formats.
+
 ## 0.12.1 - Mantis file extensions (implemented locally)
 
 New project downloads use `.mantis` and job planning drafts use `.mantisjob`.
@@ -79,7 +89,7 @@ See [user research and priorities](USER_RESEARCH.md) for the public feedback beh
 
 - True node editing, pen/Bezier tools, compound paths and non-destructive booleans.
 - Extend shipped native-shape booleans to outlined text and decomposed imports; contour selection and reliable offsets.
-- Text outlining with appropriately licensed bundled fonts, kerning, multiline and curved text.
+- Text outlining with appropriately licensed bundled fonts and finer kerning; multiline and curved editable text are implemented.
 - More complete SVG import with an explicit unsupported-feature report and editable imported paths.
 - Pan, configurable snapping and guides.
 - Project library with thumbnails, explicit recent files, recovery snapshots and file-backed autosave.

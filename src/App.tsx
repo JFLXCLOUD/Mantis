@@ -2,10 +2,11 @@ import { version as appVersion } from "../package.json";
 import { AppSettings } from './AppSettings';
 import { useAppSettings } from './useAppSettings';
 import { CurvedText } from './CurvedText';
-import { TextCurveControl } from './TextCurveControl';
 import { ColorControl } from './ColorControl';
 import { PropertyMenu } from './PropertyMenu';
-import { FontPicker } from './FontPicker';
+import { TextOptions } from './TextOptions';
+import { CanvasTextEditor } from './CanvasTextEditor';
+import { richText, styledTextMarkup } from './richText';
 import { ShapeLibrary } from './ShapeLibrary';
 import { createLibraryObject } from './shapeCatalog';
 import { fontFamily } from './fonts';
@@ -51,6 +52,7 @@ import {
   Minus,
   MousePointer2,
   Palette,
+  PanelLeftClose,
   Plus,
   Redo2,
   Repeat2,
@@ -159,6 +161,7 @@ function Logo() {
   return <img src="./brand/mantis-mark.svg" width="42" height="42" alt="" />;
 }
 function Artwork({ object: o }: { object: DesignObject }) {
+  const artId = useId();
   const outline =
     o.operation === "draw" ||
     o.operation === "score" ||
@@ -190,6 +193,8 @@ function Artwork({ object: o }: { object: DesignObject }) {
           ry={o.height / 2}
           {...props}
         />
+      ) : o.type === "text" && richText(o) ? (
+        <g dangerouslySetInnerHTML={{__html: styledTextMarkup(o, `fill="${props.fill}" stroke="${props.stroke}" stroke-width="1.5"${props.strokeDasharray ? ` stroke-dasharray="${props.strokeDasharray}"` : ''}`, `styled-${artId}`)}} />
       ) : o.type === "text" && o.textCurve ? (
         <CurvedText object={o} paint={props} />
       ) : o.type === "text" ? (
@@ -288,11 +293,24 @@ export default function App() {
     future: Project[];
   }>(() => ({ past: [], present: initialProject(), future: [] }));
   const project = history.present;
+  const [textEditing, setTextEditing] = useState<{object: DesignObject; anchor: {x:number;y:number;width:number;height:number}} | null>(null);
+  function editTextOnCanvas(object: DesignObject) {
+    if (object.locked || object.type !== 'text' || !object.visible) return;
+    const node = [...(canvas.current?.querySelectorAll<SVGGElement>('[data-object-id]') || [])].find(el => el.dataset.objectId === object.id);
+    if (!node) return;
+    const box = node.getBoundingClientRect();
+    setSelection([object.id]); setPropertyMenu(null); setDrag(null);
+    setTextEditing({object,anchor:{x:box.x,y:box.y,width:box.width,height:box.height}});
+  }
   const [curvePreview, setCurvePreview] = useState<DesignObject | null>(null);
   const [colorPreview, setColorPreview] = useState<{
     key: string;
     color: string;
   } | null>(null);
+  const [leftCollapsed, setLeftCollapsed] = useState(() => {
+    try { return localStorage.getItem("mantis.sidebar-collapsed.v1") === "true"; } catch { return false; }
+  });
+  useEffect(() => { try { localStorage.setItem("mantis.sidebar-collapsed.v1", String(leftCollapsed)); } catch { /* Session preference remains usable. */ } }, [leftCollapsed]);
   const [propertyMenu, setPropertyMenu] = useState<string | null>(null);
   const [boardColor, setBoardColor] = useState(loadBoardColor);
   const [boardPreview, setBoardPreview] = useState<string | null>(null);
@@ -447,7 +465,7 @@ export default function App() {
     const timer = setTimeout(() => setToast(""), 5000);
     return () => clearTimeout(timer);
   }, [toast]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (JSON.stringify(project) === lastSaved.current) {
       setSaved(current => current === "Saving locally…" ? "Saved on this device" : current);
       return;
@@ -557,40 +575,22 @@ export default function App() {
       );
     setContextMenu({ x, y, origin });
   }
-  function canvasContextMenu(event: ReactMouseEvent<SVGSVGElement>) {
-    event.preventDefault();
-    // Inspect the same rectangular hit areas used for dragging, including locked
-    // layers whose pointer events deliberately pass through during normal editing.
-    const targets = [
-      ...event.currentTarget.querySelectorAll<SVGGElement>(".canvas-object"),
-    ].reverse();
+  function canvasObjectAt(event: ReactMouseEvent<SVGSVGElement>) {
+    const targets = [...event.currentTarget.querySelectorAll<SVGGElement>(".canvas-object")].reverse();
     for (const target of targets) {
       const hit = target.querySelector<SVGRectElement>(":scope > rect");
       const matrix = hit?.getScreenCTM();
       if (!hit || !matrix) continue;
-      const p = new DOMPoint(event.clientX, event.clientY).matrixTransform(
-        matrix.inverse(),
-      );
-      if (
-        p.x >= 0 &&
-        p.y >= 0 &&
-        p.x <= hit.width.baseVal.value &&
-        p.y <= hit.height.baseVal.value
-      ) {
-        const object = project.objects.find(
-          (item) => item.id === target.dataset.objectId,
-        );
-        if (object)
-          openObjectMenu(
-            object,
-            event.clientX,
-            event.clientY,
-            event.currentTarget,
-          );
-        return;
-      }
+      const p = new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse());
+      if (p.x >= 0 && p.y >= 0 && p.x <= hit.width.baseVal.value && p.y <= hit.height.baseVal.value)
+        return project.objects.find(item => item.id === target.dataset.objectId);
     }
-    closeContextMenu();
+  }
+  function canvasContextMenu(event: ReactMouseEvent<SVGSVGElement>) {
+    event.preventDefault();
+    const object = canvasObjectAt(event);
+    if (object) openObjectMenu(object,event.clientX,event.clientY,event.currentTarget);
+    else closeContextMenu();
   }
   const allEditable =
     selected.length > 0 && editable.length === selected.length;
@@ -1147,8 +1147,16 @@ export default function App() {
           </button>
         </div>
       </header>
-      <div className="workspace">
+      <div className={`workspace ${leftCollapsed ? "left-collapsed" : ""}`}>
         <aside className="left-panel">
+          <button className="sidebar-toggle" aria-label={leftCollapsed ? "Expand left sidebar" : "Collapse left sidebar"} aria-expanded={!leftCollapsed} onClick={() => setLeftCollapsed(value => !value)}><PanelLeftClose size={18} />{!leftCollapsed && <span>Create tools</span>}</button>
+          {leftCollapsed && <div className="collapsed-tools">
+            <IconButton title="Shape library" onClick={() => setDialog("library")}><Shapes /></IconButton>
+            <IconButton title="Add text" onClick={() => add("text")}><Type /></IconButton>
+            <IconButton title="Import SVG" onClick={() => file.current?.click()}><Upload /></IconButton>
+            <IconButton title="Projects" onClick={() => { setLeftCollapsed(false); setTab("projects"); }}><FolderOpen /></IconButton>
+          </div>}
+          <div className="left-panel-content" hidden={leftCollapsed}>
           <nav className="panel-tabs">
             <button
               className={tab === "create" ? "selected" : ""}
@@ -1335,6 +1343,7 @@ export default function App() {
               </div>
             </div>
           )}
+          </div>
         </aside>
         <main className="editor">
           <div className="editor-toolbar">
@@ -1487,244 +1496,7 @@ export default function App() {
               Copy in place
             </button>
           </div>
-          <div className="canvas-topline">
-            <div>
-              <span className="canvas-tag">CANVAS 01</span>
-              <span>
-                {(project.width / 96).toFixed(0)} ×{" "}
-                {(project.height / 96).toFixed(0)} in
-              </span>
-            </div>
-            <span>
-              <span className="status-dot" />
-              All your ideas welcome
-            </span>
-          </div>
-          <div
-            className="canvas-viewport"
-            ref={viewport}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              void openFile(e.dataTransfer.files[0]);
-            }}
-          >
-            <div
-              className="mat-surround"
-              style={{
-                width: project.width * fit * zoom + 36,
-                height: project.height * fit * zoom + 36,
-              }}
-            >
-              <div className="ruler-corner">{unit}</div>
-              <div className="ruler horizontal">
-                {Array.from(
-                  { length: Math.floor(project.width / 96) + 1 },
-                  (_, i) => (
-                    <span
-                      key={i}
-                      style={{ left: `${((i * 96) / project.width) * 100}%` }}
-                    >
-                      {unit === "in" ? i : +(i * 25.4).toFixed(1)}
-                    </span>
-                  ),
-                )}
-              </div>
-              <div className="ruler vertical">
-                {Array.from(
-                  { length: Math.floor(project.height / 96) + 1 },
-                  (_, i) => (
-                    <span
-                      key={i}
-                      style={{ top: `${((i * 96) / project.height) * 100}%` }}
-                    >
-                      {unit === "in" ? i : +(i * 25.4).toFixed(1)}
-                    </span>
-                  ),
-                )}
-              </div>
-              <svg
-                className="design-canvas"
-                tabIndex={0}
-                onContextMenu={canvasContextMenu}
-                ref={canvas}
-                data-testid="design-canvas"
-                role="img"
-                aria-label="Design canvas"
-                width={project.width * fit * zoom}
-                height={project.height * fit * zoom}
-                viewBox={`0 0 ${project.width} ${project.height}`}
-                onPointerDown={(e) => {
-                  if (e.button !== 0) return;
-                  const p = point(e);
-                  e.currentTarget.setPointerCapture(e.pointerId);
-                  if (!e.shiftKey) setSelection([]);
-                  setDrag({
-                    kind: "marquee",
-                    startX: p.x,
-                    startY: p.y,
-                    dx: 0,
-                    dy: 0,
-                    ids: e.shiftKey ? selection : [],
-                    box: bounds([]),
-                    originals: [],
-                  });
-                }}
-                onPointerMove={updateDrag}
-                onPointerUp={endDrag}
-                onPointerCancel={() => setDrag(null)}
-              >
-                <defs>
-                  <pattern
-                    id="small-grid"
-                    width="24"
-                    height="24"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <path
-                      d="M24 0H0V24"
-                      fill="none"
-                      stroke={isDarkBoard ? "#ffffff18" : "#0000000d"}
-                      strokeWidth="1"
-                    />
-                  </pattern>
-                  <pattern
-                    id="big-grid"
-                    width="96"
-                    height="96"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <rect width="96" height="96" fill="url(#small-grid)" />
-                    <path
-                      d="M96 0H0V96"
-                      fill="none"
-                      stroke={isDarkBoard ? "#ffffff30" : "#00000020"}
-                      strokeWidth="1.4"
-                    />
-                  </pattern>
-                </defs>
-                <rect
-                  width={project.width}
-                  height={project.height}
-                  data-testid="board-background"
-                  fill={canvasColor}
-                />
-                {grid && <rect width={project.width} height={project.height} fill="url(#big-grid)" pointerEvents="none" />}
-                {displayed
-                  .filter((o) => o.visible)
-                  .map((o) => (
-                    <g
-                      key={o.id}
-                      data-object-id={o.id}
-                      aria-label={o.name}
-                      className={`canvas-object ${o.locked ? "locked" : ""}`}
-                      onPointerDown={(e) => beginDrag(e, o)}
-                    >
-                      <Artwork object={o} />
-                      <rect
-                        x={0}
-                        y={0}
-                        width={o.width}
-                        height={o.height}
-                        transform={objectTransform(o)}
-                        fill="transparent"
-                        pointerEvents={o.locked ? "none" : "all"}
-                      />
-                    </g>
-                  ))}
-                <SelectionFrame
-                  objects={displayed.filter(
-                    (o) =>
-                      selection.includes(o.id) &&
-                      o.visible &&
-                      (!editable.length || !o.locked),
-                  )}
-                  zoom={fit * zoom}
-                  editable={editable.length > 0}
-                  onHandle={(e, handle) => beginDrag(e, undefined, handle)}
-                />
-                {drag?.kind === "marquee" && (
-                  <rect
-                    x={Math.min(drag.startX, drag.startX + drag.dx)}
-                    y={Math.min(drag.startY, drag.startY + drag.dy)}
-                    width={Math.abs(drag.dx)}
-                    height={Math.abs(drag.dy)}
-                    fill="#31715a18"
-                    stroke="#31715a"
-                    strokeWidth={1 / (fit * zoom)}
-                    pointerEvents="none"
-                  />
-                )}
-              </svg>
-            </div>
-            {!project.objects.length && (
-              <div className="empty-canvas">
-                <img
-                  className="empty-mascot"
-                  src="./brand/manti-mascot.png"
-                  width="165"
-                  height="150"
-                  alt="Manti the praying mantis"
-                />
-                <h2>A fresh space for your next idea.</h2>
-                <p>Add a shape, write a few words, or drop an SVG here.</p>
-              </div>
-            )}
-          </div>
-          <div className="canvas-footer">
-            <div className="toolbar-group">
-              <IconButton
-                title="Toggle grid"
-                active={grid}
-                onClick={() => setGrid(!grid)}
-              >
-                <Grid2X2 />
-              </IconButton>
-              <button
-                className={`snap-button ${snap ? "on" : ""}`}
-                onClick={() => setSnap(!snap)}
-              >
-                <Grip size={15} />
-                Snap {snap ? "on" : "off"}
-              </button>
-            </div>
-            <span className="selection-hint">
-              {selected.length
-                ? `${selected.length} ${selected.length === 1 ? "object" : "objects"} selected · Shift + click to add`
-                : "Drag to select · Drop an SVG to import"}
-            </span>
-            <div className="zoom-controls">
-              <IconButton
-                title="Zoom out"
-                onClick={() => setZoom((z) => Math.max(0.3, z / 1.2))}
-              >
-                <Minus />
-              </IconButton>
-              <span>{zoomPercent}%</span>
-              <IconButton
-                title="Zoom in"
-                onClick={() => setZoom((z) => Math.min(5, z * 1.2))}
-              >
-                <Plus />
-              </IconButton>
-              <IconButton
-                title="Fit canvas"
-                onClick={() => {
-                  setZoom(1);
-                  viewport.current?.scrollTo(0, 0);
-                }}
-              >
-                <Maximize />
-              </IconButton>
-            </div>
-          </div>
-        </main>
-        <aside className="right-panel">
-          <div className="inspector-heading">
-            <Settings2 size={17} />
-            <h3>Design properties</h3>
-          </div>
-          <div className="inspector">
+          <div className="inspector context-toolbar" aria-label="Design controls">
             {selected.length ? (
               <>
                 <div className="selected-title">
@@ -1925,23 +1697,7 @@ export default function App() {
                 </PropertyMenu>
                 {single?.type === "text" && (
                   <PropertyMenu title="Effects" summary="Text, fonts, style & curves" {...menu("effects")}>
-                  <div className="text-properties">
-                    <label className="field-label">
-                      Your words
-                      <textarea
-                        aria-label="Text content"
-                        maxLength={1000}
-                        value={single.text}
-                        disabled={single.locked}
-                        onChange={(e) =>
-                          patch({ text: e.target.value.replace(/\n/g, " ") })
-                        }
-                      />
-                    </label>
-                    <FontPicker key={`font-${single.id}`} value={single.font || 'Georgia'} disabled={single.locked} onChange={font => patch({ font })} />
-                    <button className={`italic-button ${single.italic ? 'active' : ''}`} disabled={single.locked} onClick={() => patch({ italic: !single.italic })} aria-label="Italic" aria-pressed={!!single.italic}>Italic</button>
-                    <TextCurveControl key={single.id} object={single} onPreview={setCurvePreview} onCommit={o => commitObjects([o])} />
-                  </div>
+                  <TextOptions object={single} onPatch={patch} onPreview={setCurvePreview} onCommit={o => commitObjects([o])} onEdit={() => editTextOnCanvas(single)} />
                   </PropertyMenu>
                 )}
                 {selected.length > 1 && (
@@ -2012,6 +1768,240 @@ export default function App() {
               <button className="board-reset" onClick={() => { setBoardPreview(null); changeBoardColor('#ffffff'); }}>Reset to white</button>
             </PropertyMenu>
           </div>
+          <div className="canvas-topline">
+            <div>
+              <span className="canvas-tag">CANVAS 01</span>
+              <span>
+                {(project.width / 96).toFixed(0)} ×{" "}
+                {(project.height / 96).toFixed(0)} in
+              </span>
+            </div>
+            <span>
+              <span className="status-dot" />
+              All your ideas welcome
+            </span>
+          </div>
+          <div
+            className="canvas-viewport"
+            ref={viewport}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              void openFile(e.dataTransfer.files[0]);
+            }}
+          >
+            <div
+              className="mat-surround"
+              style={{
+                width: project.width * fit * zoom + 36,
+                height: project.height * fit * zoom + 36,
+              }}
+            >
+              <div className="ruler-corner">{unit}</div>
+              <div className="ruler horizontal">
+                {Array.from(
+                  { length: Math.floor(project.width / 96) + 1 },
+                  (_, i) => (
+                    <span
+                      key={i}
+                      style={{ left: `${((i * 96) / project.width) * 100}%` }}
+                    >
+                      {unit === "in" ? i : +(i * 25.4).toFixed(1)}
+                    </span>
+                  ),
+                )}
+              </div>
+              <div className="ruler vertical">
+                {Array.from(
+                  { length: Math.floor(project.height / 96) + 1 },
+                  (_, i) => (
+                    <span
+                      key={i}
+                      style={{ top: `${((i * 96) / project.height) * 100}%` }}
+                    >
+                      {unit === "in" ? i : +(i * 25.4).toFixed(1)}
+                    </span>
+                  ),
+                )}
+              </div>
+              <svg
+                className="design-canvas"
+                tabIndex={0}
+                onContextMenu={canvasContextMenu}
+                onDoubleClick={e => { const object = canvasObjectAt(e); if (object?.type === 'text') editTextOnCanvas(object); }}
+                ref={canvas}
+                data-testid="design-canvas"
+                role="img"
+                aria-label="Design canvas"
+                width={project.width * fit * zoom}
+                height={project.height * fit * zoom}
+                viewBox={`0 0 ${project.width} ${project.height}`}
+                onPointerDown={(e) => {
+                  if (e.button !== 0) return;
+                  const p = point(e);
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                  if (!e.shiftKey) setSelection([]);
+                  setDrag({
+                    kind: "marquee",
+                    startX: p.x,
+                    startY: p.y,
+                    dx: 0,
+                    dy: 0,
+                    ids: e.shiftKey ? selection : [],
+                    box: bounds([]),
+                    originals: [],
+                  });
+                }}
+                onPointerMove={updateDrag}
+                onPointerUp={endDrag}
+                onPointerCancel={() => setDrag(null)}
+              >
+                <defs>
+                  <pattern
+                    id="small-grid"
+                    width="24"
+                    height="24"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <path
+                      d="M24 0H0V24"
+                      fill="none"
+                      stroke={isDarkBoard ? "#ffffff18" : "#0000000d"}
+                      strokeWidth="1"
+                    />
+                  </pattern>
+                  <pattern
+                    id="big-grid"
+                    width="96"
+                    height="96"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <rect width="96" height="96" fill="url(#small-grid)" />
+                    <path
+                      d="M96 0H0V96"
+                      fill="none"
+                      stroke={isDarkBoard ? "#ffffff30" : "#00000020"}
+                      strokeWidth="1.4"
+                    />
+                  </pattern>
+                </defs>
+                <rect
+                  width={project.width}
+                  height={project.height}
+                  data-testid="board-background"
+                  fill={canvasColor}
+                />
+                {grid && <rect width={project.width} height={project.height} fill="url(#big-grid)" pointerEvents="none" />}
+                {displayed
+                  .filter((o) => o.visible)
+                  .map((o) => (
+                    <g
+                      key={o.id}
+                      data-object-id={o.id}
+                      aria-label={o.name}
+                      className={`canvas-object ${o.locked ? "locked" : ""}`}
+                      onPointerDown={(e) => beginDrag(e, o)}
+                    >
+                      <Artwork object={o} />
+                      <rect
+                        x={0}
+                        y={0}
+                        width={o.width}
+                        height={o.height}
+                        transform={objectTransform(o)}
+                        fill="transparent"
+                        pointerEvents={o.locked ? "none" : "all"}
+                      />
+                    </g>
+                  ))}
+                <SelectionFrame
+                  objects={displayed.filter(
+                    (o) =>
+                      selection.includes(o.id) &&
+                      o.visible &&
+                      (!editable.length || !o.locked),
+                  )}
+                  zoom={fit * zoom}
+                  editable={editable.length > 0}
+                  onHandle={(e, handle) => beginDrag(e, undefined, handle)}
+                />
+                {drag?.kind === "marquee" && (
+                  <rect
+                    x={Math.min(drag.startX, drag.startX + drag.dx)}
+                    y={Math.min(drag.startY, drag.startY + drag.dy)}
+                    width={Math.abs(drag.dx)}
+                    height={Math.abs(drag.dy)}
+                    fill="#31715a18"
+                    stroke="#31715a"
+                    strokeWidth={1 / (fit * zoom)}
+                    pointerEvents="none"
+                  />
+                )}
+              </svg>
+            </div>
+            {!project.objects.length && (
+              <div className="empty-canvas">
+                <img
+                  className="empty-mascot"
+                  src="./brand/manti-mascot.png"
+                  width="165"
+                  height="150"
+                  alt="Manti the praying mantis"
+                />
+                <h2>A fresh space for your next idea.</h2>
+                <p>Add a shape, write a few words, or drop an SVG here.</p>
+              </div>
+            )}
+          </div>
+          <div className="canvas-footer">
+            <div className="toolbar-group">
+              <IconButton
+                title="Toggle grid"
+                active={grid}
+                onClick={() => setGrid(!grid)}
+              >
+                <Grid2X2 />
+              </IconButton>
+              <button
+                className={`snap-button ${snap ? "on" : ""}`}
+                onClick={() => setSnap(!snap)}
+              >
+                <Grip size={15} />
+                Snap {snap ? "on" : "off"}
+              </button>
+            </div>
+            <span className="selection-hint">
+              {selected.length
+                ? `${selected.length} ${selected.length === 1 ? "object" : "objects"} selected · Shift + click to add`
+                : "Drag to select · Drop an SVG to import"}
+            </span>
+            <div className="zoom-controls">
+              <IconButton
+                title="Zoom out"
+                onClick={() => setZoom((z) => Math.max(0.3, z / 1.2))}
+              >
+                <Minus />
+              </IconButton>
+              <span>{zoomPercent}%</span>
+              <IconButton
+                title="Zoom in"
+                onClick={() => setZoom((z) => Math.min(5, z * 1.2))}
+              >
+                <Plus />
+              </IconButton>
+              <IconButton
+                title="Fit canvas"
+                onClick={() => {
+                  setZoom(1);
+                  viewport.current?.scrollTo(0, 0);
+                }}
+              >
+                <Maximize />
+              </IconButton>
+            </div>
+          </div>
+        </main>
+        <aside className="right-panel">
           <div className="layers-heading">
             <div>
               <Layers size={17} />
@@ -2206,6 +2196,10 @@ export default function App() {
           close={closeContextMenu}
         />
       )}
+      {textEditing && <CanvasTextEditor key={textEditing.object.id} object={textEditing.object} anchor={textEditing.anchor} onCancel={() => setTextEditing(null)} onDone={text => {
+        commit(p => ({...p, objects:p.objects.map(o => o.id === textEditing.object.id && !o.locked ? {...o,text,...(text.includes('\n')?{textCurve:0,textCurveRatio:undefined}:{})} : o)}));
+        setTextEditing(null);
+      }} />}
       {dialog && (
         <div className="modal-backdrop" onClick={() => setDialog(null)}>
           <section

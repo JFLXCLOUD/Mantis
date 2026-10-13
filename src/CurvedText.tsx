@@ -2,6 +2,7 @@ import { fontFamily } from './fonts';
 import { useId } from "react";
 import type { DesignObject } from "./model";
 import { curveLayout, curveTransform, TEXT_EM } from "./textCurve";
+import { richText, styledTextMarkup } from './richText';
 
 export function CurvedText({
   object,
@@ -11,6 +12,7 @@ export function CurvedText({
   paint: React.SVGProps<SVGTextElement>;
 }) {
   const id = `text-curve-${useId()}`;
+  if (richText(object)) return <g dangerouslySetInnerHTML={{__html: styledTextMarkup(object, `fill="${paint.fill}" stroke="${paint.stroke}" stroke-width="${paint.strokeWidth || 1.5}"`, id)}} />;
   const layout = curveLayout(object);
   return (
     <g data-curved-text="true" transform={curveTransform(object, layout.box)}>

@@ -28,6 +28,13 @@ export type DesignObject = {
   text?: string;
   font?: string;
   italic?: boolean;
+  bold?: boolean;
+  underline?: boolean;
+  letterSpacing?: number;
+  lineSpacing?: number;
+  textAlign?: "left" | "center" | "right";
+  textEffect?: "outline" | "shadow";
+  effectAmount?: number;
   textCurve?: number;
   textCurveRatio?: number;
   svg?: string;
@@ -39,7 +46,7 @@ export type DesignObject = {
 };
 export type Project = {
   format: "hopper";
-  version: 4;
+  version: 5;
   name: string;
   width: number;
   height: number;
@@ -87,7 +94,7 @@ export function createObject(type: Shape, index = 0): DesignObject {
 export function blankProject(): Project {
   return {
     format: "hopper",
-    version: 4,
+    version: 5,
     name: "Untitled project",
     width: 1152,
     height: 1152,
@@ -145,7 +152,7 @@ export function validateProject(input: unknown): Project {
   const p = input as Omit<Project, "version"> & { version: number };
   if (
     p.format !== "hopper" ||
-    ![1, 2, 3, 4].includes(p.version) ||
+    ![1, 2, 3, 4, 5].includes(p.version) ||
     !Array.isArray(p.objects) ||
     p.objects.length > 1000
   )
@@ -221,6 +228,12 @@ export function validateProject(input: unknown): Project {
         !validFontName(o.font))
     )
       throw new Error("Invalid text layer.");
+    if ([o.bold, o.underline, o.italic].some(v => v !== undefined && typeof v !== 'boolean')) throw new Error('Invalid text style.');
+    if ((o.letterSpacing !== undefined && (!Number.isFinite(o.letterSpacing) || o.letterSpacing < -10 || o.letterSpacing > 50)) ||
+      (o.lineSpacing !== undefined && (!Number.isFinite(o.lineSpacing) || o.lineSpacing < .8 || o.lineSpacing > 3)) ||
+      (o.effectAmount !== undefined && (!Number.isFinite(o.effectAmount) || o.effectAmount < 1 || o.effectAmount > 15)) ||
+      (o.textAlign !== undefined && !['left','center','right'].includes(o.textAlign)) ||
+      (o.textEffect !== undefined && !['outline','shadow'].includes(o.textEffect))) throw new Error('Invalid text effect or spacing.');
     if (o.textCurve !== undefined && (o.type !== 'text' || !Number.isInteger(o.textCurve) || Math.abs(o.textCurve) > 180))
       throw new Error('Invalid text curve.');
     if ((o.textCurveRatio !== undefined && (o.type !== 'text' || !Number.isFinite(o.textCurveRatio) || o.textCurveRatio < 0.00001 || o.textCurveRatio > 100000)) ||
@@ -241,7 +254,7 @@ export function validateProject(input: unknown): Project {
   }
   return {
     format: "hopper",
-    version: 4,
+    version: 5,
     name: p.name,
     width: p.width,
     height: p.height,

@@ -1,3 +1,5 @@
+import { richText, styledTextMarkup } from './richText';
+import tablerLicense from '../licenses/TABLER_ICONS.txt?raw';
 import { embeddedFonts, fontFamily } from './fonts';
 import DOMPurify from "dompurify";
 import { objectTransform } from "./geometry";
@@ -74,6 +76,9 @@ export function sanitizeSvg(raw: string): string {
       "font-size",
       "font-weight",
       "font-style",
+      "letter-spacing",
+      "text-decoration",
+      "xml:space",
       "text-anchor",
       "textLength",
       "lengthAdjust",
@@ -168,6 +173,7 @@ export function objectMarkup(o: DesignObject): string {
     body = `<rect width="${o.width}" height="${o.height}" rx="${Math.min(o.width, o.height) * 0.12}" ${attrs}/>`;
   else if (o.type === "ellipse")
     body = `<ellipse cx="${o.width / 2}" cy="${o.height / 2}" rx="${o.width / 2}" ry="${o.height / 2}" ${attrs}/>`;
+  else if (o.type === "text" && richText(o)) body = styledTextMarkup(o, attrs, `styled-export-${crypto.randomUUID()}`);
   else if (o.type === "text" && o.textCurve) {
     const layout = curveLayout(o), id = `export-curve-${crypto.randomUUID()}`;
     body = `<g transform="${curveTransform(o, layout.box)}"><defs><path id="${id}" d="${layout.path}"/></defs><text font-family="${escape(fontFamily(o.font))}" font-size="${TEXT_EM}" font-style="${o.italic ? 'italic' : 'normal'}" ${attrs}><textPath href="#${id}" textLength="${layout.length}" lengthAdjust="spacingAndGlyphs">${escape(o.text || '')}</textPath></text></g>`;
@@ -185,7 +191,7 @@ export function exportSvg(
   mirror = false,
 ): string {
   const visible = objects.filter((o) => o.visible && o.operation !== "guide");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${project.width / 96}in" height="${project.height / 96}in" viewBox="0 0 ${project.width} ${project.height}">\n<title>${escape(project.name)}</title>\n<desc>Created with Mantis Studio. Text is editable text, not outlined paths. Operation labels are metadata; configure operations in your cutting software.</desc>\n${embeddedFonts(visible)}<g${mirror ? ` transform="translate(${project.width} 0) scale(-1 1)"` : ""}>${visible.map(objectMarkup).join("\n")}</g>\n</svg>`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${project.width / 96}in" height="${project.height / 96}in" viewBox="0 0 ${project.width} ${project.height}">\n<title>${escape(project.name)}</title>\n<desc>Created with Mantis Studio. Text is editable text, not outlined paths. Operation labels are metadata; configure operations in your cutting software.\nLibrary notice (applies to any included Tabler artwork):\n${escape(tablerLicense)}</desc>\n${embeddedFonts(visible)}<g${mirror ? ` transform="translate(${project.width} 0) scale(-1 1)"` : ""}>${visible.map(objectMarkup).join("\n")}</g>\n</svg>`;
 }
 export function download(contents: string | Blob, name: string, type: string) {
   const url = URL.createObjectURL(new Blob([contents], { type }));

@@ -17,3 +17,8 @@ They contain no third-party stock artwork, font outlines or Cricut assets.
 This dedication applies to the catalog's shape geometries, not the Mantis name,
 mascot, branding, imported user artwork or fonts. Application code remains MIT
 licensed; see LICENSE.
+
+The additional `src/tabler-catalog.json` designs are adapted from Tabler Icons
+3.49.0, Copyright (c) 2020-2026 Paweł Kuna, under the MIT license. They are not
+covered by the CC0 dedication above. Their complete notice is in
+`licenses/TABLER_ICONS.txt`, the bundled third-party notices, and SVG exports.

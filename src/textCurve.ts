@@ -1,3 +1,4 @@
+import { richText, styledTextLayout } from './richText';
 import type { DesignObject } from "./model";
 import type { Box } from "./geometry";
 import { fontFamily } from './fonts';
@@ -21,6 +22,7 @@ export function curveLayout(o: DesignObject) {
   const angle = o.textCurve || 0;
   const ratio = o.textCurveRatio ?? o.width / o.height;
   const arc = textArc(angle, ratio);
+  if (richText(o)) return {...arc,box:styledTextLayout(o,'styled-curve-measure').box};
   if (!angle)
     return { ...arc, box: { x: 0, y: 0, width: arc.length, height: TEXT_EM } };
   const key = JSON.stringify([angle, ratio, o.text, o.font, o.italic]);

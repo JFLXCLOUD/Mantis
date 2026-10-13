@@ -21,7 +21,7 @@ The application is now Mantis Studio. The default desktop profile remains `%APPD
 
 All coordinates are in SVG user units at 96 units per inch. Millimeters are a display/input conversion. The file canvas dimensions specify exported physical size. Positive rotation is clockwise in the SVG coordinate system, around each object's center. Layer order is back to front. Hidden objects remain in project files but are omitted from SVG export. Guide objects are omitted from export and preparation.
 
-## `.mantis` v4 (also reads legacy `.hopper` v1-v4)
+## `.mantis` v5 (also reads legacy `.hopper` v1-v4)
 
 Starting in 0.12.1, new project downloads use `.mantis`; job planning drafts
 use `.mantisjob`. The project picker accepts `.mantis`, `.hopper` and `.json`,
@@ -38,7 +38,7 @@ UTF-8 JSON, readable without Mantis Studio:
 ```json
 {
   "format": "hopper",
-  "version": 4,
+  "version": 5,
   "name": "My project",
   "width": 1152,
   "height": 1152,
@@ -48,15 +48,45 @@ UTF-8 JSON, readable without Mantis Studio:
 
 An object has `id`, `name`, `type`, `x`, `y`, `width`, `height`, `rotation`, hex `fill`, `operation`, `visible`, and `locked`. Optional fields include `groupId`, text content/font/italic, sanitized nested SVG, and the v2 `flipX`, `flipY`, and `skewX` transforms. Transform order about the object's center is rotation, horizontal shear, then reflection. The geometry helpers, renderer, hit regions, bounds and SVG exporter share this representation.
 
-Version 1/2/3 files open with their original geometry and are saved as version 4. Native `path` layers store normalized 100-by-100 SVG path geometry in `pathData`; object dimensions and transforms remain editable. Nonzero winding retains holes. The v4 format adds curved text and prevents older readers from silently showing curved words as straight. The autosave storage key stays `hopper.project.v1` so an existing workspace is found; the document inside it is versioned independently. Unknown versions are rejected. Original project files are never rewritten by opening them. Imports and local recovery pass through the same validation and SVG sanitation.
+Version 1/2/3/4 files open with their original geometry and are saved as version 5. Native `path` layers store normalized 100-by-100 SVG path geometry in `pathData`; object dimensions and transforms remain editable. Nonzero winding retains holes. The v4 format adds curved text and prevents older readers from silently showing curved words as straight. The autosave storage key stays `hopper.project.v1` so an existing workspace is found; the document inside it is versioned independently. Unknown versions are rejected. Original project files are never rewritten by opening them. Imports and local recovery pass through the same validation and SVG sanitation.
 
 Groups are editing relationships only. Each member retains its geometry and color. Repeat and duplicate assign new group IDs per copied group. Alignment and equal-gap distribution treat each selected group as one unit. Locked/hidden layers are excluded from cursor transforms and quick layout actions. Mat review retains original positioning and splits native objects by color and operation. Imported SVGs receive separate groups because their internal colors are not decomposed. The imported SVG viewport fills its object's dimensions so unlocked resizing visibly stretches the artwork instead of letterboxing it.
 
 Undo stores snapshots (80 entries). A drag commits one snapshot on pointer release; intermediate frames are previews. Local workspace saving is debounced. Project file export is the durable interchange path. A future implementation should replace snapshot history with compact commands for large projects.
 
+## Text studio and large artwork catalog (0.13.0)
+
+Project v5 adds optional `bold`, `underline`, `letterSpacing` (-10 to 50 in
+normalized 100-unit font coordinates), `lineSpacing` (0.8 to 3), `textAlign`,
+`textEffect` (outline or shadow) and `effectAmount` (1 to 15). Newlines create
+separate editable lines. Curves use one line; entering multiple lines resets
+the curve. Older readers reject v5 rather than silently dropping typography.
+Legacy text without new styling uses its original rendering path.
+
+`richText.ts` supplies shared, escaped SVG markup for styled on-canvas text,
+SVG export and print output. Browser glyph measurements include decoration and
+effect extents, use separate measurement path IDs and a bounded cache, and fit
+the result to the object's existing geometry. Outline is a stroked-text
+appearance, not a font-to-path conversion; shadow is translucent duplicated
+text for print artwork. Both remain editable text.
+
+`CanvasTextEditor.tsx` stages typing locally and commits once on Done,
+Ctrl+Enter or clicking away. Escape discards the draft. Canvas hit testing uses
+the object's actual screen transform so double-clicking works after rotation,
+reflection or skew, including when drag pointer capture retargets the click.
+Locked layers do not enter text editing. Toolbar popouts close on Escape or
+canvas clicks; Save, Undo and layer controls retain the current editing context.
+
+The original catalog is extended by 1,019 filled Tabler designs from pinned
+`@tabler/icons` 3.49.0. The build-only generator converts their paths to native
+editable contours, preserves proportions and excludes brand marks. Search uses
+upstream keyword metadata and pages results in groups of 40. The complete MIT
+notice is bundled with the app and included in SVG exports, including job draft
+artwork; CC0 continues to apply only to Mantis original library designs.
+
 ## Known engineering limits
 
-SVG text uses a target text length and Windows system fonts, not glyph outlines. Primitive shapes are intentionally simple. The rectangle tool currently creates rounded rectangles. Conservative SVG import omits resources/effects; it is not a full SVG implementation. Native-shape booleans and print-proof export are implemented; a machine toolpath engine and verified cutting driver are not.
+SVG text uses Windows system fonts, not glyph outlines. Primitive shapes are intentionally simple. The rectangle tool currently creates rounded rectangles. Conservative SVG import omits resources/effects; it is not a full SVG implementation. Native-shape booleans and print-proof export are implemented; a machine toolpath engine and verified cutting driver are not.
 
 ## Property menus, fonts and board colors (0.11.0)
 

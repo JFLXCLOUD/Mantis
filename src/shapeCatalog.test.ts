@@ -12,9 +12,9 @@ import type paper from "paper";
 
 describe("original shape library", () => {
   it("finds plural names, aliases, punctuation and intersected categories", () => {
-    expect(searchShapes("shamrocks")).toHaveLength(4);
-    expect(searchShapes("St. Patrick’s")).toHaveLength(4);
-    expect(searchShapes("  SHAMROCKS ")).toHaveLength(4);
+    expect(searchShapes("shamrocks", "All shapes", "originals")).toHaveLength(4);
+    expect(searchShapes("St. Patrick’s")).toHaveLength(5);
+    expect(searchShapes("  SHAMROCKS ", "All shapes", "originals")).toHaveLength(4);
     expect(searchShapes("butterflies")[0].id).toBe("butterfly");
     expect(searchShapes("flowers").length).toBeGreaterThan(2);
     expect(searchShapes("shamrock", "Animals")).toHaveLength(0);

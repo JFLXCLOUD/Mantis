@@ -1,40 +1,50 @@
-# Original shape library
+# Searchable artwork library
 
-Open **Shape library** in the Create sidebar. Search names or related words
-(for example, `shamrocks`, `St Patrick's`, `butterflies` or `flowers`), or choose
-a category. Click a shape to insert it and return to editing. Escape closes the
-library and returns focus to its button.
+Open **Shape library** in the Create sidebar or collapsed tool rail. Search
+names and related words, choose a category or filter by collection. Click a
+preview to insert it and return to the canvas. Escape closes the library.
 
-The initial collection includes 36 Mantis originals in Nature, Animals,
-Celebrations and Essentials. It is bundled with the app: search works offline,
-without accounts, downloads or API keys. It is a curated starter collection,
-not a search of the entire web. More designs can be added in future updates.
+The bundled catalog contains **1,055 designs**: 36 Mantis originals and 1,019
+filled designs adapted from Tabler Icons 3.49.0. It works offline without an
+account, downloads or API keys. Results are paged in groups of 40; the count
+shows all matches. This is a curated vector catalog, not a web image search.
 
-Shapes are native editable paths with their original proportions. They start
-centered on the board, up to two inches on their longest side, and can be
-recolored, resized, transformed, repeated or combined with other native
-shapes. Insertion is undoable. Project saves, SVG export and print preparation
-use the same existing path workflow. Very small or intricate output still
-needs appropriate sizing for its intended material and workflow.
+Search examples include shamrocks, clovers, flowers, butterflies, cherries,
+hearts, arrows, buildings, vehicles, weather, sports and symbols. Tabler's
+upstream names, categories and keywords expand the searchable vocabulary.
+Brand marks are excluded from the bundled collection.
 
-The [library geometry dedication](../SHAPE_LIBRARY_LICENSE.md) uses
-[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/): personal and
-commercial use, modification and redistribution without required attribution.
-This applies to these original catalog shapes; it does not change the terms
-of artwork or fonts you import.
+Inserted designs are native editable paths, centered on the board at up to
+two inches on their longest side. They preserve their proportions and can be
+recolored, resized, transformed, repeated or combined. Insertion is undoable.
+Project files, SVG exports and print preparation use the existing path workflow.
 
-## Adding original designs
+## Free-use terms
 
-`scripts/build-shape-library.mjs` is the auditable geometric source; run
-`npm run shapes:build` to regenerate `src/shape-catalog.json`. Every entry has
-a stable ID, name, category, search aliases, aspect ratio and normalized path.
-The generator combines original primitives with Paper.js; it does not trace,
-download or extract existing artwork. Paths use a 100-by-100 coordinate space
-and retain their intended proportions via the separate aspect ratio.
+- **Mantis originals:** [CC0 dedication](../SHAPE_LIBRARY_LICENSE.md), allowing
+  personal and commercial use without attribution.
+- **Tabler filled:** [MIT license](../licenses/TABLER_ICONS.txt), Copyright
+  (c) 2020-2026 Pawel Kuna. Personal and commercial use is permitted; retain
+  the license notice when redistributing the covered digital artwork. The
+  full upstream notice is bundled in the app and included in SVG exports.
 
-Contributions must have clear provenance and compatible free-use rights.
-Add helpful singular/plural and subject aliases. Review previews at small
-sizes and check that closed paths, holes, dimensions, project round-trips and
-SVG export pass `src/shapeCatalog.test.ts`. Browser coverage in
-`tests/shape-library.spec.ts` exercises offline search, editing, undo, color,
-export, keyboard dismissal, dark/light layouts and the project object limit.
+Each card identifies its collection/license. Imported user artwork and fonts
+keep their own terms. These notices do not promise the suitability of an
+intricate design for a particular material, scale or cutting process.
+
+## Rebuilding the catalogs
+
+`npm run shapes:build` regenerates the 36 original designs from their auditable
+geometric source in `scripts/build-shape-library.mjs`.
+
+`npm run shapes:tabler` regenerates the Tabler catalog and copies its full
+license from the pinned build dependency. The generator handles filled paths,
+closes implicitly closed contours, combines component paths and normalizes
+geometry to a 100-by-100 coordinate space with a separate aspect ratio.
+Outline-only icons and brand marks are not included.
+
+Contributions need clear provenance and compatible free-use terms. Preserve
+names, helpful tags and source attribution. `src/shapeCatalog.test.ts` checks
+all bundled entries for unique IDs, closed/bounded geometry and project/SVG
+round-trips. Browser checks cover offline search, categories, paging, edits,
+undo, export, keyboard dismissal, themes and the 1,000-object project limit.

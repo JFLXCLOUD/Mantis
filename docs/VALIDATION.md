@@ -1,3 +1,12 @@
+# Text studio and expanded artwork - 12 October 2026
+
+- **112 unit/offline tests passed**: 66 renderer, 27 native and 19 offline research. Typography coverage includes v5 project round-trips, escaping, local text-path references, SVG sanitation, and rejected invalid style values. Every one of the 1,055 library paths is checked for bounded, closed geometry and project/SVG round-trips.
+- **53 browser/Electron scenarios passed**, with physical hardware discovery skipped. New checks cover actual canvas double-click editing, multiline commit/undo/redo/cancel, locked text, persistent sidebar collapse, top popouts at 1100 by 740 in dark mode, styles and SVG export, plus offline collection search, pagination and native path insertion.
+- The full run exposed popout dismissal after a clicked setting replaced its own button. Dismissal now checks the original event path. Autosave now marks edits pending before paint, avoiding a stale saved indicator. Drag tests dismiss an open popout before reaching handles it covers. The complete suite passed after these fixes.
+- Windows 0.13.0 built and packaged locally. An isolated package check verified direct editing, multiline outline text, a curved shadow preview and an actual native PNG download of styled text (about 395 KB). Reviewed screenshots use demonstration artwork only. The temporary profile was removed.
+- Privately backed up local storage and IndexedDB, closed 0.12.1 normally, and opened 0.13.0. All six existing storage entries remained unchanged apart from update-check timing. No user artwork was edited. Earlier projects open as schema v5; new files keep the `.mantis` extension.
+- The pinned Tabler filled catalog excludes brand marks and includes the upstream MIT notice in app notices and SVG exports. Text outline/shadow are editable appearance effects, not font-to-path conversion or verified machine toolpaths. No hardware commands, public downloads or release tags were created.
+
 # Mantis file extensions - 12 October 2026
 
 - Production build and local Windows 0.12.1 packaging passed.

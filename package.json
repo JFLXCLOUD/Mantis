@@ -1,6 +1,6 @@
 {
   "name": "mantis-studio",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "private": true,
   "description": "An independent, open-source craft design studio. Your ideas, without limits.",
   "repository": {
@@ -27,7 +27,8 @@
     "test:e2e": "playwright test",
     "package:win": "npm run build && node scripts/ensure-electron.mjs && electron-builder --win --dir",
     "dist:win": "npm run build && node scripts/ensure-electron.mjs && electron-builder --win portable",
-    "shapes:build": "node scripts/build-shape-library.mjs"
+    "shapes:build": "node scripts/build-shape-library.mjs",
+    "shapes:tabler": "node scripts/build-tabler-library.mjs"
   },
   "keywords": [],
   "author": "Mantis Studio contributors",
@@ -38,7 +39,7 @@
     "appId": "studio.hopper.desktop",
     "productName": "Mantis Studio",
     "directories": {
-      "output": "release/v0.12.1"
+      "output": "release/v0.13.0"
     },
     "files": [
       "dist/**/*",
@@ -74,6 +75,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.64.0",
+    "@tabler/icons": "3.49.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",

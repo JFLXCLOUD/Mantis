@@ -108,6 +108,7 @@ export function FontPicker({
           </optgroup>
         </select>
       </label>
+      <div className="font-preview" style={{fontFamily:fontFamily(value)}} aria-label="Font preview">Aa Bb Cc · Made with love</div>
       <div className="font-actions">
         <button
           className="button secondary"
@@ -152,6 +153,7 @@ export function FontPicker({
           }
         }}
       />
+      <details className="font-help"><summary>Font files &amp; portability</summary>
       <p className="field-note">
         {loading
           ? "Reading installed fonts…"
@@ -161,6 +163,7 @@ export function FontPicker({
         Project files reference fonts; another computer needs the same fonts.
         SVG and print exports include imported fonts used in the artwork.
       </p>
+      </details>
       {!known && !loading && (
         <p className="font-error">
           This font is unavailable here. Import its file or choose an installed

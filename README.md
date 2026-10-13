@@ -15,9 +15,10 @@ Design locally, keep editable project files, and take your artwork with you as S
 
 - **Precise transforms:** drag to resize freely or lock proportions, rotate, flip, align, distribute and repeat. Work in inches or millimeters with grid snapping.
 - **Vector tools:** native shapes, editable text, Weld, Subtract, Intersect and Slice. Combine native shapes into editable paths with holes.
-- **Searchable shape library:** 36 original vector designs, including shamrocks, clovers, flowers, animals, celebration shapes and tags. Search by name or keyword, browse categories and add editable shapes in one click, entirely offline. The [original library shapes are dedicated to CC0](SHAPE_LIBRARY_LICENSE.md), free for personal and commercial projects without attribution.
+- **Searchable shape library:** 1,055 editable vector designs: 36 Mantis originals plus 1,019 filled Tabler designs. Search names and keywords offline, filter by category or collection, and browse paged previews. Both collections allow personal and commercial use; original designs use CC0 and Tabler designs use MIT with bundled/exported notices. See the [library guide](docs/SHAPE_LIBRARY.md).
 - **Curved text:** bend editable words up or down, adjust the arc with a slider and reset to straight. Curves survive resizing, project saves, SVG export and print preparation.
-- **Organized editing:** compact Color, Size & position, Effects and Board settings dropdowns keep controls out of the way until needed. Text content, fonts, italic styling and curves live under Effects.
+- **Room to design:** Color, Size & position, Effects and Board settings now open above the board. The left sidebar collapses to a tool rail, and the right sidebar is dedicated to layers.
+- **A friendlier text studio:** double-click text on the canvas to type, including multiple lines. Finish with Ctrl+Enter or click away; Escape cancels. The Effects popout has Text, Style and Curve tabs, with font previews, bold/italic/underline, text height, spacing, line alignment, case conversion, outline and translucent shadow styles.
 - **Your fonts:** search installed Windows font families or import TTF, OTF, WOFF and WOFF2 files. Imported fonts stay in a local library and are included in SVG/print output; portable project files reference fonts, so another computer needs the same fonts.
 - **Board color:** preview artwork against a color of your choice, with a contrasting grid. This workspace preference does not alter artwork or export backgrounds.
 - **Color your artwork:** choose from 20 named swatches or open the advanced picker for hue, saturation, brightness and exact HEX/RGB values. Preview changes, apply or cancel, and recolor multiple editable layers together.
@@ -30,17 +31,17 @@ Design locally, keep editable project files, and take your artwork with you as S
 - **Release notifications:** check GitHub for updates from App settings, or enable automatic daily checks. Open release notes/downloads in your browser when ready; no automatic installation or restart.
 
 <details>
-<summary>See the organized properties menus and custom board color</summary>
+<summary>See the text studio and direct canvas editing</summary>
 
-![Compact editing menus beside curved text on a cream board](docs/screenshots/properties-menus.png)
+![Text styling popout above the board, with the left sidebar collapsed](docs/screenshots/text-studio-style.png)
+![Double-click text to type directly on the canvas](docs/screenshots/text-studio-inline.png)
 
 </details>
 
 <details>
-<summary>Search the original shape library</summary>
+<summary>Search the expanded artwork library</summary>
 
-![Shamrock search in the light shape library](docs/screenshots/shape-library-light.png)
-![Shamrock search in the dark shape library](docs/screenshots/shape-library-dark.png)
+![Nature designs from the Tabler collection, searchable offline](docs/screenshots/artwork-library-expanded.png)
 
 Browse the [library guide](docs/SHAPE_LIBRARY.md) for available categories and free-use terms.
 

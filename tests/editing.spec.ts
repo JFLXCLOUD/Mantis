@@ -9,6 +9,8 @@ async function fixture(page: Page, objects = [base('First')]) {
   await openProperties(page, 'Size & position');
 }
 async function drag(page: Page, handle: string, dx: number, dy: number) {
+  const menu=page.getByRole('button',{name:'Size & position',exact:true});
+  if(await menu.getAttribute('aria-expanded')==='true') await menu.click();
   const rect = await page.getByTestId(handle).boundingBox();
   const x = rect!.x + rect!.width / 2, y = rect!.y + rect!.height / 2;
   await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x + dx, y + dy, { steps: 6 }); await page.mouse.up();
@@ -33,7 +35,7 @@ test('unlocked cursor stretch, edge handles, single-step undo and persistence', 
   await page.getByRole('button', { name: 'Undo (Ctrl+Z)', exact: true }).click();
   expect(await field(page, 'Width')).toBe(afterEdge); expect(await field(page, 'Height')).toBe(1);
   await page.getByRole('button', { name: 'Redo (Ctrl+Shift+Z)', exact: true }).click();
-  const saved = await snapshot(page); expect(saved.version).toBe(4);
+  const saved = await snapshot(page); expect(saved.version).toBe(5);
   await page.reload(); await page.getByRole('button', { name: 'Select First', exact: true }).click();
   await openProperties(page, 'Size & position');
   expect(await field(page, 'Height')).toBeCloseTo(saved.objects[0].height / 96, 3);
@@ -67,6 +69,7 @@ test('rotated resize anchors the opposite corner and cursor rotation snaps with 
 
 test('Escape cancels a transform and locked layers offer no resize handles', async ({ page }) => {
   await fixture(page);
+  await page.getByRole('button',{name:'Size & position',exact:true}).click();
   const rect = await page.getByTestId('resize-se').boundingBox();
   await page.mouse.move(rect!.x + rect!.width / 2, rect!.y + rect!.height / 2); await page.mouse.down();
   await page.mouse.move(rect!.x + 70, rect!.y + 25); await page.keyboard.press('Escape'); await page.mouse.up();
