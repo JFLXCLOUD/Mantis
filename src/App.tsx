@@ -709,7 +709,7 @@ export default function App() {
   function saveFile() {
     download(
       JSON.stringify(project, null, 2),
-      `${filename(project.name)}.hopper`,
+      `${filename(project.name)}.mantis`,
       "application/json",
     );
     notify("Project file saved. Everything stays editable.");
@@ -2172,7 +2172,7 @@ export default function App() {
         ref={file}
         type="file"
         aria-label="Import artwork or project"
-        accept=".svg,.hopper,.json"
+        accept=".svg,.mantis,.hopper,.json"
         hidden
         onChange={(e) => {
           void openFile(e.target.files?.[0]);
@@ -2430,7 +2430,7 @@ export default function App() {
                     <Save />
                     <strong>Keep your work</strong>
                     <p>
-                      Your workspace saves locally. Save a .hopper file for a
+                      Your workspace saves locally. Save a .mantis file for a
                       portable, editable copy.
                     </p>
                   </div>

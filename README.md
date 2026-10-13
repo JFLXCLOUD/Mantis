@@ -22,7 +22,7 @@ Design locally, keep editable project files, and take your artwork with you as S
 - **Board color:** preview artwork against a color of your choice, with a contrasting grid. This workspace preference does not alter artwork or export backgrounds.
 - **Color your artwork:** choose from 20 named swatches or open the advanced picker for hue, saturation, brightness and exact HEX/RGB values. Preview changes, apply or cancel, and recolor multiple editable layers together.
 - **Fast object actions:** right-click the canvas or layers for duplicate, group, combine, repeat, arrange, hide, lock and delete. Keyboard navigation and undo are included.
-- **Layers and local projects:** search layers, select matching colors, group artwork, recover your current workspace and save portable `.hopper` files.
+- **Layers and local projects:** search layers, select matching colors, group artwork, recover your current workspace and save portable `.mantis` files.
 - **Portable artwork:** sanitized SVG import, SVG export by canvas or group, mirrored material previews and overhang checks.
 - **Print Then Cut preparation:** export transparent 300 dpi PNG artwork and Letter/A4 PDF proofs, then finish registration and cutting in Design Space. Native sensor registration is still planned.
 - **Material library:** browse 15 starter materials, search by category, save favorites and create your own profiles with supplier, weight/thickness and notes. Job drafts retain a material snapshot; profiles are planning notes, not verified cutting presets.
@@ -63,7 +63,7 @@ Browse the [library guide](docs/SHAPE_LIBRARY.md) for available categories and f
 
 </details>
 
-Meet **Manti**, our praying mantis mascot, in the [brand kit](docs/BRANDING.md). Earlier Hopper projects and local workspaces remain compatible.
+Meet **Manti**, our praying mantis mascot, in the [brand kit](docs/BRANDING.md). Earlier `.hopper` projects still open directly; new saves use `.mantis`. Existing local workspaces remain compatible.
 
 <details>
 <summary>See curved text</summary>
@@ -94,7 +94,7 @@ Meet **Manti**, our praying mantis mascot, in the [brand kit](docs/BRANDING.md).
 | Motion, drawing, cutting and job stop/cancel | Not implemented or physically validated |
 | Print Then Cut | Artwork/proof export works; native calibration, registration and cutting are pending |
 
-Connection cancellation stops a connection attempt; it is **not a machine-motion stop**. `.hopperjob` exports are planning drafts, not executable machine jobs. See [model coverage](docs/MACHINE_SUPPORT.md), [device integration](docs/DEVICE_INTEGRATION.md) and the [Explore 3 investigation](docs/research/EXPLORE3_PROTOCOL.md) for the evidence and limits.
+Connection cancellation stops a connection attempt; it is **not a machine-motion stop**. `.mantisjob` exports are planning drafts, not executable machine jobs. See [model coverage](docs/MACHINE_SUPPORT.md), [device integration](docs/DEVICE_INTEGRATION.md) and the [Explore 3 investigation](docs/research/EXPLORE3_PROTOCOL.md) for the evidence and limits.
 
 ## Run from source on Windows
 
@@ -123,7 +123,7 @@ Imported SVG is one artwork layer. Scripts, external resources, embedded images,
 
 Prepare is an artwork review/export stage; automatic mat nesting and machine toolpaths are still planned. Operation labels are metadata, not commands understood automatically by other software. SVG output clips at the canvas boundary.
 
-Autosave recovers the current workspace in each app/browser profile. Save `.hopper` files to keep separate projects and backups. Undo history is session-only (80 entries); projects support up to 1,000 objects and imports up to 5 MB. Details: [architecture and file formats](docs/ARCHITECTURE.md), [print workflow](docs/PRINT_THEN_CUT.md).
+Autosave recovers the current workspace in each app/browser profile. Save `.mantis` files to keep separate projects and backups. Undo history is session-only (80 entries); projects support up to 1,000 objects and imports up to 5 MB. Details: [architecture and file formats](docs/ARCHITECTURE.md), [print workflow](docs/PRINT_THEN_CUT.md).
 
 ## Help build Mantis
 

@@ -149,7 +149,7 @@ try {
     page.getByRole("button", { name: "Send cut job", exact: true }),
   ).toBeDisabled();
   await page.getByLabel("Job material").fill("Test vinyl");
-  const draftPath = join(profile, "test-job.hopperjob");
+  const draftPath = join(profile, "test-job.mantisjob");
   await app.evaluate(({ session }, savePath) => {
     globalThis.hopperTestDownload = "waiting";
     session.defaultSession.once("will-download", (_event, item) => {

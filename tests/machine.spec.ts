@@ -24,9 +24,9 @@ test("machine setup saves preferences and exports an honest mirrored job draft",
   ).toBeDisabled();
   const downloading = page.waitForEvent("download");
   await panel.getByRole("button", { name: "Save job draft" }).click();
-  const job = JSON.parse(
-    await readFile((await (await downloading).path())!, "utf8"),
-  );
+  const draft = await downloading;
+  expect(draft.suggestedFilename()).toMatch(/\.mantisjob$/);
+  const job = JSON.parse(await readFile((await draft.path())!, "utf8"));
   expect(job.target.model).toBe("maker-3");
   expect(job.setup).toMatchObject({
     material: "Removable vinyl",

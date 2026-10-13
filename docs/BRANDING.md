@@ -29,7 +29,7 @@ Use the simplified emblem at small sizes. The 16/20/24/32px exports use thicker 
 
 ## Compatibility
 
-Version 0.4.0 changes the visible name, executable name, logos and mascot. The default profile remains %APPDATA%/hopper-studio; explicit --user-data-dir profiles remain supported. Existing project/settings storage keys, .hopper project format v2, .hopperjob draft format and internal device bridge identifiers stay stable. Branding does not relocate or rewrite projects. The Windows application ID remains stable for continuity.
+Version 0.4.0 changed the visible name, executable name, logos and mascot. Version 0.12.1 changes new project downloads to `.mantis` and job drafts to `.mantisjob`; existing `.hopper` projects continue to open. The default profile remains %APPDATA%/hopper-studio; explicit --user-data-dir profiles remain supported. Existing project/settings storage keys, internal JSON format identifiers and device bridge identifiers stay stable. Branding does not relocate or rewrite projects. The Windows application ID remains stable for continuity.
 
 ## Provenance
 

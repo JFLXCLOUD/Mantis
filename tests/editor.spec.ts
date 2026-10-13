@@ -80,10 +80,23 @@ test('saved projects reopen intact and invalid input leaves the canvas unchanged
   await page.getByLabel('Project name', { exact: true }).fill('My saved project');
   const pending = page.waitForEvent('download'); await page.getByRole('button', { name: 'Save project', exact: true }).click();
   const saved = await pending, projectPath = (await saved.path())!;
+  expect(saved.suggestedFilename()).toBe('My saved project.mantis');
   await page.getByRole('button', { name: 'Projects', exact: true }).click();
   await page.getByRole('button', { name: 'New blank project' }).click(); await page.getByRole('button', { name: 'Start fresh' }).click();
   await expect(page.getByText('0 editable objects')).toBeVisible();
-  await page.getByLabel("Import artwork or project", { exact: true }).setInputFiles({ name: 'saved.hopper', mimeType: 'application/json', buffer: await readFile(projectPath) });
+  const uploader = page.getByLabel("Import artwork or project", { exact: true });
+  await expect(uploader).toHaveAttribute('accept', '.svg,.mantis,.hopper,.json');
+  const original = await readFile(projectPath);
+  // Both branded downloads and existing Hopper files retain every object.
+  for (const extension of ['mantis', 'hopper', 'json']) {
+    await uploader.setInputFiles({ name: `saved.${extension}`, mimeType: 'application/json', buffer: original });
+    await expect(page.getByLabel('Project name')).toHaveValue('My saved project');
+    const roundTrip = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Save project', exact: true }).click();
+    const file = await roundTrip;
+    expect(file.suggestedFilename()).toBe('My saved project.mantis');
+    expect(await readFile((await file.path())!)).toEqual(original);
+  }
   await expect(page.getByLabel('Project name')).toHaveValue('My saved project');
   await expect(page.getByText('10 editable objects')).toBeVisible();
   await page.getByRole('button', { name: 'Select Your words', exact: true }).click();

@@ -136,6 +136,10 @@ test("mixed selection recolors editable objects and protects SVG and locked laye
   await openProperties(page, "Color");
   await expect(page.getByText("Mixed colors", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Pink #ec78a4", exact: true }).click();
+  // Wait for this edit's debounced autosave, not the previous Saved label.
+  await expect.poll(() => page.evaluate(() =>
+    JSON.parse(localStorage.getItem("hopper.project.v1")!).objects[0].fill,
+  )).toBe("#ec78a4");
   const p = await saved(page);
   expect(p.objects.map((o: { fill: string }) => o.fill)).toEqual([
     "#ec78a4",

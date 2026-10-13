@@ -21,7 +21,17 @@ The application is now Mantis Studio. The default desktop profile remains `%APPD
 
 All coordinates are in SVG user units at 96 units per inch. Millimeters are a display/input conversion. The file canvas dimensions specify exported physical size. Positive rotation is clockwise in the SVG coordinate system, around each object's center. Layer order is back to front. Hidden objects remain in project files but are omitted from SVG export. Guide objects are omitted from export and preparation.
 
-## `.hopper` v4 (reads v1, v2 and v3)
+## `.mantis` v4 (also reads legacy `.hopper` v1-v4)
+
+Starting in 0.12.1, new project downloads use `.mantis`; job planning drafts
+use `.mantisjob`. The project picker accepts `.mantis`, `.hopper` and `.json`,
+alongside SVG artwork. Existing files need no renaming or conversion. Opening
+an older project and saving it creates a new `.mantis` download without
+modifying the original file. Job drafts still have no import/reopen workflow.
+
+Only the filename extensions changed. The internal `format: "hopper"` project
+identifier, `hopper-job-draft` draft identifier, schema versions, profile path,
+application ID and autosave/settings keys remain stable for compatibility.
 
 UTF-8 JSON, readable without Mantis Studio:
 
@@ -76,7 +86,7 @@ Canvas and exported SVG use local `<textPath>` references, scoped per render/exp
 
 `MaterialLibrary` is a view inside job setup, accessible directly from Prepare without mounting device discovery. It supports intersecting search/category/collection filters, favorites, custom creation/copy/edit and confirmed deletion. Dark/light tokens and the existing modal focus trap apply. Selecting a profile copies validated descriptive fields into the existing machine-preference key and optional draft `setup.materialProfile`. Unknown configuration fields are stripped. Invalid optional metadata does not reset legacy machine preferences. Manual name edits detach the snapshot; library changes never silently alter an already selected snapshot.
 
-The `.hopper` project schema remains unchanged. Material preferences are defaults for each exported artwork-group draft, not automatic per-group assignments. Tools, passes and mirror remain explicit choices; pressure/speed stay null and send eligibility stays false. Library entries make no tested material/tool/model compatibility claim.
+The `.mantis` project schema remains unchanged. Material preferences are defaults for each exported artwork-group draft, not automatic per-group assignments. Tools, passes and mirror remain explicit choices; pressure/speed stay null and send eligibility stays false. Library entries make no tested material/tool/model compatibility claim.
 
 ## Appearance and release checks (0.7.0)
 

@@ -1,6 +1,6 @@
 {
   "name": "mantis-studio",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "private": true,
   "description": "An independent, open-source craft design studio. Your ideas, without limits.",
   "repository": {
@@ -38,7 +38,7 @@
     "appId": "studio.hopper.desktop",
     "productName": "Mantis Studio",
     "directories": {
-      "output": "release/v0.12.0"
+      "output": "release/v0.12.1"
     },
     "files": [
       "dist/**/*",

@@ -406,7 +406,7 @@ export function MachineSetup({
               if (!draft) return;
               download(
                 JSON.stringify(draft, null, 2),
-                `${filename(project.name)}-group-${groupIndex + 1}.hopperjob`,
+                `${filename(project.name)}-group-${groupIndex + 1}.mantisjob`,
                 "application/json",
               );
               setExported(

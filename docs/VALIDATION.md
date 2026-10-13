@@ -1,3 +1,12 @@
+# Mantis file extensions - 12 October 2026
+
+- Production build and local Windows 0.12.1 packaging passed.
+- All three focused browser/desktop checks passed: reopening an actual Hopper profile, project save/import compatibility, and job draft export. Project downloads use `.mantis`; importing the same saved artwork through `.mantis`, `.hopper` and `.json` produces byte-identical project downloads. Invalid project input still preserves the canvas. Job drafts use `.mantisjob` and retain their existing planning-only schema.
+- An isolated packaged Windows check verified the native download filename and reopened both new `.mantis` and legacy `.hopper` files. Its temporary profile was removed.
+- Backed up local storage and IndexedDB, normally closed 0.12.0 and opened 0.12.1. All six existing storage entries were preserved apart from update-check timing; the running app advertises the new and legacy project extensions.
+- The preceding shape-library CI run found two tests reading/reloading before the 450 ms workspace autosave completed. Those tests now wait for the expected saved contents, rather than a previous status label or an immediate download, before checking recovery.
+- No schema version, internal format identifier, profile directory or persistent storage key changed. Existing files are not renamed or rewritten. Both new extensions are excluded from Git alongside the legacy extensions.
+
 # Original shape library - 12 October 2026
 
 - **109 unit/offline tests passed**: 63 renderer, 27 native and 19 offline research. New coverage checks search aliases/plurals, unique entries, closed geometry, finite dimensions, original proportions, holes, small boards and native project/SVG round-trips for all 36 shapes.

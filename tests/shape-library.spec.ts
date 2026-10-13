@@ -47,6 +47,10 @@ test("offline shamrock search inserts an editable path with undo, color, save an
   expect(added.type).toBe("path");
   expect(added.fill).toBe("#243b70");
   expect(await download("Export SVG")).toContain(added.pathData);
+  // Download is immediate; workspace recovery waits for the debounced save.
+  await expect.poll(() => page.evaluate(() =>
+    JSON.parse(localStorage.getItem("hopper.project.v1") || "null"),
+  )).toEqual(saved);
   await context.setOffline(false);
   await page.reload();
   await expect(objects).toHaveCount(before + 1);

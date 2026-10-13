@@ -8,6 +8,13 @@
 4. **Broader Cricut coverage:** independent Maker, Explore, Joy and Venture adapters, including a separate BLE track. Track each model/firmware/transport explicitly; do not equate a dropdown entry with cutting support.
 5. **Public application release:** source and contributor workflow live at [JFLXCLOUD/Mantis](https://github.com/JFLXCLOUD/Mantis). Hold downloads until machine validation passes, then finish Windows distribution, signing and updates.
 
+## 0.12.1 - Mantis file extensions (implemented locally)
+
+New project downloads use `.mantis` and job planning drafts use `.mantisjob`.
+The file picker continues to accept legacy `.hopper` projects and JSON files;
+existing files need no conversion. Internal format identifiers, schema versions
+and workspace storage remain unchanged.
+
 ## 0.12.0 - Searchable original shape library (implemented locally)
 
 The Create sidebar opens an offline library of 36 original designs, including
